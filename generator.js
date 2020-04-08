@@ -219,6 +219,8 @@ function setStrChecks(wAllow, mPres, oDrs ,bBrs){
 	document.getElementById("bndBrs").innerHTML = bndBrs;
 }
 
+// test
+
 function removeOption(index){
 	let op1 = document.getElementById("stat1").getElementsByTagName("option");
 	op1[index].disabled = true;
