@@ -1,0 +1,41 @@
+html, body, *{
+	font-family:sans-serif;
+}
+
+.roller{
+	padding:1em;
+	margin:1em;
+	display:inline-block;
+	border:solid 1px #ccc;
+	vertical-align:top;
+}
+
+.roller div{
+	margin-bottom:1em;
+}
+
+.roller div:last-child{
+	margin-bottom:0em;
+}
+
+.roller div label{
+	margin-left:2em;
+	display:inline-block;
+	width:85px;
+}
+
+.roller div input[type=number]{
+	width:30px;
+	-moz-appearance: textfield;
+}
+
+.roller div select{
+	padding:1.5px;
+}
+
+#percent{
+	display: inline-block;
+	font-size:6pt;
+	width: 30px;
+	margin-left:0;
+}

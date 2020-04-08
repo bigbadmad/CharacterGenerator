@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Character generator</title>
+	  <link rel="stylesheet" type="text/css" href="styles.css" />
+	  <script type="text/javascript" src="generator.js"></script>
+   </head>
+   <body>
+	<div class="roller">
+		<div>
+			<input type="number" id="one" readonly />
+			<select id="stat1" onchange="setOne(this,'one')">
+				<option></option>
+				<option value="str">strength</option>
+				<option value="dex">dexterity</option>
+				<option value="con">constitution</option>
+				<option value="int">intelligence</option>
+				<option value="wis">wisdom</option>
+				<option value="chr">charisma</option>
+			</select>
+			<label for="str">Strength</label>
+			<input type="number" id="str" readonly />
+			<label id="percent"></label>
+		</div>
+		<div>
+			<input type="number" id="two" readonly />
+			<select id="stat2" onchange="setOne(this,'two')">
+				<option></option>
+				<option value="str">strength</option>
+				<option value="dex">dexterity</option>
+				<option value="con">constitution</option>
+				<option value="int">intelligence</option>
+				<option value="wis">wisdom</option>
+				<option value="chr">charisma</option>
+			</select>
+			<label for="str">Dexterity</label>
+			<input type="number" id="dex" readonly />
+		</div>
+		<div>
+			<input type="number" id="three" readonly />
+			<select id="stat3" onchange="setOne(this,'three')">
+				<option></option>
+				<option value="str">strength</option>
+				<option value="dex">dexterity</option>
+				<option value="con">constitution</option>
+				<option value="int">intelligence</option>
+				<option value="wis">wisdom</option>
+				<option value="chr">charisma</option>
+			</select>
+			<label for="str">Constitution</label>
+			<input type="number" id="con" readonly />
+		</div>
+		<div>
+			<input type="number" id="four" readonly />
+			<select id="stat4" onchange="setOne(this,'four')">
+				<option></option>
+				<option value="str">strength</option>
+				<option value="dex">dexterity</option>
+				<option value="con">constitution</option>
+				<option value="int">intelligence</option>
+				<option value="wis">wisdom</option>
+				<option value="chr">charisma</option>
+			</select>
+			<label for="str">Intelligence</label>
+			<input type="number" id="int" readonly />
+		</div>
+		<div>
+			<input type="number" id="five" readonly />
+			<select id="stat5" onchange="setOne(this,'five')">
+				<option></option>
+				<option value="str">strength</option>
+				<option value="dex">dexterity</option>
+				<option value="con">constitution</option>
+				<option value="int">intelligence</option>
+				<option value="wis">wisdom</option>
+				<option value="chr">charisma</option>
+			</select>
+			<label for="str">Wisdom</label>
+			<input type="number" id="wis" readonly />
+		</div>
+		<div>
+			<input type="number" id="six" readonly />
+			<select id="stat6" onchange="setOne(this,'six')">
+				<option></option>
+				<option value="str">strength</option>
+				<option value="dex">dexterity</option>
+				<option value="con">constitution</option>
+				<option value="int">intelligence</option>
+				<option value="wis">wisdom</option>
+				<option value="chr">charisma</option>
+			</select>
+			<label for="str">Charisma</label>
+			<input type="number" id="chr" readonly />
+		</div>
+		<div>
+			<input type="button" id="roll" value="Roll dem bones" />
+		</div>
+	</div>
+	<div class="roller">
+		<select id="class" onchange="setClass(this)">
+			<option></option>
+			<option>fighter</option>
+			<option>thief</option>
+			<option>cleric</option>
+			<option>mage</option>
+			<option>bard</option>
+			<option>paladin</option>
+			<option>ranger</option>
+			<option>druid</option>
+		</select>
+		<select id="race" onchange="setRace(this)">
+			<option></option>
+			<option>human</option>
+			<option>dwarf</option>
+			<option>elf</option>
+			<option>gnome</option>
+			<option>halfling</option>
+			<option>half elf</option>
+			<option>half orc</option>
+		</select>
+		<select id="lvl" onchange="setLevel(this)">
+			<option></option>
+			<option>1</option>
+			<option>2</option>
+			<option>3</option>
+			<option>4</option>
+			<option>5</option>
+			<option>6</option>
+			<option>7</option>
+			<option>8</option>
+			<option>9</option>
+			<option>10</option>
+			<option>11</option>
+			<option>12</option>
+			<option>13</option>
+			<option>14</option>
+			<option>15</option>
+			<option>16</option>
+			<option>17</option>
+			<option>18</option>
+			<option>19</option>
+			<option>20</option>
+		</select>
+		<p>HP <label id="hp"></label></p>
+		<p>AC <label id="ac">10</label></p>
+		<p>THACO <label id="thaco">20</label></p>
+	</div>
+	<div class="roller">
+		<p>Weight Allowance: <label id="wghtAllow"></label></p>
+		<p>Max Press: <label id="MxPres"></label></p>
+		<p>Open Doors: <label id="opDrs"></label></p>
+		<p>Bend Bars: <label id="bndBrs"></label>%</p>
+	</div>
+   </body>
+</html>
