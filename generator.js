@@ -641,16 +641,18 @@ function setRace(ddl){
 		case 1://human
 			break;
 		case 2://dwarf
+			// + 1 con - 1 chr
 			break;
 		case 3://elf
+		// + 1 dex - 1 con
 			break;
 		case 4://gnome
+		// + 1 int - 1 wisdom
 			break;
 		case 5://halfling
+		// + 1 dex - 1 str
 			break;
 		case 6://half elf
-			break;
-		case 7://half orc
 			break;
 		default:
 			break;
