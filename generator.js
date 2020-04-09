@@ -9,6 +9,16 @@ var DmgAdj = 0;
 
 var isFighter = false;
 
+var rctAdj = 0;
+var mislAdj = 0;
+var defAdj = 0;
+
+var hpAdj = 0;
+var sysShk = 0;
+var resSurv = 0;
+var posSv = 0;
+var regen = 0;
+
 var wghtAllow = 0;
 var MxPres = 0;
 var opDrs = 0;
@@ -19,6 +29,8 @@ window.onload = (event) => {
 };
 
 function roll(){
+	isFighter = false;
+	
 	document.getElementById("one").value = fourD6();
 	document.getElementById("two").value = fourD6();
 	document.getElementById("three").value = fourD6();
@@ -87,11 +99,13 @@ function setOne(ddl, box){
 			document.getElementById("dex").value = document.getElementById(box).value;
 			ddl.disabled = true;
 			removeOption(2);
+			setDexMods(document.getElementById(box).value);
 			break;
 		case 3:
 			document.getElementById("con").value = document.getElementById(box).value;
 			ddl.disabled = true;
 			removeOption(3);
+			setConMods(document.getElementById(box).value);
 			break;
 		case 4:
 			document.getElementById("int").value = document.getElementById(box).value;
@@ -219,7 +233,129 @@ function setStrChecks(wAllow, mPres, oDrs ,bBrs){
 	document.getElementById("bndBrs").innerHTML = bndBrs;
 }
 
-// test
+function setDexMods(dex){
+	dex = parseInt(dex);
+	switch(dex){
+		case 3:
+			setDexAdj(-3, -3, 4);
+			break;
+		case 4:
+			setDexAdj(-2, -2, 3);
+			break;
+		case 5:
+			setDexAdj(-1, -1, 2);
+			break;
+		case 6:
+			setDexAdj(0, 0, 1);
+			break;
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+		case 11:
+		case 12:
+		case 13:
+		case 14:
+			setDexAdj(0, 0, 0);
+			break;
+		case 15:
+			setDexAdj(0, 0, -1);
+			break;
+		case 16:
+			setDexAdj(1, 1, -2);
+			break;
+		case 17:
+			setDexAdj(2, 2, -3);
+			break;
+		case 18:
+			setDexAdj(2, 2, -4);
+			break;
+		default:
+			break;
+	}
+}
+
+function setDexAdj(rAdj, msAdj, dAdj){
+	rctAdj = rAdj, mislAdj = msAdj, defAdj = dAdj;
+	document.getElementById("rctAdj").innerHTML = rctAdj;
+	document.getElementById("mislAdj").innerHTML = mislAdj;
+	document.getElementById("defAdj").innerHTML = defAdj;
+}
+
+function setConMods(con){
+	con = parseInt(con);
+	switch(con){
+		case 3:
+			setConAdj(-2, 25, 30, -2, 0);
+			break;
+		case 4:
+			setConAdj(-1, 40, 45, 0, 0);
+			break;
+		case 5:
+			setConAdj(-1, 45, 50, 0, 0);
+			break;
+		case 6:
+			setConAdj(-1, 50, 55, 0, 0);
+			break;
+		case 7:
+			setConAdj(0, 55, 60, 0, 0);
+			break;
+		case 8:
+			setConAdj(0, 60, 65, 0, 0);
+			break;
+		case 9:
+			setConAdj(0, 65, 70, 0, 0);
+			break;
+		case 10:
+			setConAdj(0, 70, 75, 0, 0);
+			break;
+		case 11:
+			setConAdj(0, 75, 80, 0, 0);
+			break;
+		case 12:
+			setConAdj(0, 80, 85, 0, 0);
+			break;
+		case 13:
+			setConAdj(0, 85, 90, 0, 0);
+			break;
+		case 14:
+			setConAdj(0, 88, 92, 0, 0);
+			break;
+		case 15:
+			setConAdj(1, 90, 94, 0, 0);
+			break;
+		case 16:
+			setConAdj(2, 95, 96, 0, 0);
+			break;
+		case 17:
+			setConAdj(2, 97, 98, 0, 0);
+			break;
+		case 18:
+			setConAdj(2, 99, 100, 0, 0);
+			break;
+		default:
+			break;
+	}
+	if(isFighter){
+		switch(con){
+			case 17:
+				setConAdj(3, 97, 98, 0, 0);
+				break;
+			case 18:
+				setConAdj(4, 99, 100, 0, 0);
+				break;
+		}
+	}
+}
+
+function setConAdj(hpA, sys, res, pos, reg){
+	hpAdj = hpA, sysShk = sys, resSurv = res, posSv = pos, regen = reg;
+	document.getElementById("hpAdj").innerHTML = hpAdj;
+	document.getElementById("sysShk").innerHTML = sysShk;
+	document.getElementById("resSurv").innerHTML = resSurv;
+	document.getElementById("posSv").innerHTML = posSv;
+	document.getElementById("regen").innerHTML = regen;
+}
 
 function removeOption(index){
 	let op1 = document.getElementById("stat1").getElementsByTagName("option");
@@ -257,6 +393,7 @@ function setClass(ddl){
 		case 7:
 			isFighter = true;
 			checkForStrMods(document.getElementById("str").value);
+			setConMods(document.getElementById("con").value);
 			hitdice = 10;
 			break;
 		case 2:// Rogues
