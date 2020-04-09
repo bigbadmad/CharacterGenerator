@@ -39,10 +39,12 @@ var mxHench = 0;
 var loyaltyBs = 0;
 var ReactAdj = 0;
 
+// set roll button's click
 window.onload = (event) => {
 	document.getElementById("roll").addEventListener("click", roll);
 };
 
+// roll stats and clear odl values etc
 function roll(){
 	isFighter = false;
 	
@@ -98,10 +100,12 @@ function roll(){
 	document.getElementById("chr").value = '';
 }
 
+// re-enable dropdwon option
 function enableOpts(item, index){
 	item.disabled = false;
 }
 
+// assign stat from dropdown
 function setOne(ddl, box){
 	switch(ddl.selectedIndex){
 		case 1:
@@ -145,6 +149,7 @@ function setOne(ddl, box){
 	}
 }
 
+// calculate strength modifiers
 function checkForStrMods(str){
 	debugger;
 	let prcStr = 101;
@@ -243,6 +248,7 @@ function checkForStrMods(str){
 	}
 }
 
+// set strength adjustments
 function setStrChecks(wAllow, mPres, oDrs ,bBrs){
 	wghtAllow = wAllow, MxPres = mPres, opDrs = oDrs, bndBrs = bBrs;
 	document.getElementById("wghtAllow").innerHTML = wghtAllow;
@@ -251,6 +257,7 @@ function setStrChecks(wAllow, mPres, oDrs ,bBrs){
 	document.getElementById("bndBrs").innerHTML = bndBrs;
 }
 
+// calculate dexterity modifiers
 function setDexMods(dex){
 	dex = parseInt(dex);
 	switch(dex){
@@ -293,6 +300,7 @@ function setDexMods(dex){
 	}
 }
 
+// set dexterity adj
 function setDexAdj(rAdj, msAdj, dAdj){
 	rctAdj = rAdj, mislAdj = msAdj, defAdj = dAdj;
 	document.getElementById("rctAdj").innerHTML = rctAdj;
@@ -300,6 +308,7 @@ function setDexAdj(rAdj, msAdj, dAdj){
 	document.getElementById("defAdj").innerHTML = defAdj;
 }
 
+// calculate con modifiers
 function setConMods(con){
 	con = parseInt(con);
 	switch(con){
@@ -366,6 +375,7 @@ function setConMods(con){
 	}
 }
 
+// set consititution adj
 function setConAdj(hpA, sys, res, pos, reg){
 	hpAdj = hpA, sysShk = sys, resSurv = res, posSv = pos, regen = reg;
 	document.getElementById("hpAdj").innerHTML = hpAdj;
@@ -375,6 +385,7 @@ function setConAdj(hpA, sys, res, pos, reg){
 	document.getElementById("regen").innerHTML = regen;
 }
 
+// calculate intelligence modifiers
 function setIntMods(int){
 	debugger;
 	int = parseInt(int);
@@ -422,6 +433,7 @@ function setIntMods(int){
 	}
 }
 
+// set intelligence adjustments
 function setIntAdj(noLan, sLvl, chnLn, max, imun){
 	noOfLang = noLan, spellLvl = sLvl, chnLearn = chnLn, maxSplPerLvl = max, splImun = imun;
 	document.getElementById("noOfLang").innerHTML = noOfLang;
@@ -431,6 +443,7 @@ function setIntAdj(noLan, sLvl, chnLn, max, imun){
 	document.getElementById("splImun").innerHTML = splImun;
 }
 
+// calculate wisdom modifiers
 function setWisMods(wis){
 	wis = parseInt(wis);
 	switch(wis){
@@ -485,6 +498,7 @@ function setWisMods(wis){
 	}
 }
 
+// set wisdom adjustments
 function setWisAdj(mDef, bSp, cnFl, imun){
 	magDefAdj = mDef, BonusSp = bSp, chnFail = cnFl, splImmune = imun;
 	document.getElementById("magDefAdj").innerHTML = magDefAdj;
@@ -493,6 +507,7 @@ function setWisAdj(mDef, bSp, cnFl, imun){
 	document.getElementById("splImmune").innerHTML = splImmune;
 }
 
+// Calculate charisma modifiers
 function setCharMods(chr){
 	chr = parseInt(chr);
 	switch(chr){
@@ -545,6 +560,7 @@ function setCharMods(chr){
 	}
 }
 
+// Set charisma adj
 function setCharAdj(hench, loyal, react){
 	mxHench = hench, loyaltyBs = loyal, ReactAdj = react;
 	document.getElementById("mxHench").innerHTML = mxHench;
@@ -552,6 +568,7 @@ function setCharAdj(hench, loyal, react){
 	document.getElementById("ReactAdj").innerHTML = ReactAdj;
 }
 
+// Disable statistic option after its selected
 function removeOption(index){
 	let op1 = document.getElementById("stat1").getElementsByTagName("option");
 	op1[index].disabled = true;
@@ -567,6 +584,7 @@ function removeOption(index){
 	op6[index].disabled = true;
 }
 
+// throw 4d6 remove lowest roll
 function fourD6(){
 	let one = getRndInteger(1,6);
 	let two = getRndInteger(1,6);
@@ -576,11 +594,21 @@ function fourD6(){
 	return (one + two + three + four) - lowest;
 }
 
+// throw 3d6
+function threeD6(){
+	let one = getRndInteger(1,6);
+	let two = getRndInteger(1,6);
+	let three = getRndInteger(1,6);
+	return one + two + three;
+}
+
+// random number generator
 function getRndInteger(min, max) {
 	max = max + 1;
 	return Math.floor(Math.random() * (max - min) ) + min;
 }
 
+// Set the class
 function setClass(ddl){
 	switch(ddl.selectedIndex){
 		case 1:// Fighters
@@ -607,6 +635,7 @@ function setClass(ddl){
 	}
 }
 
+// Add racial mods
 function setRace(ddl){
 	switch(ddl.selectedIndex){
 		case 1://human
@@ -628,11 +657,21 @@ function setRace(ddl){
 	}	
 }
 
+// Calculate hp
 function setLevel(ddl){	
 	let hp = document.getElementById("hp");
 	let hit = 0;
 	for(i = 0; i < ddl.selectedIndex; i++){
-		hit += getRndInteger(1, hitdice);
+		hit += calcHPRoll();
 	}
 	hp.innerHTML = hit;
+}
+
+// Hit dice roll with con mod, minimum roll 1
+function calcHPRoll(){
+	let hp = getRndInteger(1, hitdice) + hpAdj;
+	if (hp < 1)
+		return 1
+	else
+		return hp;
 }
