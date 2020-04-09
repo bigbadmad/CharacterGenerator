@@ -97,6 +97,15 @@
 		</div>
 	</div>
 	<div class="roller">
+		<select id="race" onchange="setRace(this)">
+			<option></option>
+			<option>human</option>
+			<option>dwarf</option>
+			<option>elf</option>
+			<option>gnome</option>
+			<option>halfling</option>
+			<option>half elf</option>
+		</select>
 		<select id="class" onchange="setClass(this)">
 			<option></option>
 			<option>fighter</option>
@@ -107,17 +116,7 @@
 			<option>paladin</option>
 			<option>ranger</option>
 			<option>druid</option>
-		</select>
-		<select id="race" onchange="setRace(this)">
-			<option></option>
-			<option>human</option>
-			<option>dwarf</option>
-			<option>elf</option>
-			<option>gnome</option>
-			<option>halfling</option>
-			<option>half elf</option>
-			<option>half orc</option>
-		</select>
+		</select>		
 		<select id="lvl" onchange="setLevel(this)">
 			<option></option>
 			<option>1</option>
