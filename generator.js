@@ -8,21 +8,36 @@ var hitProb = 0;
 var DmgAdj = 0;
 
 var isFighter = false;
-
+// dex
 var rctAdj = 0;
 var mislAdj = 0;
 var defAdj = 0;
-
+// con
 var hpAdj = 0;
 var sysShk = 0;
 var resSurv = 0;
 var posSv = 0;
 var regen = 0;
-
+// int
+var noOfLang = 0;
+var spellLvl = 0;
+var chnLearn = 0;
+var maxSplPerLvl = 0;
+var splImun = 0;
+// str
 var wghtAllow = 0;
 var MxPres = 0;
 var opDrs = 0;
 var bndBrs = 0;
+// wis
+var magDefAdj = 0;
+var BonusSp = 0;
+var chnFail = 0;
+var splImmune = 0;
+// char
+var mxHench = 0;
+var loyaltyBs = 0;
+var ReactAdj = 0;
 
 window.onload = (event) => {
 	document.getElementById("roll").addEventListener("click", roll);
@@ -111,16 +126,19 @@ function setOne(ddl, box){
 			document.getElementById("int").value = document.getElementById(box).value;
 			ddl.disabled = true;
 			removeOption(4);
+			setIntMods(document.getElementById(box).value);
 			break;
 		case 5:
 			document.getElementById("wis").value = document.getElementById(box).value;
 			ddl.disabled = true;
 			removeOption(5);
+			setWisMods(document.getElementById(box).value);
 			break;
 		case 6:
 			document.getElementById("chr").value = document.getElementById(box).value;
 			ddl.disabled = true;
 			removeOption(6);
+			setCharMods(document.getElementById(box).value);
 			break;
 		default:
 			break;				
@@ -355,6 +373,183 @@ function setConAdj(hpA, sys, res, pos, reg){
 	document.getElementById("resSurv").innerHTML = resSurv;
 	document.getElementById("posSv").innerHTML = posSv;
 	document.getElementById("regen").innerHTML = regen;
+}
+
+function setIntMods(int){
+	debugger;
+	int = parseInt(int);
+	switch(int){
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+			setIntAdj(1, 0, 0, 0, 0);
+			break;
+		case 9:
+			setIntAdj(2, 4, 35, 6, 0);
+			break;
+		case 10:
+			setIntAdj(2, 5, 40, 7, 0);
+			break;
+		case 11:
+			setIntAdj(2, 5, 45, 7, 0);
+			break;
+		case 12:
+			setIntAdj(3, 6, 50, 7, 0);
+			break;
+		case 13:
+			setIntAdj(3, 6, 55, 7, 0);
+			break;
+		case 14:
+			setIntAdj(4, 7, 60, 9, 0);
+			break;
+		case 15:
+			setIntAdj(4, 7, 65, 11, 0);
+			break;
+		case 16:
+			setIntAdj(5, 8, 70, 11, 0);
+			break;
+		case 17:
+			setIntAdj(6, 8, 75, 14, 0);
+			break;
+		case 18:
+			setIntAdj(7, 9, 85, 18, 0);
+			break;
+		default:
+			break;
+	}
+}
+
+function setIntAdj(noLan, sLvl, chnLn, max, imun){
+	noOfLang = noLan, spellLvl = sLvl, chnLearn = chnLn, maxSplPerLvl = max, splImun = imun;
+	document.getElementById("noOfLang").innerHTML = noOfLang;
+	document.getElementById("spellLvl").innerHTML = spellLvl;
+	document.getElementById("chnLearn").innerHTML = chnLearn;
+	document.getElementById("maxSplPerLvl").innerHTML = maxSplPerLvl;
+	document.getElementById("splImun").innerHTML = splImun;
+}
+
+function setWisMods(wis){
+	wis = parseInt(wis);
+	switch(wis){
+		case 3:
+			setWisAdj(-3, 0, 50, 0);
+			break;
+		case 4:
+			setWisAdj(-2, 0, 45, 0);
+			break;
+		case 5:
+			setWisAdj(-1, 0, 40, 0);
+			break;
+		case 6:
+			setWisAdj(-1, 0, 35, 0);
+			break;
+		case 7:
+			setWisAdj(-1, 0, 30, 0);
+			break;
+		case 8:
+			setWisAdj(0, 0, 25, 0);
+			break;
+		case 9:
+			setWisAdj(0, 0, 20, 0);
+			break;
+		case 10:
+			setWisAdj(0, 0, 15, 0);
+			break;
+		case 11:
+			setWisAdj(0, 0, 10, 0);
+			break;
+		case 12:
+			setWisAdj(0, 0, 5, 0);
+			break;
+		case 13:
+		case 14:
+			setWisAdj(0, 1, 0, 0);
+			break;
+		case 15:
+			setWisAdj(1, 2, 0, 0);
+			break;
+		case 16:
+			setWisAdj(2, 2, 0, 0);
+			break;
+		case 17:
+			setWisAdj(3, 3, 0, 0);
+			break;
+		case 18:
+			setWisAdj(4, 4, 0, 0);
+			break;
+		default:
+			break;
+	}
+}
+
+function setWisAdj(mDef, bSp, cnFl, imun){
+	magDefAdj = mDef, BonusSp = bSp, chnFail = cnFl, splImmune = imun;
+	document.getElementById("magDefAdj").innerHTML = magDefAdj;
+	document.getElementById("BonusSp").innerHTML = BonusSp;
+	document.getElementById("chnFail").innerHTML = chnFail;
+	document.getElementById("splImmune").innerHTML = splImmune;
+}
+
+function setCharMods(chr){
+	chr = parseInt(chr);
+	switch(chr){
+		case 3:
+			setCharAdj(1, -6, -5);
+			break;
+		case 4:
+			setCharAdj(1, -5, -4);
+			break;
+		case 5:
+			setCharAdj(2, -4, -3);
+			break;
+		case 6:
+			setCharAdj(2, -3, -2);
+			break;
+		case 7:
+			setCharAdj(3, -2, -1);
+			break;
+		case 8:
+			setCharAdj(3, -1, 0);
+			break;
+		case 9:
+		case 10:
+		case 11:
+			setCharAdj(4, 0, 0);
+			break;
+		case 12:
+			setCharAdj(5, 0, 0);
+			break;
+		case 13:
+			setCharAdj(5, 0, 1);
+			break;
+		case 14:
+			setCharAdj(6, 1, 2);
+			break;
+		case 15:
+			setCharAdj(7, 3, 3);
+			break;
+		case 16:
+			setCharAdj(8, 4, 5);
+			break;
+		case 17:
+			setCharAdj(10, 6, 6);
+			break;
+		case 18:
+			setCharAdj(15, 8, 7);
+			break;
+		default:
+			break;
+	}
+}
+
+function setCharAdj(hench, loyal, react){
+	mxHench = hench, loyaltyBs = loyal, ReactAdj = react;
+	document.getElementById("mxHench").innerHTML = mxHench;
+	document.getElementById("loyaltyBs").innerHTML = loyaltyBs;
+	document.getElementById("ReactAdj").innerHTML = ReactAdj;
 }
 
 function removeOption(index){
