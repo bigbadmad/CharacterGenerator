@@ -39,6 +39,13 @@ var mxHench = 0;
 var loyaltyBs = 0;
 var ReactAdj = 0;
 
+var strMod = 0;
+var dexMod = 0;
+var conMod = 0;
+var intMod = 0;
+var wisMod = 0;
+var chrMod = 0;
+
 // set roll button's click
 window.onload = (event) => {
 	document.getElementById("roll").addEventListener("click", roll);

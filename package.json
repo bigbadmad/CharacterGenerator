@@ -1,0 +1,19 @@
+{
+  "name": "char",
+  "version": "1.0.0",
+  "description": "",
+  "main": "generator.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bigbadmad/CharacterGenerator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bigbadmad/CharacterGenerator/issues"
+  },
+  "homepage": "https://github.com/bigbadmad/CharacterGenerator#readme"
+}
