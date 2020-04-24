@@ -1,16 +1,17 @@
 {
   "name": "char",
   "version": "1.0.0",
-  "description": "",
+  "description": "AD&D 2e Character Generator",
   "main": "generator.js",
   "scripts": {
+    "start": "index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bigbadmad/CharacterGenerator.git"
   },
-  "author": "",
+  "author": "Matthew Allen - madtv.me.uk",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/bigbadmad/CharacterGenerator/issues"
