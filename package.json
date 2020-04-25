@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/bigbadmad/CharacterGenerator/issues"
   },
-  "homepage": "https://github.com/bigbadmad/CharacterGenerator#readme"
+  "homepage": "https://github.com/bigbadmad/CharacterGenerator#readme",
+  "dependencies": {
+    "typescript": "^3.8.3"
+  }
 }
