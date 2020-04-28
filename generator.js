@@ -1,678 +1,730 @@
-// Global variables
-var hp = 0;
-var ac = 10;
-var level = 1;
-var hitdice = 6;
-var hitProb = 0;
-var DmgAdj = 0;
-var isFighter = false;
-// dex
-var rctAdj = 0;
-var mislAdj = 0;
-var defAdj = 0;
-// con
-var hpAdj = 0;
-var sysShk = 0;
-var resSurv = 0;
-var posSv = 0;
-var regen = 0;
-// int
-var noOfLang = 0;
-var spellLvl = 0;
-var chnLearn = 0;
-var maxSplPerLvl = 0;
-var splImun = 0;
-// str
-var wghtAllow = 0;
-var MxPres = 0;
-var opDrs = 0;
-var bndBrs = 0;
-// wis
-var magDefAdj = 0;
-var BonusSp = 0;
-var chnFail = 0;
-var splImmune = 0;
-// char
-var mxHench = 0;
-var loyaltyBs = 0;
-var ReactAdj = 0;
-var strInit = 0;
-var dexInit = 0;
-var conInit = 0;
-var intInit = 0;
-var wisInit = 0;
-var chrInit = 0;
-// racial mods
-var strMod = 0;
-var dexMod = 0;
-var conMod = 0;
-var intMod = 0;
-var wisMod = 0;
-var chrMod = 0;
-// set roll button's click
-window.onload = function (event) {
-    document.getElementById("roll").addEventListener("click", roll);
+"use strict";
+// Global class object
+var gen;
+window.onload = function () {
+    gen = new Generator(document.getElementById("roll"));
+    gen.setup();
 };
-// roll stats and clear odl values etc
-function roll() {
-    isFighter = false;
-    document.getElementById("one").value = fourD6().toString();
-    document.getElementById("two").value = fourD6().toString();
-    document.getElementById("three").value = fourD6().toString();
-    document.getElementById("four").value = fourD6().toString();
-    document.getElementById("five").value = fourD6().toString();
-    document.getElementById("six").value = fourD6().toString();
-    document.getElementById("percent").innerHTML = '';
-    var stat1 = document.getElementById("stat1");
-    stat1.disabled = false;
-    stat1.selectedIndex = 0;
-    var opt1 = stat1.getElementsByTagName("option");
-    Array.prototype.slice.call(opt1, 0).forEach(enableOpts);
-    document.getElementById("str").value = '';
-    var stat2 = document.getElementById("stat2");
-    stat2.disabled = false;
-    stat2.selectedIndex = 0;
-    var opt2 = stat2.getElementsByTagName("option");
-    Array.prototype.slice.call(opt2, 0).forEach(enableOpts);
-    document.getElementById("dex").value = '';
-    var stat3 = document.getElementById("stat3");
-    stat3.disabled = false;
-    stat3.selectedIndex = 0;
-    var opt3 = stat3.getElementsByTagName("option");
-    Array.prototype.slice.call(opt3, 0).forEach(enableOpts);
-    document.getElementById("con").value = '';
-    var stat4 = document.getElementById("stat4");
-    stat4.disabled = false;
-    stat4.selectedIndex = 0;
-    var opt4 = stat4.getElementsByTagName("option");
-    Array.prototype.slice.call(opt4, 0).forEach(enableOpts);
-    document.getElementById("int").value = '';
-    var stat5 = document.getElementById("stat5");
-    stat5.disabled = false;
-    stat5.selectedIndex = 0;
-    var opt5 = stat5.getElementsByTagName("option");
-    Array.prototype.slice.call(opt5, 0).forEach(enableOpts);
-    document.getElementById("wis").value = '';
-    var stat6 = document.getElementById("stat6");
-    stat6.disabled = false;
-    stat6.selectedIndex = 0;
-    var opt6 = stat6.getElementsByTagName("option");
-    Array.prototype.slice.call(opt6, 0).forEach(enableOpts);
-    document.getElementById("chr").value = '';
-}
-// re-enable dropdown option
-function enableOpts(item, index) {
-    item.disabled = false;
-}
-// assign stat from dropdown
 function setOne(ddl, box) {
-    var val = parseInt(document.getElementById(box).value);
-    switch (ddl.selectedIndex) {
-        case 1:
-            strInit = val;
-            document.getElementById("str").value = strInit.toString();
-            ddl.disabled = true;
-            removeOption(1);
-            checkForStrMods(strInit);
-            break;
-        case 2:
-            dexInit = val;
-            document.getElementById("dex").value = dexInit.toString();
-            ddl.disabled = true;
-            removeOption(2);
-            setDexMods(dexInit);
-            break;
-        case 3:
-            conInit = val;
-            document.getElementById("con").value = conInit.toString();
-            ddl.disabled = true;
-            removeOption(3);
-            setConMods(conInit);
-            break;
-        case 4:
-            intInit = val;
-            document.getElementById("int").value = intInit.toString();
-            ddl.disabled = true;
-            removeOption(4);
-            setIntMods(intInit);
-            break;
-        case 5:
-            wisInit = val;
-            document.getElementById("wis").value = wisInit.toString();
-            ddl.disabled = true;
-            removeOption(5);
-            setWisMods(wisInit);
-            break;
-        case 6:
-            chrInit = val;
-            document.getElementById("chr").value = chrInit.toString();
-            ddl.disabled = true;
-            removeOption(6);
-            setCharMods(chrInit);
-            break;
-        default:
-            break;
-    }
+    gen.setOne(ddl, box);
 }
-// calculate strength modifiers
-function checkForStrMods(str) {
-    var prcStr = 101;
-    if (str == 18 && isFighter) {
-        prcStr = getRndInteger(1, 100);
-        document.getElementById("percent").innerText = prcStr.toString();
-    }
-    switch (parseInt(str)) {
-        case 3:
-            hitProb = -3;
-            DmgAdj = -1;
-            setStrChecks(5, 10, 2, 0);
-            break;
-        case 4:
-        case 5:
-            hitProb = -2;
-            DmgAdj = -1;
-            setStrChecks(10, 25, 3, 0);
-            break;
-        case 6:
-        case 7:
-            hitProb = -1;
-            DmgAdj = 0;
-            setStrChecks(20, 55, 4, 0);
-            break;
-        case 8:
-        case 9:
-            hitProb = 0;
-            DmgAdj = 0;
-            setStrChecks(35, 90, 5, 1);
-            break;
-        case 10:
-        case 11:
-            hitProb = 0;
-            DmgAdj = 0;
-            setStrChecks(40, 115, 6, 2);
-            break;
-        case 12:
-        case 13:
-            hitProb = 0;
-            DmgAdj = 0;
-            setStrChecks(45, 140, 7, 4);
-            break;
-        case 14:
-        case 15:
-            hitProb = 0;
-            DmgAdj = 0;
-            setStrChecks(55, 170, 8, 7);
-            break;
-        case 16:
-            hitProb = 0;
-            DmgAdj = 1;
-            setStrChecks(70, 195, 8, 10);
-            break;
-        case 17:
-            hitProb = 1;
-            DmgAdj = 1;
-            setStrChecks(85, 220, 10, 13);
-            break;
-        case 18:
-            switch (true) {
-                case prcStr < 51:
-                    hitProb = 1;
-                    DmgAdj = 3;
-                    setStrChecks(135, 280, 12, 20);
-                    break;
-                case prcStr < 76:
-                    hitProb = 2;
-                    DmgAdj = 3;
-                    setStrChecks(160, 305, 13, 25);
-                    break;
-                case prcStr < 91:
-                    hitProb = 2;
-                    DmgAdj = 4;
-                    setStrChecks(185, 330, 14, 30);
-                    break;
-                case prcStr < 100:
-                    hitProb = 2;
-                    DmgAdj = 5;
-                    setStrChecks(235, 380, 15, 35);
-                    break;
-                case prcStr == 100:
-                    hitProb = 3;
-                    DmgAdj = 6;
-                    setStrChecks(335, 480, 16, 40);
-                    wghtAllow = 335;
-                    MxPres = 480;
-                    opDrs = 16;
-                    bndBrs = 40;
-                default:
-                    hitProb = 1;
-                    DmgAdj = 2;
-                    setStrChecks(110, 255, 11, 16);
-            }
-            break;
-    }
-}
-// set strength adjustments
-function setStrChecks(wAllow, mPres, oDrs, bBrs) {
-    wghtAllow = wAllow, MxPres = mPres, opDrs = oDrs, bndBrs = bBrs;
-    document.getElementById("wghtAllow").innerText = wghtAllow.toString();
-    document.getElementById("MxPres").innerHTML = MxPres.toString();
-    document.getElementById("opDrs").innerHTML = opDrs.toString();
-    document.getElementById("bndBrs").innerHTML = bndBrs.toString();
-}
-// calculate dexterity modifiers
-function setDexMods(dex) {
-    dex = parseInt(dex);
-    switch (dex) {
-        case 3:
-            setDexAdj(-3, -3, 4);
-            break;
-        case 4:
-            setDexAdj(-2, -2, 3);
-            break;
-        case 5:
-            setDexAdj(-1, -1, 2);
-            break;
-        case 6:
-            setDexAdj(0, 0, 1);
-            break;
-        case 7:
-        case 8:
-        case 9:
-        case 10:
-        case 11:
-        case 12:
-        case 13:
-        case 14:
-            setDexAdj(0, 0, 0);
-            break;
-        case 15:
-            setDexAdj(0, 0, -1);
-            break;
-        case 16:
-            setDexAdj(1, 1, -2);
-            break;
-        case 17:
-            setDexAdj(2, 2, -3);
-            break;
-        case 18:
-            setDexAdj(2, 2, -4);
-            break;
-        default:
-            break;
-    }
-}
-// set dexterity adj
-function setDexAdj(rAdj, msAdj, dAdj) {
-    rctAdj = rAdj, mislAdj = msAdj, defAdj = dAdj;
-    document.getElementById("rctAdj").innerHTML = rctAdj.toString();
-    document.getElementById("mislAdj").innerHTML = mislAdj.toString();
-    document.getElementById("defAdj").innerHTML = defAdj.toString();
-}
-// calculate con modifiers
-function setConMods(con) {
-    con = parseInt(con);
-    switch (con) {
-        case 3:
-            setConAdj(-2, 25, 30, -2, 0);
-            break;
-        case 4:
-            setConAdj(-1, 40, 45, 0, 0);
-            break;
-        case 5:
-            setConAdj(-1, 45, 50, 0, 0);
-            break;
-        case 6:
-            setConAdj(-1, 50, 55, 0, 0);
-            break;
-        case 7:
-            setConAdj(0, 55, 60, 0, 0);
-            break;
-        case 8:
-            setConAdj(0, 60, 65, 0, 0);
-            break;
-        case 9:
-            setConAdj(0, 65, 70, 0, 0);
-            break;
-        case 10:
-            setConAdj(0, 70, 75, 0, 0);
-            break;
-        case 11:
-            setConAdj(0, 75, 80, 0, 0);
-            break;
-        case 12:
-            setConAdj(0, 80, 85, 0, 0);
-            break;
-        case 13:
-            setConAdj(0, 85, 90, 0, 0);
-            break;
-        case 14:
-            setConAdj(0, 88, 92, 0, 0);
-            break;
-        case 15:
-            setConAdj(1, 90, 94, 0, 0);
-            break;
-        case 16:
-            setConAdj(2, 95, 96, 0, 0);
-            break;
-        case 17:
-            setConAdj(2, 97, 98, 0, 0);
-            break;
-        case 18:
-            setConAdj(2, 99, 100, 0, 0);
-            break;
-        default:
-            break;
-    }
-    if (isFighter) {
-        switch (con) {
-            case 17:
-                setConAdj(3, 97, 98, 0, 0);
-                break;
-            case 18:
-                setConAdj(4, 99, 100, 0, 0);
-                break;
-        }
-    }
-}
-// set consititution adj
-function setConAdj(hpA, sys, res, pos, reg) {
-    hpAdj = hpA, sysShk = sys, resSurv = res, posSv = pos, regen = reg;
-    document.getElementById("hpAdj").innerHTML = hpAdj.toString();
-    document.getElementById("sysShk").innerHTML = sysShk.toString();
-    document.getElementById("resSurv").innerHTML = resSurv.toString();
-    document.getElementById("posSv").innerHTML = posSv.toString();
-    document.getElementById("regen").innerHTML = regen.toString();
-}
-// calculate intelligence modifiers
-function setIntMods(int) {
-    debugger;
-    int = parseInt(int);
-    switch (int) {
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-            setIntAdj(1, 0, 0, 0, 0);
-            break;
-        case 9:
-            setIntAdj(2, 4, 35, 6, 0);
-            break;
-        case 10:
-            setIntAdj(2, 5, 40, 7, 0);
-            break;
-        case 11:
-            setIntAdj(2, 5, 45, 7, 0);
-            break;
-        case 12:
-            setIntAdj(3, 6, 50, 7, 0);
-            break;
-        case 13:
-            setIntAdj(3, 6, 55, 7, 0);
-            break;
-        case 14:
-            setIntAdj(4, 7, 60, 9, 0);
-            break;
-        case 15:
-            setIntAdj(4, 7, 65, 11, 0);
-            break;
-        case 16:
-            setIntAdj(5, 8, 70, 11, 0);
-            break;
-        case 17:
-            setIntAdj(6, 8, 75, 14, 0);
-            break;
-        case 18:
-            setIntAdj(7, 9, 85, 18, 0);
-            break;
-        default:
-            break;
-    }
-}
-// set intelligence adjustments
-function setIntAdj(noLan, sLvl, chnLn, max, imun) {
-    noOfLang = noLan, spellLvl = sLvl, chnLearn = chnLn, maxSplPerLvl = max, splImun = imun;
-    document.getElementById("noOfLang").innerHTML = noOfLang.toString();
-    document.getElementById("spellLvl").innerHTML = spellLvl.toString();
-    document.getElementById("chnLearn").innerHTML = chnLearn.toString();
-    document.getElementById("maxSplPerLvl").innerHTML = maxSplPerLvl.toString();
-    document.getElementById("splImun").innerHTML = splImun.toString();
-}
-// calculate wisdom modifiers
-function setWisMods(wis) {
-    wis = parseInt(wis);
-    switch (wis) {
-        case 3:
-            setWisAdj(-3, 0, 50, 0);
-            break;
-        case 4:
-            setWisAdj(-2, 0, 45, 0);
-            break;
-        case 5:
-            setWisAdj(-1, 0, 40, 0);
-            break;
-        case 6:
-            setWisAdj(-1, 0, 35, 0);
-            break;
-        case 7:
-            setWisAdj(-1, 0, 30, 0);
-            break;
-        case 8:
-            setWisAdj(0, 0, 25, 0);
-            break;
-        case 9:
-            setWisAdj(0, 0, 20, 0);
-            break;
-        case 10:
-            setWisAdj(0, 0, 15, 0);
-            break;
-        case 11:
-            setWisAdj(0, 0, 10, 0);
-            break;
-        case 12:
-            setWisAdj(0, 0, 5, 0);
-            break;
-        case 13:
-        case 14:
-            setWisAdj(0, 1, 0, 0);
-            break;
-        case 15:
-            setWisAdj(1, 2, 0, 0);
-            break;
-        case 16:
-            setWisAdj(2, 2, 0, 0);
-            break;
-        case 17:
-            setWisAdj(3, 3, 0, 0);
-            break;
-        case 18:
-            setWisAdj(4, 4, 0, 0);
-            break;
-        default:
-            break;
-    }
-}
-// set wisdom adjustments
-function setWisAdj(mDef, bSp, cnFl, imun) {
-    magDefAdj = mDef, BonusSp = bSp, chnFail = cnFl, splImmune = imun;
-    document.getElementById("magDefAdj").innerHTML = magDefAdj.toString();
-    document.getElementById("BonusSp").innerHTML = BonusSp.toString();
-    document.getElementById("chnFail").innerHTML = chnFail.toString();
-    document.getElementById("splImmune").innerHTML = splImmune.toString();
-}
-// Calculate charisma modifiers
-function setCharMods(chr) {
-    chr = parseInt(chr);
-    switch (chr) {
-        case 3:
-            setCharAdj(1, -6, -5);
-            break;
-        case 4:
-            setCharAdj(1, -5, -4);
-            break;
-        case 5:
-            setCharAdj(2, -4, -3);
-            break;
-        case 6:
-            setCharAdj(2, -3, -2);
-            break;
-        case 7:
-            setCharAdj(3, -2, -1);
-            break;
-        case 8:
-            setCharAdj(3, -1, 0);
-            break;
-        case 9:
-        case 10:
-        case 11:
-            setCharAdj(4, 0, 0);
-            break;
-        case 12:
-            setCharAdj(5, 0, 0);
-            break;
-        case 13:
-            setCharAdj(5, 0, 1);
-            break;
-        case 14:
-            setCharAdj(6, 1, 2);
-            break;
-        case 15:
-            setCharAdj(7, 3, 3);
-            break;
-        case 16:
-            setCharAdj(8, 4, 5);
-            break;
-        case 17:
-            setCharAdj(10, 6, 6);
-            break;
-        case 18:
-            setCharAdj(15, 8, 7);
-            break;
-        default:
-            break;
-    }
-}
-// Set charisma adj
-function setCharAdj(hench, loyal, react) {
-    mxHench = hench, loyaltyBs = loyal, ReactAdj = react;
-    document.getElementById("mxHench").innerHTML = mxHench.toString();
-    document.getElementById("loyaltyBs").innerHTML = loyaltyBs.toString();
-    document.getElementById("ReactAdj").innerHTML = ReactAdj.toString();
-}
-// Disable statistic option after its selected
-function removeOption(index) {
-    var op1 = document.getElementById("stat1").getElementsByTagName("option");
-    op1[index].disabled = true;
-    var op2 = document.getElementById("stat2").getElementsByTagName("option");
-    op2[index].disabled = true;
-    var op3 = document.getElementById("stat3").getElementsByTagName("option");
-    op3[index].disabled = true;
-    var op4 = document.getElementById("stat4").getElementsByTagName("option");
-    op4[index].disabled = true;
-    var op5 = document.getElementById("stat5").getElementsByTagName("option");
-    op5[index].disabled = true;
-    var op6 = document.getElementById("stat6").getElementsByTagName("option");
-    op6[index].disabled = true;
-}
-// throw 4d6 remove lowest roll
-function fourD6() {
-    var one = getRndInteger(1, 6);
-    var two = getRndInteger(1, 6);
-    var three = getRndInteger(1, 6);
-    var four = getRndInteger(1, 6);
-    var lowest = Math.min(one, two, three, four);
-    return (one + two + three + four) - lowest;
-}
-// throw 3d6
-function threeD6() {
-    var one = getRndInteger(1, 6);
-    var two = getRndInteger(1, 6);
-    var three = getRndInteger(1, 6);
-    return one + two + three;
-}
-// random number generator
-function getRndInteger(min, max) {
-    max = max + 1;
-    return Math.floor(Math.random() * (max - min)) + min;
-}
-// Set the class
-function setClass(ddl) {
-    switch (ddl.selectedIndex) {
-        case 1: // Fighters
-        case 6:
-        case 7:
-            isFighter = true;
-            checkForStrMods(strInit);
-            setConMods(conInit);
-            hitdice = 10;
-            break;
-        case 2: // Rogues
-        case 5:
-            hitdice = 6;
-            break;
-        case 3: // Priests
-        case 8:
-            hitdice = 8;
-            break;
-        case 4: // Wizards
-            hitdice = 4;
-            break;
-        default:
-            break;
-    }
-}
-function zeroMOds() {
-    strMod = 0;
-    dexMod = 0;
-    conMod = 0;
-    intMod = 0;
-    wisMod = 0;
-    chrMod = 0;
-}
-// Add racial mods
+;
 function setRace(ddl) {
-    switch (ddl.selectedIndex) {
-        case 1: //human
-            break;
-        case 2: //dwarf
-            // + 1 con - 1 chr
-            // remove mage class option
-            zeroMOds();
-            conMod = 1;
-            chrMod = -1;
-            document.getElementById("con").value = (strInit + conMod).toString();
-            document.getElementById("chr").value = (chrInit + chrMod).toString();
-            break;
-        case 3: //elf
-            // + 1 dex - 1 con
-            break;
-        case 4: //gnome
-            // + 1 int - 1 wisdom
-            break;
-        case 5: //halfling
-            // + 1 dex - 1 str
-            break;
-        case 6: //half elf
-            break;
-        default:
-            break;
-    }
+    gen.setRace(ddl);
 }
-// Calculate hp
+;
+function setClass(ddl) {
+    gen.setClass(ddl);
+}
+;
 function setLevel(ddl) {
-    var hp = document.getElementById("hp");
-    var hit = 0;
-    for (var i = 0; i < ddl.selectedIndex; i++) {
-        hit += calcHPRoll();
+    gen.setLevel(ddl);
+}
+;
+var Generator = /** @class */ (function () {
+    function Generator(rollButton) {
+        var _this = this;
+        // class level variables
+        this.hp = 0;
+        this.ac = 10;
+        this.level = 1;
+        this.hitdice = 6;
+        this.hitProb = 0;
+        this.DmgAdj = 0;
+        this.isFighter = false;
+        // dex
+        this.rctAdj = 0;
+        this.mislAdj = 0;
+        this.defAdj = 0;
+        // con
+        this.hpAdj = 0;
+        this.sysShk = 0;
+        this.resSurv = 0;
+        this.posSv = 0;
+        this.regen = 0;
+        // int
+        this.noOfLang = 0;
+        this.spellLvl = 0;
+        this.chnLearn = 0;
+        this.maxSplPerLvl = 0;
+        this.splImun = 0;
+        // str
+        this.wghtAllow = 0;
+        this.MxPres = 0;
+        this.opDrs = 0;
+        this.bndBrs = 0;
+        // wis
+        this.magDefAdj = 0;
+        this.BonusSp = 0;
+        this.chnFail = 0;
+        this.splImmune = 0;
+        // char
+        this.mxHench = 0;
+        this.loyaltyBs = 0;
+        this.ReactAdj = 0;
+        // Attributes
+        this.strInit = 0;
+        this.dexInit = 0;
+        this.conInit = 0;
+        this.intInit = 0;
+        this.wisInit = 0;
+        this.chrInit = 0;
+        // racial attribute mods
+        this.strMod = 0;
+        this.dexMod = 0;
+        this.conMod = 0;
+        this.intMod = 0;
+        this.wisMod = 0;
+        this.chrMod = 0;
+        this.setup = function () {
+            _this.rollButton.addEventListener("click", _this.roll);
+        };
+        // roll stats and clear old values etc
+        this.roll = function () {
+            _this.isFighter = false;
+            document.getElementById("one").value = _this.fourD6().toString();
+            document.getElementById("two").value = _this.fourD6().toString();
+            document.getElementById("three").value = _this.fourD6().toString();
+            document.getElementById("four").value = _this.fourD6().toString();
+            document.getElementById("five").value = _this.fourD6().toString();
+            document.getElementById("six").value = _this.fourD6().toString();
+            document.getElementById("percent").innerText = '';
+            var stat1 = document.getElementById("stat1");
+            stat1.disabled = false;
+            stat1.selectedIndex = 0;
+            var opt1 = stat1.getElementsByTagName("option");
+            Array.prototype.slice.call(opt1, 0).forEach(_this.enableOpts);
+            document.getElementById("str").value = '';
+            var stat2 = document.getElementById("stat2");
+            stat2.disabled = false;
+            stat2.selectedIndex = 0;
+            var opt2 = stat2.getElementsByTagName("option");
+            Array.prototype.slice.call(opt2, 0).forEach(_this.enableOpts);
+            document.getElementById("dex").value = '';
+            var stat3 = document.getElementById("stat3");
+            stat3.disabled = false;
+            stat3.selectedIndex = 0;
+            var opt3 = stat3.getElementsByTagName("option");
+            Array.prototype.slice.call(opt3, 0).forEach(_this.enableOpts);
+            document.getElementById("con").value = '';
+            var stat4 = document.getElementById("stat4");
+            stat4.disabled = false;
+            stat4.selectedIndex = 0;
+            var opt4 = stat4.getElementsByTagName("option");
+            Array.prototype.slice.call(opt4, 0).forEach(_this.enableOpts);
+            document.getElementById("int").value = '';
+            var stat5 = document.getElementById("stat5");
+            stat5.disabled = false;
+            stat5.selectedIndex = 0;
+            var opt5 = stat5.getElementsByTagName("option");
+            Array.prototype.slice.call(opt5, 0).forEach(_this.enableOpts);
+            document.getElementById("wis").value = '';
+            var stat6 = document.getElementById("stat6");
+            stat6.disabled = false;
+            stat6.selectedIndex = 0;
+            var opt6 = stat6.getElementsByTagName("option");
+            Array.prototype.slice.call(opt6, 0).forEach(_this.enableOpts);
+            document.getElementById("chr").value = '';
+        };
+        // re-enable dropdown option
+        this.enableOpts = function (item, index) {
+            item.disabled = false;
+        };
+        // assign stat from dropdown
+        this.setOne = function (ddl, box) {
+            var val = parseInt(document.getElementById(box).value);
+            switch (ddl.selectedIndex) {
+                case 1:
+                    _this.strInit = val;
+                    document.getElementById("str").value = _this.strInit.toString();
+                    ddl.disabled = true;
+                    _this.removeOption(1);
+                    _this.checkForStrMods(_this.strInit);
+                    break;
+                case 2:
+                    _this.dexInit = val;
+                    document.getElementById("dex").value = _this.dexInit.toString();
+                    ddl.disabled = true;
+                    _this.removeOption(2);
+                    _this.setDexMods(_this.dexInit);
+                    break;
+                case 3:
+                    _this.conInit = val;
+                    document.getElementById("con").value = _this.conInit.toString();
+                    ddl.disabled = true;
+                    _this.removeOption(3);
+                    _this.setConMods(_this.conInit);
+                    break;
+                case 4:
+                    _this.intInit = val;
+                    document.getElementById("int").value = _this.intInit.toString();
+                    ddl.disabled = true;
+                    _this.removeOption(4);
+                    _this.setIntMods(_this.intInit);
+                    break;
+                case 5:
+                    _this.wisInit = val;
+                    document.getElementById("wis").value = _this.wisInit.toString();
+                    ddl.disabled = true;
+                    _this.removeOption(5);
+                    _this.setWisMods(_this.wisInit);
+                    break;
+                case 6:
+                    _this.chrInit = val;
+                    document.getElementById("chr").value = _this.chrInit.toString();
+                    ddl.disabled = true;
+                    _this.removeOption(6);
+                    _this.setCharMods(_this.chrInit);
+                    break;
+                default:
+                    break;
+            }
+        };
+        // calculate strength modifiers
+        this.checkForStrMods = function (str) {
+            var prcStr = 101;
+            if (str == 18 && _this.isFighter) {
+                prcStr = _this.getRndInteger(1, 100);
+                document.getElementById("percent").innerText = prcStr.toString();
+            }
+            switch (str) {
+                case 3:
+                    _this.hitProb = -3;
+                    _this.DmgAdj = -1;
+                    _this.setStrChecks(5, 10, 2, 0);
+                    break;
+                case 4:
+                case 5:
+                    _this.hitProb = -2;
+                    _this.DmgAdj = -1;
+                    _this.setStrChecks(10, 25, 3, 0);
+                    break;
+                case 6:
+                case 7:
+                    _this.hitProb = -1;
+                    _this.DmgAdj = 0;
+                    _this.setStrChecks(20, 55, 4, 0);
+                    break;
+                case 8:
+                case 9:
+                    _this.hitProb = 0;
+                    _this.DmgAdj = 0;
+                    _this.setStrChecks(35, 90, 5, 1);
+                    break;
+                case 10:
+                case 11:
+                    _this.hitProb = 0;
+                    _this.DmgAdj = 0;
+                    _this.setStrChecks(40, 115, 6, 2);
+                    break;
+                case 12:
+                case 13:
+                    _this.hitProb = 0;
+                    _this.DmgAdj = 0;
+                    _this.setStrChecks(45, 140, 7, 4);
+                    break;
+                case 14:
+                case 15:
+                    _this.hitProb = 0;
+                    _this.DmgAdj = 0;
+                    _this.setStrChecks(55, 170, 8, 7);
+                    break;
+                case 16:
+                    _this.hitProb = 0;
+                    _this.DmgAdj = 1;
+                    _this.setStrChecks(70, 195, 8, 10);
+                    break;
+                case 17:
+                    _this.hitProb = 1;
+                    _this.DmgAdj = 1;
+                    _this.setStrChecks(85, 220, 10, 13);
+                    break;
+                case 18:
+                    switch (true) {
+                        case prcStr < 51:
+                            _this.hitProb = 1;
+                            _this.DmgAdj = 3;
+                            _this.setStrChecks(135, 280, 12, 20);
+                            break;
+                        case prcStr < 76:
+                            _this.hitProb = 2;
+                            _this.DmgAdj = 3;
+                            _this.setStrChecks(160, 305, 13, 25);
+                            break;
+                        case prcStr < 91:
+                            _this.hitProb = 2;
+                            _this.DmgAdj = 4;
+                            _this.setStrChecks(185, 330, 14, 30);
+                            break;
+                        case prcStr < 100:
+                            _this.hitProb = 2;
+                            _this.DmgAdj = 5;
+                            _this.setStrChecks(235, 380, 15, 35);
+                            break;
+                        case prcStr == 100:
+                            _this.hitProb = 3;
+                            _this.DmgAdj = 6;
+                            _this.setStrChecks(335, 480, 16, 40);
+                            _this.wghtAllow = 335;
+                            _this.MxPres = 480;
+                            _this.opDrs = 16;
+                            _this.bndBrs = 40;
+                        default:
+                            _this.hitProb = 1;
+                            _this.DmgAdj = 2;
+                            _this.setStrChecks(110, 255, 11, 16);
+                    }
+                    break;
+            }
+        };
+        // set strength adjustments
+        this.setStrChecks = function (wAllow, mPres, oDrs, bBrs) {
+            _this.wghtAllow = wAllow, _this.MxPres = mPres, _this.opDrs = oDrs, _this.bndBrs = bBrs;
+            document.getElementById("wghtAllow").innerText = _this.wghtAllow.toString();
+            document.getElementById("MxPres").innerHTML = _this.MxPres.toString();
+            document.getElementById("opDrs").innerHTML = _this.opDrs.toString();
+            document.getElementById("bndBrs").innerHTML = _this.bndBrs.toString();
+        };
+        // calculate dexterity modifiers
+        this.setDexMods = function (dex) {
+            switch (dex) {
+                case 3:
+                    _this.setDexAdj(-3, -3, 4);
+                    break;
+                case 4:
+                    _this.setDexAdj(-2, -2, 3);
+                    break;
+                case 5:
+                    _this.setDexAdj(-1, -1, 2);
+                    break;
+                case 6:
+                    _this.setDexAdj(0, 0, 1);
+                    break;
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                case 14:
+                    _this.setDexAdj(0, 0, 0);
+                    break;
+                case 15:
+                    _this.setDexAdj(0, 0, -1);
+                    break;
+                case 16:
+                    _this.setDexAdj(1, 1, -2);
+                    break;
+                case 17:
+                    _this.setDexAdj(2, 2, -3);
+                    break;
+                case 18:
+                    _this.setDexAdj(2, 2, -4);
+                    break;
+                default:
+                    break;
+            }
+        };
+        // set dexterity adj
+        this.setDexAdj = function (rAdj, msAdj, dAdj) {
+            _this.rctAdj = rAdj, _this.mislAdj = msAdj, _this.defAdj = dAdj;
+            document.getElementById("rctAdj").innerHTML = _this.rctAdj.toString();
+            document.getElementById("mislAdj").innerHTML = _this.mislAdj.toString();
+            document.getElementById("defAdj").innerHTML = _this.defAdj.toString();
+        };
+        // calculate con modifiers
+        this.setConMods = function (con) {
+            switch (con) {
+                case 3:
+                    _this.setConAdj(-2, 25, 30, -2, 0);
+                    break;
+                case 4:
+                    _this.setConAdj(-1, 40, 45, 0, 0);
+                    break;
+                case 5:
+                    _this.setConAdj(-1, 45, 50, 0, 0);
+                    break;
+                case 6:
+                    _this.setConAdj(-1, 50, 55, 0, 0);
+                    break;
+                case 7:
+                    _this.setConAdj(0, 55, 60, 0, 0);
+                    break;
+                case 8:
+                    _this.setConAdj(0, 60, 65, 0, 0);
+                    break;
+                case 9:
+                    _this.setConAdj(0, 65, 70, 0, 0);
+                    break;
+                case 10:
+                    _this.setConAdj(0, 70, 75, 0, 0);
+                    break;
+                case 11:
+                    _this.setConAdj(0, 75, 80, 0, 0);
+                    break;
+                case 12:
+                    _this.setConAdj(0, 80, 85, 0, 0);
+                    break;
+                case 13:
+                    _this.setConAdj(0, 85, 90, 0, 0);
+                    break;
+                case 14:
+                    _this.setConAdj(0, 88, 92, 0, 0);
+                    break;
+                case 15:
+                    _this.setConAdj(1, 90, 94, 0, 0);
+                    break;
+                case 16:
+                    _this.setConAdj(2, 95, 96, 0, 0);
+                    break;
+                case 17:
+                    _this.setConAdj(2, 97, 98, 0, 0);
+                    break;
+                case 18:
+                    _this.setConAdj(2, 99, 100, 0, 0);
+                    break;
+                default:
+                    break;
+            }
+            if (_this.isFighter) {
+                switch (con) {
+                    case 17:
+                        _this.setConAdj(3, 97, 98, 0, 0);
+                        break;
+                    case 18:
+                        _this.setConAdj(4, 99, 100, 0, 0);
+                        break;
+                }
+            }
+        };
+        // set consititution adj
+        this.setConAdj = function (hpA, sys, res, pos, reg) {
+            _this.hpAdj = hpA, _this.sysShk = sys, _this.resSurv = res, _this.posSv = pos, _this.regen = reg;
+            document.getElementById("hpAdj").innerHTML = _this.hpAdj.toString();
+            document.getElementById("sysShk").innerHTML = _this.sysShk.toString();
+            document.getElementById("resSurv").innerHTML = _this.resSurv.toString();
+            document.getElementById("posSv").innerHTML = _this.posSv.toString();
+            document.getElementById("regen").innerHTML = _this.regen.toString();
+        };
+        // calculate intelligence modifiers
+        this.setIntMods = function (int) {
+            switch (int) {
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    _this.setIntAdj(1, 0, 0, 0, 0);
+                    break;
+                case 9:
+                    _this.setIntAdj(2, 4, 35, 6, 0);
+                    break;
+                case 10:
+                    _this.setIntAdj(2, 5, 40, 7, 0);
+                    break;
+                case 11:
+                    _this.setIntAdj(2, 5, 45, 7, 0);
+                    break;
+                case 12:
+                    _this.setIntAdj(3, 6, 50, 7, 0);
+                    break;
+                case 13:
+                    _this.setIntAdj(3, 6, 55, 7, 0);
+                    break;
+                case 14:
+                    _this.setIntAdj(4, 7, 60, 9, 0);
+                    break;
+                case 15:
+                    _this.setIntAdj(4, 7, 65, 11, 0);
+                    break;
+                case 16:
+                    _this.setIntAdj(5, 8, 70, 11, 0);
+                    break;
+                case 17:
+                    _this.setIntAdj(6, 8, 75, 14, 0);
+                    break;
+                case 18:
+                    _this.setIntAdj(7, 9, 85, 18, 0);
+                    break;
+                default:
+                    break;
+            }
+        };
+        // set intelligence adjustments
+        this.setIntAdj = function (noLan, sLvl, chnLn, max, imun) {
+            _this.noOfLang = noLan, _this.spellLvl = sLvl, _this.chnLearn = chnLn, _this.maxSplPerLvl = max, _this.splImun = imun;
+            document.getElementById("noOfLang").innerHTML = _this.noOfLang.toString();
+            document.getElementById("spellLvl").innerHTML = _this.spellLvl.toString();
+            document.getElementById("chnLearn").innerHTML = _this.chnLearn.toString();
+            document.getElementById("maxSplPerLvl").innerHTML = _this.maxSplPerLvl.toString();
+            document.getElementById("splImun").innerHTML = _this.splImun.toString();
+        };
+        // calculate wisdom modifiers
+        this.setWisMods = function (wis) {
+            switch (wis) {
+                case 3:
+                    _this.setWisAdj(-3, 0, 50, 0);
+                    break;
+                case 4:
+                    _this.setWisAdj(-2, 0, 45, 0);
+                    break;
+                case 5:
+                    _this.setWisAdj(-1, 0, 40, 0);
+                    break;
+                case 6:
+                    _this.setWisAdj(-1, 0, 35, 0);
+                    break;
+                case 7:
+                    _this.setWisAdj(-1, 0, 30, 0);
+                    break;
+                case 8:
+                    _this.setWisAdj(0, 0, 25, 0);
+                    break;
+                case 9:
+                    _this.setWisAdj(0, 0, 20, 0);
+                    break;
+                case 10:
+                    _this.setWisAdj(0, 0, 15, 0);
+                    break;
+                case 11:
+                    _this.setWisAdj(0, 0, 10, 0);
+                    break;
+                case 12:
+                    _this.setWisAdj(0, 0, 5, 0);
+                    break;
+                case 13:
+                case 14:
+                    _this.setWisAdj(0, 1, 0, 0);
+                    break;
+                case 15:
+                    _this.setWisAdj(1, 2, 0, 0);
+                    break;
+                case 16:
+                    _this.setWisAdj(2, 2, 0, 0);
+                    break;
+                case 17:
+                    _this.setWisAdj(3, 3, 0, 0);
+                    break;
+                case 18:
+                    _this.setWisAdj(4, 4, 0, 0);
+                    break;
+                default:
+                    break;
+            }
+        };
+        // set wisdom adjustments
+        this.setWisAdj = function (mDef, bSp, cnFl, imun) {
+            _this.magDefAdj = mDef, _this.BonusSp = bSp, _this.chnFail = cnFl, _this.splImmune = imun;
+            document.getElementById("magDefAdj").innerHTML = _this.magDefAdj.toString();
+            document.getElementById("BonusSp").innerHTML = _this.BonusSp.toString();
+            document.getElementById("chnFail").innerHTML = _this.chnFail.toString();
+            document.getElementById("splImmune").innerHTML = _this.splImmune.toString();
+        };
+        // Calculate charisma modifiers
+        this.setCharMods = function (chr) {
+            switch (chr) {
+                case 3:
+                    _this.setCharAdj(1, -6, -5);
+                    break;
+                case 4:
+                    _this.setCharAdj(1, -5, -4);
+                    break;
+                case 5:
+                    _this.setCharAdj(2, -4, -3);
+                    break;
+                case 6:
+                    _this.setCharAdj(2, -3, -2);
+                    break;
+                case 7:
+                    _this.setCharAdj(3, -2, -1);
+                    break;
+                case 8:
+                    _this.setCharAdj(3, -1, 0);
+                    break;
+                case 9:
+                case 10:
+                case 11:
+                    _this.setCharAdj(4, 0, 0);
+                    break;
+                case 12:
+                    _this.setCharAdj(5, 0, 0);
+                    break;
+                case 13:
+                    _this.setCharAdj(5, 0, 1);
+                    break;
+                case 14:
+                    _this.setCharAdj(6, 1, 2);
+                    break;
+                case 15:
+                    _this.setCharAdj(7, 3, 3);
+                    break;
+                case 16:
+                    _this.setCharAdj(8, 4, 5);
+                    break;
+                case 17:
+                    _this.setCharAdj(10, 6, 6);
+                    break;
+                case 18:
+                    _this.setCharAdj(15, 8, 7);
+                    break;
+                default:
+                    break;
+            }
+        };
+        // Set charisma adj
+        this.setCharAdj = function (hench, loyal, react) {
+            _this.mxHench = hench, _this.loyaltyBs = loyal, _this.ReactAdj = react;
+            document.getElementById("mxHench").innerHTML = _this.mxHench.toString();
+            document.getElementById("loyaltyBs").innerHTML = _this.loyaltyBs.toString();
+            document.getElementById("ReactAdj").innerHTML = _this.ReactAdj.toString();
+        };
+        // Disable statistic option after its selected
+        this.removeOption = function (index) {
+            var op1 = document.getElementById("stat1").getElementsByTagName("option");
+            op1[index].disabled = true;
+            var op2 = document.getElementById("stat2").getElementsByTagName("option");
+            op2[index].disabled = true;
+            var op3 = document.getElementById("stat3").getElementsByTagName("option");
+            op3[index].disabled = true;
+            var op4 = document.getElementById("stat4").getElementsByTagName("option");
+            op4[index].disabled = true;
+            var op5 = document.getElementById("stat5").getElementsByTagName("option");
+            op5[index].disabled = true;
+            var op6 = document.getElementById("stat6").getElementsByTagName("option");
+            op6[index].disabled = true;
+        };
+        // throw 4d6 remove lowest roll
+        this.fourD6 = function () {
+            var one = _this.getRndInteger(1, 6);
+            var two = _this.getRndInteger(1, 6);
+            var three = _this.getRndInteger(1, 6);
+            var four = _this.getRndInteger(1, 6);
+            var lowest = Math.min(one, two, three, four);
+            return (one + two + three + four) - lowest;
+        };
+        // random number generator
+        this.getRndInteger = function (min, max) {
+            max = max + 1;
+            return Math.floor(Math.random() * (max - min)) + min;
+        };
+        // Set the class
+        this.setClass = function (ddl) {
+            switch (ddl.selectedIndex) {
+                case 1: // Fighters
+                case 6:
+                case 7:
+                    _this.isFighter = true;
+                    _this.checkForStrMods(_this.strInit);
+                    _this.setConMods(_this.conInit);
+                    _this.hitdice = 10;
+                    break;
+                case 2: // Rogues
+                case 5:
+                    _this.hitdice = 6;
+                    break;
+                case 3: // Priests
+                case 8:
+                    _this.hitdice = 8;
+                    break;
+                case 4: // Wizards
+                    _this.hitdice = 4;
+                    break;
+                default:
+                    break;
+            }
+        };
+        this.zeroMOds = function () {
+            _this.strMod = 0;
+            _this.dexMod = 0;
+            _this.conMod = 0;
+            _this.intMod = 0;
+            _this.wisMod = 0;
+            _this.chrMod = 0;
+        };
+        this.applyRacialMods = function () {
+            document.getElementById("con").value = (_this.conInit + _this.conMod).toString();
+            document.getElementById("chr").value = (_this.chrInit + _this.chrMod).toString();
+            document.getElementById("dex").value = (_this.dexInit + _this.dexMod).toString();
+            document.getElementById("con").value = (_this.conInit + _this.conMod).toString();
+            document.getElementById("int").value = (_this.intInit + _this.intMod).toString();
+            document.getElementById("wis").value = (_this.wisInit + _this.wisMod).toString();
+            document.getElementById("dex").value = (_this.dexInit + _this.dexMod).toString();
+            document.getElementById("str").value = (_this.strInit + _this.strMod).toString();
+        };
+        // Add racial mods
+        this.setRace = function (ddl) {
+            switch (ddl.selectedIndex) {
+                case 1: //human
+                    _this.zeroMOds();
+                    _this.applyRacialMods();
+                    break;
+                case 2: //dwarf
+                    // + 1 con - 1 chr
+                    // remove mage class option
+                    _this.zeroMOds();
+                    _this.conMod = 1;
+                    _this.chrMod = -1;
+                    _this.applyRacialMods();
+                    break;
+                case 3: //elf
+                    // + 1 dex - 1 con
+                    _this.zeroMOds();
+                    _this.dexMod = 1;
+                    _this.conMod = -1;
+                    _this.applyRacialMods();
+                    break;
+                case 4: //gnome
+                    // + 1 int - 1 wisdom
+                    _this.zeroMOds();
+                    _this.intMod = 1;
+                    _this.wisMod = -1;
+                    _this.applyRacialMods();
+                    break;
+                case 5: //halfling
+                    // + 1 dex - 1 str
+                    _this.zeroMOds();
+                    _this.dexMod = 1;
+                    _this.strMod = -1;
+                    _this.applyRacialMods();
+                    break;
+                case 6: //half elf
+                    _this.zeroMOds();
+                    _this.applyRacialMods();
+                    break;
+                default:
+                    _this.zeroMOds();
+                    _this.applyRacialMods();
+                    break;
+            }
+        };
+        // Calculate hp and thac0
+        this.setLevel = function (ddl) {
+            var hp = document.getElementById("hp");
+            var hit = 0;
+            for (var i = 0; i < ddl.selectedIndex; i++) {
+                hit += _this.calcHPRoll();
+            }
+            hp.innerHTML = hit.toString();
+        };
+        // Hit dice roll with con mod, minimum roll 1
+        this.calcHPRoll = function () {
+            var hp = _this.getRndInteger(1, _this.hitdice) + _this.hpAdj;
+            if (hp < 1)
+                return 1;
+            else
+                return hp;
+        };
+        this.rollButton = rollButton;
     }
-    hp.innerHTML = hit.toString();
-}
-// Hit dice roll with con mod, minimum roll 1
-function calcHPRoll() {
-    var hp = getRndInteger(1, hitdice) + hpAdj;
-    if (hp < 1)
-        return 1;
-    else
-        return hp;
-}
+    ;
+    // throw 3d6
+    Generator.prototype.threeD6 = function () {
+        var one = this.getRndInteger(1, 6);
+        var two = this.getRndInteger(1, 6);
+        var three = this.getRndInteger(1, 6);
+        return one + two + three;
+    };
+    return Generator;
+}());
