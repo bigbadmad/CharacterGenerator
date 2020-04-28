@@ -5,6 +5,7 @@ window.onload = function () {
     gen = new Generator(document.getElementById("roll"));
     gen.setup();
 };
+// Pass through methods for dropdowns
 function setOne(ddl, box) {
     gen.setOne(ddl, box);
 }
@@ -21,6 +22,7 @@ function setLevel(ddl) {
     gen.setLevel(ddl);
 }
 ;
+//
 var Generator = /** @class */ (function () {
     function Generator(rollButton) {
         var _this = this;
@@ -32,36 +34,12 @@ var Generator = /** @class */ (function () {
         this.hitProb = 0;
         this.DmgAdj = 0;
         this.isFighter = false;
-        // dex
-        this.rctAdj = 0;
-        this.mislAdj = 0;
-        this.defAdj = 0;
-        // con
         this.hpAdj = 0;
-        this.sysShk = 0;
-        this.resSurv = 0;
-        this.posSv = 0;
-        this.regen = 0;
-        // int
-        this.noOfLang = 0;
-        this.spellLvl = 0;
-        this.chnLearn = 0;
-        this.maxSplPerLvl = 0;
-        this.splImun = 0;
         // str
         this.wghtAllow = 0;
         this.MxPres = 0;
         this.opDrs = 0;
         this.bndBrs = 0;
-        // wis
-        this.magDefAdj = 0;
-        this.BonusSp = 0;
-        this.chnFail = 0;
-        this.splImmune = 0;
-        // char
-        this.mxHench = 0;
-        this.loyaltyBs = 0;
-        this.ReactAdj = 0;
         // Attributes
         this.strInit = 0;
         this.dexInit = 0;
@@ -78,57 +56,118 @@ var Generator = /** @class */ (function () {
         this.chrMod = 0;
         this.setup = function () {
             _this.rollButton.addEventListener("click", _this.roll);
+            _this.getControls();
+        };
+        // Get the page controls
+        this.getControls = function () {
+            _this.inputOne = document.getElementById("one");
+            _this.inputTwo = document.getElementById("two");
+            _this.inputThree = document.getElementById("three");
+            _this.inputFour = document.getElementById("four");
+            _this.inputFive = document.getElementById("five");
+            _this.inputSix = document.getElementById("six");
+            _this.labelPercent = document.getElementById("percent");
+            _this.stat1 = document.getElementById("stat1");
+            _this.stat2 = document.getElementById("stat2");
+            _this.stat3 = document.getElementById("stat3");
+            _this.stat4 = document.getElementById("stat4");
+            _this.stat5 = document.getElementById("stat5");
+            _this.stat6 = document.getElementById("stat6");
+            _this.inputStr = document.getElementById("str");
+            _this.inputDex = document.getElementById("dex");
+            _this.inputCon = document.getElementById("con");
+            _this.inputWis = document.getElementById("wis");
+            _this.inputInt = document.getElementById("int");
+            _this.inputChr = document.getElementById("chr");
+            _this.labelPercent = document.getElementById("percent");
+            _this.labelWgtAllow = document.getElementById("wghtAllow");
+            _this.labelMxPress = document.getElementById("MxPres");
+            _this.labelOpDrs = document.getElementById("opDrs");
+            _this.labelBndBrs = document.getElementById("bndBrs");
+            _this.labelRctAdj = document.getElementById("rctAdj");
+            _this.labelMislAdj = document.getElementById("mislAdj");
+            _this.labelDefAdj = document.getElementById("defAdj");
+            _this.labelHpAdj = document.getElementById("hpAdj");
+            _this.labelSysShk = document.getElementById("sysShk");
+            _this.labelResSurv = document.getElementById("resSurv");
+            _this.labelPoisSv = document.getElementById("posSv");
+            _this.labelRegen = document.getElementById("regen");
+            _this.labelNoLang = document.getElementById("noOfLang");
+            _this.labelSplLvl = document.getElementById("spellLvl");
+            _this.labelChLrn = document.getElementById("chnLearn");
+            _this.labelMxSplPLvl = document.getElementById("maxSplPerLvl");
+            _this.labelSplImun = document.getElementById("splImun");
+            _this.labelMagDefAdj = document.getElementById("magDefAdj");
+            _this.labelBonusSp = document.getElementById("BonusSp");
+            _this.labelChnFail = document.getElementById("chnFail");
+            _this.labelSplImmune = document.getElementById("splImmune");
+            _this.labelMxHench = document.getElementById("mxHench");
+            _this.labelLoyaltyBs = document.getElementById("loyaltyBs");
+            _this.labelReactAdj = document.getElementById("ReactAdj");
+            _this.labelHp = document.getElementById("hp");
         };
         // roll stats and clear old values etc
         this.roll = function () {
             _this.isFighter = false;
-            document.getElementById("one").value = _this.fourD6().toString();
-            document.getElementById("two").value = _this.fourD6().toString();
-            document.getElementById("three").value = _this.fourD6().toString();
-            document.getElementById("four").value = _this.fourD6().toString();
-            document.getElementById("five").value = _this.fourD6().toString();
-            document.getElementById("six").value = _this.fourD6().toString();
-            document.getElementById("percent").innerText = '';
-            var stat1 = document.getElementById("stat1");
-            stat1.disabled = false;
-            stat1.selectedIndex = 0;
-            var opt1 = stat1.getElementsByTagName("option");
+            _this.inputOne.value = _this.fourD6().toString();
+            _this.inputTwo.value = _this.fourD6().toString();
+            _this.inputThree.value = _this.fourD6().toString();
+            _this.inputFour.value = _this.fourD6().toString();
+            _this.inputFive.value = _this.fourD6().toString();
+            _this.inputSix.value = _this.fourD6().toString();
+            _this.labelPercent.innerText = '';
+            _this.stat1.disabled = false;
+            _this.stat1.selectedIndex = 0;
+            var opt1 = _this.stat1.getElementsByTagName("option");
             Array.prototype.slice.call(opt1, 0).forEach(_this.enableOpts);
-            document.getElementById("str").value = '';
-            var stat2 = document.getElementById("stat2");
-            stat2.disabled = false;
-            stat2.selectedIndex = 0;
-            var opt2 = stat2.getElementsByTagName("option");
+            _this.inputStr.value = '';
+            _this.stat2.disabled = false;
+            _this.stat2.selectedIndex = 0;
+            var opt2 = _this.stat2.getElementsByTagName("option");
             Array.prototype.slice.call(opt2, 0).forEach(_this.enableOpts);
-            document.getElementById("dex").value = '';
-            var stat3 = document.getElementById("stat3");
-            stat3.disabled = false;
-            stat3.selectedIndex = 0;
-            var opt3 = stat3.getElementsByTagName("option");
+            _this.inputDex.value = '';
+            _this.stat3.disabled = false;
+            _this.stat3.selectedIndex = 0;
+            var opt3 = _this.stat3.getElementsByTagName("option");
             Array.prototype.slice.call(opt3, 0).forEach(_this.enableOpts);
-            document.getElementById("con").value = '';
-            var stat4 = document.getElementById("stat4");
-            stat4.disabled = false;
-            stat4.selectedIndex = 0;
-            var opt4 = stat4.getElementsByTagName("option");
+            _this.inputCon.value = '';
+            _this.stat4.disabled = false;
+            _this.stat4.selectedIndex = 0;
+            var opt4 = _this.stat4.getElementsByTagName("option");
             Array.prototype.slice.call(opt4, 0).forEach(_this.enableOpts);
-            document.getElementById("int").value = '';
-            var stat5 = document.getElementById("stat5");
-            stat5.disabled = false;
-            stat5.selectedIndex = 0;
-            var opt5 = stat5.getElementsByTagName("option");
+            _this.inputInt.value = '';
+            _this.stat5.disabled = false;
+            _this.stat5.selectedIndex = 0;
+            var opt5 = _this.stat5.getElementsByTagName("option");
             Array.prototype.slice.call(opt5, 0).forEach(_this.enableOpts);
-            document.getElementById("wis").value = '';
-            var stat6 = document.getElementById("stat6");
-            stat6.disabled = false;
-            stat6.selectedIndex = 0;
-            var opt6 = stat6.getElementsByTagName("option");
+            _this.inputWis.value = '';
+            _this.stat6.disabled = false;
+            _this.stat6.selectedIndex = 0;
+            var opt6 = _this.stat6.getElementsByTagName("option");
             Array.prototype.slice.call(opt6, 0).forEach(_this.enableOpts);
-            document.getElementById("chr").value = '';
+            _this.inputChr.value = '';
         };
         // re-enable dropdown option
         this.enableOpts = function (item, index) {
             item.disabled = false;
+        };
+        this.getValue = function (box) {
+            switch (box) {
+                case "one":
+                    return _this.stat1.value;
+                case "two":
+                    return _this.stat2.value;
+                case "three":
+                    return _this.stat3.value;
+                case "four":
+                    return _this.stat4.value;
+                case "five":
+                    return _this.stat5.value;
+                case "six":
+                    return _this.stat6.value;
+                default:
+                    break;
+            }
         };
         // assign stat from dropdown
         this.setOne = function (ddl, box) {
@@ -136,42 +175,42 @@ var Generator = /** @class */ (function () {
             switch (ddl.selectedIndex) {
                 case 1:
                     _this.strInit = val;
-                    document.getElementById("str").value = _this.strInit.toString();
+                    _this.inputStr.value = _this.strInit.toString();
                     ddl.disabled = true;
                     _this.removeOption(1);
                     _this.checkForStrMods(_this.strInit);
                     break;
                 case 2:
                     _this.dexInit = val;
-                    document.getElementById("dex").value = _this.dexInit.toString();
+                    _this.inputDex.value = _this.dexInit.toString();
                     ddl.disabled = true;
                     _this.removeOption(2);
                     _this.setDexMods(_this.dexInit);
                     break;
                 case 3:
                     _this.conInit = val;
-                    document.getElementById("con").value = _this.conInit.toString();
+                    _this.inputCon.value = _this.conInit.toString();
                     ddl.disabled = true;
                     _this.removeOption(3);
                     _this.setConMods(_this.conInit);
                     break;
                 case 4:
                     _this.intInit = val;
-                    document.getElementById("int").value = _this.intInit.toString();
+                    _this.inputInt.value = _this.intInit.toString();
                     ddl.disabled = true;
                     _this.removeOption(4);
                     _this.setIntMods(_this.intInit);
                     break;
                 case 5:
                     _this.wisInit = val;
-                    document.getElementById("wis").value = _this.wisInit.toString();
+                    _this.inputWis.value = _this.wisInit.toString();
                     ddl.disabled = true;
                     _this.removeOption(5);
                     _this.setWisMods(_this.wisInit);
                     break;
                 case 6:
                     _this.chrInit = val;
-                    document.getElementById("chr").value = _this.chrInit.toString();
+                    _this.inputChr.value = _this.chrInit.toString();
                     ddl.disabled = true;
                     _this.removeOption(6);
                     _this.setCharMods(_this.chrInit);
@@ -185,7 +224,7 @@ var Generator = /** @class */ (function () {
             var prcStr = 101;
             if (str == 18 && _this.isFighter) {
                 prcStr = _this.getRndInteger(1, 100);
-                document.getElementById("percent").innerText = prcStr.toString();
+                _this.labelPercent.innerText = prcStr.toString();
             }
             switch (str) {
                 case 3:
@@ -279,11 +318,10 @@ var Generator = /** @class */ (function () {
         };
         // set strength adjustments
         this.setStrChecks = function (wAllow, mPres, oDrs, bBrs) {
-            _this.wghtAllow = wAllow, _this.MxPres = mPres, _this.opDrs = oDrs, _this.bndBrs = bBrs;
-            document.getElementById("wghtAllow").innerText = _this.wghtAllow.toString();
-            document.getElementById("MxPres").innerHTML = _this.MxPres.toString();
-            document.getElementById("opDrs").innerHTML = _this.opDrs.toString();
-            document.getElementById("bndBrs").innerHTML = _this.bndBrs.toString();
+            _this.labelWgtAllow.innerText = wAllow.toString();
+            _this.labelMxPress.innerHTML = mPres.toString();
+            _this.labelOpDrs.innerHTML = oDrs.toString();
+            _this.labelBndBrs.innerHTML = bBrs.toString();
         };
         // calculate dexterity modifiers
         this.setDexMods = function (dex) {
@@ -328,10 +366,9 @@ var Generator = /** @class */ (function () {
         };
         // set dexterity adj
         this.setDexAdj = function (rAdj, msAdj, dAdj) {
-            _this.rctAdj = rAdj, _this.mislAdj = msAdj, _this.defAdj = dAdj;
-            document.getElementById("rctAdj").innerHTML = _this.rctAdj.toString();
-            document.getElementById("mislAdj").innerHTML = _this.mislAdj.toString();
-            document.getElementById("defAdj").innerHTML = _this.defAdj.toString();
+            _this.labelRctAdj.innerHTML = rAdj.toString();
+            _this.labelMislAdj.innerHTML = msAdj.toString();
+            _this.labelDefAdj.innerHTML = dAdj.toString();
         };
         // calculate con modifiers
         this.setConMods = function (con) {
@@ -400,12 +437,12 @@ var Generator = /** @class */ (function () {
         };
         // set consititution adj
         this.setConAdj = function (hpA, sys, res, pos, reg) {
-            _this.hpAdj = hpA, _this.sysShk = sys, _this.resSurv = res, _this.posSv = pos, _this.regen = reg;
-            document.getElementById("hpAdj").innerHTML = _this.hpAdj.toString();
-            document.getElementById("sysShk").innerHTML = _this.sysShk.toString();
-            document.getElementById("resSurv").innerHTML = _this.resSurv.toString();
-            document.getElementById("posSv").innerHTML = _this.posSv.toString();
-            document.getElementById("regen").innerHTML = _this.regen.toString();
+            _this.hpAdj = hpA;
+            _this.labelHpAdj.innerHTML = hpA.toString();
+            _this.labelSysShk.innerHTML = sys.toString();
+            _this.labelResSurv.innerHTML = res.toString();
+            _this.labelPoisSv.innerHTML = pos.toString();
+            _this.labelRegen.innerHTML = reg.toString();
         };
         // calculate intelligence modifiers
         this.setIntMods = function (int) {
@@ -454,12 +491,11 @@ var Generator = /** @class */ (function () {
         };
         // set intelligence adjustments
         this.setIntAdj = function (noLan, sLvl, chnLn, max, imun) {
-            _this.noOfLang = noLan, _this.spellLvl = sLvl, _this.chnLearn = chnLn, _this.maxSplPerLvl = max, _this.splImun = imun;
-            document.getElementById("noOfLang").innerHTML = _this.noOfLang.toString();
-            document.getElementById("spellLvl").innerHTML = _this.spellLvl.toString();
-            document.getElementById("chnLearn").innerHTML = _this.chnLearn.toString();
-            document.getElementById("maxSplPerLvl").innerHTML = _this.maxSplPerLvl.toString();
-            document.getElementById("splImun").innerHTML = _this.splImun.toString();
+            _this.labelNoLang.innerHTML = noLan.toString();
+            _this.labelSplLvl.innerHTML = sLvl.toString();
+            _this.labelChLrn.innerHTML = chnLn.toString();
+            _this.labelMxSplPLvl.innerHTML = max.toString();
+            _this.labelSplImun.innerHTML = imun.toString();
         };
         // calculate wisdom modifiers
         this.setWisMods = function (wis) {
@@ -516,11 +552,10 @@ var Generator = /** @class */ (function () {
         };
         // set wisdom adjustments
         this.setWisAdj = function (mDef, bSp, cnFl, imun) {
-            _this.magDefAdj = mDef, _this.BonusSp = bSp, _this.chnFail = cnFl, _this.splImmune = imun;
-            document.getElementById("magDefAdj").innerHTML = _this.magDefAdj.toString();
-            document.getElementById("BonusSp").innerHTML = _this.BonusSp.toString();
-            document.getElementById("chnFail").innerHTML = _this.chnFail.toString();
-            document.getElementById("splImmune").innerHTML = _this.splImmune.toString();
+            _this.labelMagDefAdj.innerHTML = mDef.toString();
+            _this.labelBonusSp.innerHTML = bSp.toString();
+            _this.labelChnFail.innerHTML = cnFl.toString();
+            _this.labelSplImmune.innerHTML = imun.toString();
         };
         // Calculate charisma modifiers
         this.setCharMods = function (chr) {
@@ -575,24 +610,23 @@ var Generator = /** @class */ (function () {
         };
         // Set charisma adj
         this.setCharAdj = function (hench, loyal, react) {
-            _this.mxHench = hench, _this.loyaltyBs = loyal, _this.ReactAdj = react;
-            document.getElementById("mxHench").innerHTML = _this.mxHench.toString();
-            document.getElementById("loyaltyBs").innerHTML = _this.loyaltyBs.toString();
-            document.getElementById("ReactAdj").innerHTML = _this.ReactAdj.toString();
+            _this.labelMxHench.innerHTML = hench.toString();
+            _this.labelLoyaltyBs.innerHTML = loyal.toString();
+            _this.labelReactAdj.innerHTML = react.toString();
         };
         // Disable statistic option after its selected
         this.removeOption = function (index) {
-            var op1 = document.getElementById("stat1").getElementsByTagName("option");
+            var op1 = _this.stat1.getElementsByTagName("option");
             op1[index].disabled = true;
-            var op2 = document.getElementById("stat2").getElementsByTagName("option");
+            var op2 = _this.stat2.getElementsByTagName("option");
             op2[index].disabled = true;
-            var op3 = document.getElementById("stat3").getElementsByTagName("option");
+            var op3 = _this.stat3.getElementsByTagName("option");
             op3[index].disabled = true;
-            var op4 = document.getElementById("stat4").getElementsByTagName("option");
+            var op4 = _this.stat4.getElementsByTagName("option");
             op4[index].disabled = true;
-            var op5 = document.getElementById("stat5").getElementsByTagName("option");
+            var op5 = _this.stat5.getElementsByTagName("option");
             op5[index].disabled = true;
-            var op6 = document.getElementById("stat6").getElementsByTagName("option");
+            var op6 = _this.stat6.getElementsByTagName("option");
             op6[index].disabled = true;
         };
         // throw 4d6 remove lowest roll
@@ -644,14 +678,12 @@ var Generator = /** @class */ (function () {
             _this.chrMod = 0;
         };
         this.applyRacialMods = function () {
-            document.getElementById("con").value = (_this.conInit + _this.conMod).toString();
-            document.getElementById("chr").value = (_this.chrInit + _this.chrMod).toString();
-            document.getElementById("dex").value = (_this.dexInit + _this.dexMod).toString();
-            document.getElementById("con").value = (_this.conInit + _this.conMod).toString();
-            document.getElementById("int").value = (_this.intInit + _this.intMod).toString();
-            document.getElementById("wis").value = (_this.wisInit + _this.wisMod).toString();
-            document.getElementById("dex").value = (_this.dexInit + _this.dexMod).toString();
-            document.getElementById("str").value = (_this.strInit + _this.strMod).toString();
+            _this.inputStr.value = (_this.strInit + _this.strMod).toString();
+            _this.inputDex.value = (_this.dexInit + _this.dexMod).toString();
+            _this.inputChr.value = (_this.chrInit + _this.chrMod).toString();
+            _this.inputCon.value = (_this.conInit + _this.conMod).toString();
+            _this.inputInt.value = (_this.intInit + _this.intMod).toString();
+            _this.inputWis.value = (_this.wisInit + _this.wisMod).toString();
         };
         // Add racial mods
         this.setRace = function (ddl) {
@@ -701,12 +733,11 @@ var Generator = /** @class */ (function () {
         };
         // Calculate hp and thac0
         this.setLevel = function (ddl) {
-            var hp = document.getElementById("hp");
             var hit = 0;
             for (var i = 0; i < ddl.selectedIndex; i++) {
                 hit += _this.calcHPRoll();
             }
-            hp.innerHTML = hit.toString();
+            _this.labelHp.innerHTML = hit.toString();
         };
         // Hit dice roll with con mod, minimum roll 1
         this.calcHPRoll = function () {
@@ -728,3 +759,4 @@ var Generator = /** @class */ (function () {
     };
     return Generator;
 }());
+;

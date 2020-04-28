@@ -6,6 +6,7 @@ window.onload = () => {
 	gen.setup();
 };
 
+// Pass through methods for dropdowns
 function setOne(ddl: HTMLSelectElement, box: string){
 	gen.setOne(ddl,box);
 };
@@ -22,6 +23,8 @@ function setLevel(ddl: HTMLSelectElement){
     gen.setLevel(ddl);
 };
 
+//
+
 class Generator {
 	constructor(rollButton: HTMLInputElement){this.rollButton = rollButton};
 	rollButton: HTMLInputElement; // roll the dice button
@@ -35,36 +38,13 @@ class Generator {
 	DmgAdj = 0;
 
 	isFighter = false;
-	// dex
-	rctAdj = 0;
-	mislAdj = 0;
-	defAdj = 0;
-	// con
+
 	hpAdj = 0;
-	sysShk = 0;
-	resSurv = 0;
-	posSv = 0;
-	regen = 0;
-	// int
-	noOfLang = 0;
-	spellLvl = 0;
-	chnLearn = 0;
-	maxSplPerLvl = 0;
-	splImun = 0;
 	// str
 	wghtAllow = 0;
 	MxPres = 0;
 	opDrs = 0;
 	bndBrs = 0;
-	// wis
-	magDefAdj = 0;
-	BonusSp = 0;
-	chnFail = 0;
-	splImmune = 0;
-	// char
-	mxHench = 0;
-	loyaltyBs = 0;
-	ReactAdj = 0;
 
 	// Attributes
 	strInit = 0;
@@ -82,68 +62,180 @@ class Generator {
 	wisMod = 0;
 	chrMod = 0;
 
+	inputOne: any;
+	inputTwo: any;
+	inputThree: any;
+	inputFour: any;
+	inputFive: any;
+	inputSix: any;
+	labelPercent: any;
+	stat1: any;
+	stat2: any;
+	stat3: any;
+	stat4: any;
+	stat5: any;
+	stat6: any;
+	inputStr: any;
+	inputDex: any;
+	inputCon: any;
+	inputWis: any;
+	inputInt: any;
+	inputChr: any;
+	labelPercent: any;
+	labelWgtAllow: any;
+	labelMxPress: any;
+	labelOpDrs: any;
+	labelBndBrs: any;
+	labelRctAdj: any;
+	labelMislAdj: any;
+	labelDefAdj: any;
+	labelHpAdj: any;
+	labelSysShk: any;
+	labelResSurv: any;
+	labelPoisSv: any;
+	labelRegen: any;
+	labelNoLang:any;
+	labelSplLvl: any;
+	labelChLrn: any;
+	labelMxSplPLvl: any;
+	labelSplImun: any;
+	labelMagDefAdj: any;
+	labelBonusSp: any;
+	labelChnFail: any;
+	labelSplImmune: any;
+	labelMxHench: any;
+	labelLoyaltyBs: any;
+	labelReactAdj: any;
+	labelHp: any;
+
 	setup = () => {
 		this.rollButton.addEventListener("click", this.roll);
+		this.getControls();
+	}
+
+	// Get the page controls
+	getControls = () => {
+		this.inputOne = <HTMLInputElement>document.getElementById("one");
+		this.inputTwo = <HTMLInputElement>document.getElementById("two");
+		this.inputThree = <HTMLInputElement>document.getElementById("three");
+		this.inputFour = <HTMLInputElement>document.getElementById("four");
+		this.inputFive = <HTMLInputElement>document.getElementById("five");
+		this.inputSix = <HTMLInputElement>document.getElementById("six");
+		this.labelPercent = <HTMLLabelElement>document.getElementById("percent");
+
+		this.stat1 = <HTMLSelectElement>document.getElementById("stat1");
+		this.stat2 = <HTMLSelectElement>document.getElementById("stat2");
+		this.stat3 = <HTMLSelectElement>document.getElementById("stat3");
+		this.stat4 = <HTMLSelectElement>document.getElementById("stat4");
+		this.stat5 = <HTMLSelectElement>document.getElementById("stat5");
+		this.stat6 = <HTMLSelectElement>document.getElementById("stat6");
+
+		this.inputStr = <HTMLInputElement>document.getElementById("str");
+		this.inputDex = <HTMLInputElement>document.getElementById("dex");
+		this.inputCon = <HTMLInputElement>document.getElementById("con");
+		this.inputWis = <HTMLInputElement>document.getElementById("wis");
+		this.inputInt = <HTMLInputElement>document.getElementById("int");
+		this.inputChr = <HTMLInputElement>document.getElementById("chr");
+
+		this.labelPercent = <HTMLLabelElement>document.getElementById("percent");
+		this.labelWgtAllow = <HTMLLabelElement>document.getElementById("wghtAllow");
+		this.labelMxPress = <HTMLLabelElement>document.getElementById("MxPres");
+		this.labelOpDrs = <HTMLLabelElement>document.getElementById("opDrs");
+		this.labelBndBrs = <HTMLLabelElement>document.getElementById("bndBrs");
+		this.labelRctAdj = <HTMLLabelElement>document.getElementById("rctAdj");
+		this.labelMislAdj = <HTMLLabelElement>document.getElementById("mislAdj");
+		this.labelDefAdj = <HTMLLabelElement>document.getElementById("defAdj");
+		this.labelHpAdj = <HTMLLabelElement>document.getElementById("hpAdj");
+		this.labelSysShk = <HTMLLabelElement>document.getElementById("sysShk");
+		this.labelResSurv = <HTMLLabelElement>document.getElementById("resSurv");
+		this.labelPoisSv = <HTMLLabelElement>document.getElementById("posSv");
+		this.labelRegen = <HTMLLabelElement>document.getElementById("regen");
+		this.labelNoLang = <HTMLLabelElement>document.getElementById("noOfLang");
+		this.labelSplLvl = <HTMLLabelElement>document.getElementById("spellLvl");
+		this.labelChLrn = <HTMLLabelElement>document.getElementById("chnLearn");
+		this.labelMxSplPLvl = <HTMLLabelElement>document.getElementById("maxSplPerLvl");
+		this.labelSplImun = <HTMLLabelElement>document.getElementById("splImun");
+		this.labelMagDefAdj = <HTMLLabelElement>document.getElementById("magDefAdj");
+		this.labelBonusSp = <HTMLLabelElement>document.getElementById("BonusSp");
+		this.labelChnFail = <HTMLLabelElement>document.getElementById("chnFail");
+		this.labelSplImmune = <HTMLLabelElement>document.getElementById("splImmune");
+		this.labelMxHench = <HTMLLabelElement>document.getElementById("mxHench");
+		this.labelLoyaltyBs = <HTMLLabelElement>document.getElementById("loyaltyBs");
+		this.labelReactAdj = <HTMLLabelElement>document.getElementById("ReactAdj");
+		this.labelHp = <HTMLLabelElement>document.getElementById("hp");
 	}
 
 	// roll stats and clear old values etc
 	roll = () => {
 		this.isFighter = false;
-		(<HTMLInputElement>document.getElementById("one")).value = this.fourD6().toString();
-		(<HTMLInputElement>document.getElementById("two")).value = this.fourD6().toString();
-		(<HTMLInputElement>document.getElementById("three")).value = this.fourD6().toString();
-		(<HTMLInputElement>document.getElementById("four")).value = this.fourD6().toString();
-		(<HTMLInputElement>document.getElementById("five")).value = this.fourD6().toString();
-		(<HTMLInputElement>document.getElementById("six")).value = this.fourD6().toString();
+		this.inputOne.value = this.fourD6().toString();
+		this.inputTwo.value = this.fourD6().toString();
+		this.inputThree.value = this.fourD6().toString();
+		this.inputFour.value = this.fourD6().toString();
+		this.inputFive.value = this.fourD6().toString();
+		this.inputSix.value = this.fourD6().toString();
 		
-		(<HTMLLabelElement>document.getElementById("percent")).innerText = '';
+		this.labelPercent.innerText = '';
 
-		let stat1 = <HTMLSelectElement>document.getElementById("stat1");
-		stat1.disabled = false;
-		stat1.selectedIndex = 0;
-		let opt1 = stat1.getElementsByTagName("option");
+		this.stat1.disabled = false;
+		this.stat1.selectedIndex = 0;
+		let opt1 = this.stat1.getElementsByTagName("option");
 		Array.prototype.slice.call(opt1, 0 ).forEach(this.enableOpts);
-		(<HTMLInputElement>document.getElementById("str")).value = '';
+		this.inputStr.value = '';
 		
-		let stat2 = <HTMLSelectElement>document.getElementById("stat2");
-		stat2.disabled = false;
-		stat2.selectedIndex = 0;
-		let opt2 = stat2.getElementsByTagName("option");
+		this.stat2.disabled = false;
+		this.stat2.selectedIndex = 0;
+		let opt2 = this.stat2.getElementsByTagName("option");
 		Array.prototype.slice.call(opt2, 0 ).forEach(this.enableOpts);
-		(<HTMLInputElement>document.getElementById("dex")).value = '';
+		this.inputDex.value = '';
 		
-		let stat3 = <HTMLSelectElement>document.getElementById("stat3");
-		stat3.disabled = false;
-		stat3.selectedIndex = 0;
-		let opt3 = stat3.getElementsByTagName("option");
+		this.stat3.disabled = false;
+		this.stat3.selectedIndex = 0;
+		let opt3 = this.stat3.getElementsByTagName("option");
 		Array.prototype.slice.call(opt3, 0 ).forEach(this.enableOpts);
-		(<HTMLInputElement>document.getElementById("con")).value = '';
+		this.inputCon.value = '';
 		
-		let stat4 = <HTMLSelectElement>document.getElementById("stat4");
-		stat4.disabled = false;
-		stat4.selectedIndex = 0;
-		let opt4 = stat4.getElementsByTagName("option");
+		this.stat4.disabled = false;
+		this.stat4.selectedIndex = 0;
+		let opt4 = this.stat4.getElementsByTagName("option");
 		Array.prototype.slice.call(opt4, 0 ).forEach(this.enableOpts);
-		(<HTMLInputElement>document.getElementById("int")).value = '';
+		this.inputInt.value = '';
 		
-		let stat5 = <HTMLSelectElement>document.getElementById("stat5");
-		stat5.disabled = false;
-		stat5.selectedIndex = 0;
-		let opt5 = stat5.getElementsByTagName("option");
+		this.stat5.disabled = false;
+		this.stat5.selectedIndex = 0;
+		let opt5 = this.stat5.getElementsByTagName("option");
 		Array.prototype.slice.call(opt5, 0 ).forEach(this.enableOpts);
-		(<HTMLInputElement>document.getElementById("wis")).value = '';
+		this.inputWis.value = '';
 		
-		let stat6 = <HTMLSelectElement>document.getElementById("stat6");
-		stat6.disabled = false;
-		stat6.selectedIndex = 0;
-		let opt6 = stat6.getElementsByTagName("option");
+		this.stat6.disabled = false;
+		this.stat6.selectedIndex = 0;
+		let opt6 = this.stat6.getElementsByTagName("option");
 		Array.prototype.slice.call(opt6, 0 ).forEach(this.enableOpts);
-		(<HTMLInputElement>document.getElementById("chr")).value = '';
+		this.inputChr.value = '';
 	}
 
 	// re-enable dropdown option
 	enableOpts = (item: HTMLOptionElement, index: number) => {
 		item.disabled = false;
+	}
+
+	getValue = (box: string) => {
+		switch(box){
+			case "one":
+				return this.stat1.value
+			case "two":
+				return this.stat2.value
+			case "three":
+				return this.stat3.value
+			case "four":
+				return this.stat4.value
+			case "five":
+				return this.stat5.value
+			case "six":
+				return this.stat6.value
+			default:
+				break;
+		}
 	}
 
 	// assign stat from dropdown
@@ -152,42 +244,42 @@ class Generator {
 		switch(ddl.selectedIndex){
 			case 1:
 				this.strInit = val;
-				(<HTMLInputElement>document.getElementById("str")).value = this.strInit.toString();
+				this.inputStr.value = this.strInit.toString();
 				ddl.disabled = true;
 				this.removeOption(1);
 				this.checkForStrMods(this.strInit);
 				break;
 			case 2:
 				this.dexInit = val;
-				(<HTMLInputElement>document.getElementById("dex")).value = this.dexInit.toString();
+				this.inputDex.value = this.dexInit.toString();
 				ddl.disabled = true;
 				this.removeOption(2);
 				this.setDexMods(this.dexInit);
 				break;
 			case 3:
 				this.conInit = val;
-				(<HTMLInputElement>document.getElementById("con")).value = this.conInit.toString();
+				this.inputCon.value = this.conInit.toString();
 				ddl.disabled = true;
 				this.removeOption(3);
 				this.setConMods(this.conInit);
 				break;
 			case 4:
 				this.intInit = val;
-				(<HTMLInputElement>document.getElementById("int")).value = this.intInit.toString();
+				this.inputInt.value = this.intInit.toString();
 				ddl.disabled = true;
 				this.removeOption(4);
 				this.setIntMods(this.intInit);
 				break;
 			case 5:
 				this.wisInit = val;
-				(<HTMLInputElement>document.getElementById("wis")).value = this.wisInit.toString();
+				this.inputWis.value = this.wisInit.toString();
 				ddl.disabled = true;
 				this.removeOption(5);
 				this.setWisMods(this.wisInit);
 				break;
 			case 6:
 				this.chrInit = val;
-				(<HTMLInputElement>document.getElementById("chr")).value = this.chrInit.toString();
+				this.inputChr.value = this.chrInit.toString();
 				ddl.disabled = true;
 				this.removeOption(6);
 				this.setCharMods(this.chrInit);
@@ -202,7 +294,7 @@ class Generator {
 		let prcStr = 101;
 		if(str == 18 && this.isFighter){
 			prcStr = this.getRndInteger(1,100);
-			(<HTMLLabelElement>document.getElementById("percent")).innerText = prcStr.toString();
+			this.labelPercent.innerText = prcStr.toString();
 		}
 		switch(str){
 			case 3:
@@ -297,11 +389,10 @@ class Generator {
 
 	// set strength adjustments
 	setStrChecks = (wAllow: number, mPres: number, oDrs: number ,bBrs: number) => {
-		this.wghtAllow = wAllow, this.MxPres = mPres, this.opDrs = oDrs, this.bndBrs = bBrs;
-		(<HTMLLabelElement>document.getElementById("wghtAllow")).innerText = this.wghtAllow.toString();
-		(<HTMLLabelElement>document.getElementById("MxPres")).innerHTML = this.MxPres.toString();
-		(<HTMLLabelElement>document.getElementById("opDrs")).innerHTML = this.opDrs.toString();
-		(<HTMLLabelElement>document.getElementById("bndBrs")).innerHTML = this.bndBrs.toString();
+		this.labelWgtAllow.innerText = wAllow.toString();
+		this.labelMxPress.innerHTML = mPres.toString();
+		this.labelOpDrs.innerHTML = oDrs.toString();
+		this.labelBndBrs.innerHTML = bBrs.toString();
 	}
 
 	// calculate dexterity modifiers
@@ -348,10 +439,9 @@ class Generator {
 
 	// set dexterity adj
 	setDexAdj = (rAdj: number, msAdj: number, dAdj:number) => {
-		this.rctAdj = rAdj, this.mislAdj = msAdj, this.defAdj = dAdj;
-		(<HTMLLabelElement>document.getElementById("rctAdj")).innerHTML = this.rctAdj.toString();
-		(<HTMLLabelElement>document.getElementById("mislAdj")).innerHTML = this.mislAdj.toString();
-		(<HTMLLabelElement>document.getElementById("defAdj")).innerHTML = this.defAdj.toString();
+		this.labelRctAdj.innerHTML = rAdj.toString();
+		this.labelMislAdj.innerHTML = msAdj.toString();
+		this.labelDefAdj.innerHTML = dAdj.toString();
 	}
 
 	// calculate con modifiers
@@ -422,12 +512,12 @@ class Generator {
 
 	// set consititution adj
 	setConAdj = (hpA: number, sys: number, res: number, pos: number, reg: number) => {
-		this.hpAdj = hpA, this.sysShk = sys, this.resSurv = res, this.posSv = pos, this.regen = reg;
-		(<HTMLLabelElement>document.getElementById("hpAdj")).innerHTML = this.hpAdj.toString();
-		(<HTMLLabelElement>document.getElementById("sysShk")).innerHTML = this.sysShk.toString();
-		(<HTMLLabelElement>document.getElementById("resSurv")).innerHTML = this.resSurv.toString();
-		(<HTMLLabelElement>document.getElementById("posSv")).innerHTML = this.posSv.toString();
-		(<HTMLLabelElement>document.getElementById("regen")).innerHTML = this.regen.toString();
+		this.hpAdj = hpA;
+		this.labelHpAdj.innerHTML = hpA.toString();
+		this.labelSysShk.innerHTML = sys.toString();
+		this.labelResSurv.innerHTML = res.toString();
+		this.labelPoisSv.innerHTML = pos.toString();
+		this.labelRegen.innerHTML = reg.toString();
 	}
 
 	// calculate intelligence modifiers
@@ -478,12 +568,11 @@ class Generator {
 
 	// set intelligence adjustments
 	setIntAdj = (noLan: number, sLvl: number, chnLn: number, max: number, imun: number) => {
-		this.noOfLang = noLan, this.spellLvl = sLvl, this.chnLearn = chnLn, this.maxSplPerLvl = max, this.splImun = imun;
-		(<HTMLLabelElement>document.getElementById("noOfLang")).innerHTML = this.noOfLang.toString();
-		(<HTMLLabelElement>document.getElementById("spellLvl")).innerHTML = this.spellLvl.toString();
-		(<HTMLLabelElement>document.getElementById("chnLearn")).innerHTML = this.chnLearn.toString();
-		(<HTMLLabelElement>document.getElementById("maxSplPerLvl")).innerHTML = this.maxSplPerLvl.toString();
-		(<HTMLLabelElement>document.getElementById("splImun")).innerHTML = this.splImun.toString();
+		this.labelNoLang.innerHTML = noLan.toString();
+		this.labelSplLvl.innerHTML = sLvl.toString();
+		this.labelChLrn.innerHTML = chnLn.toString();
+		this.labelMxSplPLvl.innerHTML = max.toString();
+		this.labelSplImun.innerHTML = imun.toString();
 	}
 
 	// calculate wisdom modifiers
@@ -542,11 +631,10 @@ class Generator {
 
 	// set wisdom adjustments
 	setWisAdj = (mDef: number, bSp: number, cnFl: number, imun: number) => {
-		this.magDefAdj = mDef, this.BonusSp = bSp, this.chnFail = cnFl, this.splImmune = imun;
-		(<HTMLLabelElement>document.getElementById("magDefAdj")).innerHTML = this.magDefAdj.toString();
-		(<HTMLLabelElement>document.getElementById("BonusSp")).innerHTML = this.BonusSp.toString();
-		(<HTMLLabelElement>document.getElementById("chnFail")).innerHTML = this.chnFail.toString();
-		(<HTMLLabelElement>document.getElementById("splImmune")).innerHTML = this.splImmune.toString();
+		this.labelMagDefAdj.innerHTML = mDef.toString();
+		this.labelBonusSp.innerHTML = bSp.toString();
+		this.labelChnFail.innerHTML = cnFl.toString();
+		this.labelSplImmune.innerHTML = imun.toString();
 	}
 
 	// Calculate charisma modifiers
@@ -603,25 +691,24 @@ class Generator {
 
 	// Set charisma adj
 	setCharAdj = (hench: number, loyal: number, react: number) => {
-		this.mxHench = hench, this.loyaltyBs = loyal, this.ReactAdj = react;
-		(<HTMLLabelElement>document.getElementById("mxHench")).innerHTML = this.mxHench.toString();
-		(<HTMLLabelElement>document.getElementById("loyaltyBs")).innerHTML = this.loyaltyBs.toString();
-		(<HTMLLabelElement>document.getElementById("ReactAdj")).innerHTML = this.ReactAdj.toString();
+		this.labelMxHench.innerHTML = hench.toString();
+		this.labelLoyaltyBs.innerHTML = loyal.toString();
+		this.labelReactAdj.innerHTML = react.toString();
 	}
 
 	// Disable statistic option after its selected
 	removeOption = (index: number) => {
-		let op1 = (<HTMLSelectElement>document.getElementById("stat1")).getElementsByTagName("option");
+		let op1 = this.stat1.getElementsByTagName("option");
 		op1[index].disabled = true;
-		let op2 = (<HTMLSelectElement>document.getElementById("stat2")).getElementsByTagName("option");
+		let op2 = this.stat2.getElementsByTagName("option");
 		op2[index].disabled = true;
-		let op3 = (<HTMLSelectElement>document.getElementById("stat3")).getElementsByTagName("option");
+		let op3 = this.stat3.getElementsByTagName("option");
 		op3[index].disabled = true;
-		let op4 = (<HTMLSelectElement>document.getElementById("stat4")).getElementsByTagName("option");
+		let op4 = this.stat4.getElementsByTagName("option");
 		op4[index].disabled = true;
-		let op5 = (<HTMLSelectElement>document.getElementById("stat5")).getElementsByTagName("option");
+		let op5 = this.stat5.getElementsByTagName("option");
 		op5[index].disabled = true;
-		let op6 = (<HTMLSelectElement>document.getElementById("stat6")).getElementsByTagName("option");
+		let op6 = this.stat6.getElementsByTagName("option");
 		op6[index].disabled = true;
 	}
 
@@ -687,14 +774,12 @@ class Generator {
 	}
 
 	applyRacialMods = () => {
-		(<HTMLInputElement>document.getElementById("con")).value = (this.conInit + this.conMod).toString();
-		(<HTMLInputElement>document.getElementById("chr")).value = (this.chrInit + this.chrMod).toString();
-		(<HTMLInputElement>document.getElementById("dex")).value = (this.dexInit + this.dexMod).toString();
-		(<HTMLInputElement>document.getElementById("con")).value = (this.conInit + this.conMod).toString();
-		(<HTMLInputElement>document.getElementById("int")).value = (this.intInit + this.intMod).toString();
-		(<HTMLInputElement>document.getElementById("wis")).value = (this.wisInit + this.wisMod).toString();
-		(<HTMLInputElement>document.getElementById("dex")).value = (this.dexInit + this.dexMod).toString();
-		(<HTMLInputElement>document.getElementById("str")).value = (this.strInit + this.strMod).toString();
+		this.inputStr.value = (this.strInit + this.strMod).toString();
+		this.inputDex.value = (this.dexInit + this.dexMod).toString();
+		this.inputChr.value = (this.chrInit + this.chrMod).toString();
+		this.inputCon.value = (this.conInit + this.conMod).toString();
+		this.inputInt.value = (this.intInit + this.intMod).toString();
+		this.inputWis.value = (this.wisInit + this.wisMod).toString();
 	}
 
 	// Add racial mods
@@ -746,12 +831,11 @@ class Generator {
 
 	// Calculate hp and thac0
 	setLevel = (ddl: HTMLSelectElement) => {	
-		let hp = <HTMLLabelElement>document.getElementById("hp");
 		let hit = 0;
 		for(let i = 0; i < ddl.selectedIndex; i++){
 			hit += this.calcHPRoll();
 		}
-		hp.innerHTML = hit.toString();
+		this.labelHp.innerHTML = hit.toString();
 	}
 
 	// Hit dice roll with con mod, minimum roll 1
@@ -762,4 +846,4 @@ class Generator {
 		else
 			return hp;
 	}
-}
+};
