@@ -118,28 +118,15 @@ var Generator = /** @class */ (function () {
         // roll stats and clear old values etc
         this.roll = function () {
             _this.clearControls();
-            _this.isFighter = false;
             _this.inputOne.value = _this.fourD6().toString();
             _this.inputTwo.value = _this.fourD6().toString();
             _this.inputThree.value = _this.fourD6().toString();
             _this.inputFour.value = _this.fourD6().toString();
             _this.inputFive.value = _this.fourD6().toString();
             _this.inputSix.value = _this.fourD6().toString();
-            _this.labelPercent.innerText = '';
-            _this.inputStr.value = '';
-            _this.inputDex.value = '';
-            _this.inputCon.value = '';
-            _this.inputInt.value = '';
-            _this.inputWis.value = '';
-            _this.inputChr.value = '';
-            _this.clearVals(_this.stat1);
-            _this.clearVals(_this.stat2);
-            _this.clearVals(_this.stat3);
-            _this.clearVals(_this.stat4);
-            _this.clearVals(_this.stat5);
-            _this.clearVals(_this.stat6);
         };
         this.clearControls = function () {
+            _this.isFighter = false;
             _this.inputOne.value = '';
             _this.inputTwo.value = '';
             _this.inputThree.value = '';
@@ -185,6 +172,19 @@ var Generator = /** @class */ (function () {
             _this.labelLoyaltyBs.innerText = '';
             _this.labelReactAdj.innerText = '';
             _this.labelHp.innerText = '';
+            _this.labelPercent.innerText = '';
+            _this.inputStr.value = '';
+            _this.inputDex.value = '';
+            _this.inputCon.value = '';
+            _this.inputInt.value = '';
+            _this.inputWis.value = '';
+            _this.inputChr.value = '';
+            _this.clearVals(_this.stat1);
+            _this.clearVals(_this.stat2);
+            _this.clearVals(_this.stat3);
+            _this.clearVals(_this.stat4);
+            _this.clearVals(_this.stat5);
+            _this.clearVals(_this.stat6);
             _this.selectRace.selectedIndex = 0;
             _this.selectClass.selectedIndex = 0;
             _this.selectLevel.selectedIndex = 0;

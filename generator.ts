@@ -182,31 +182,16 @@ class Generator {
 	// roll stats and clear old values etc
 	roll = () => {
 		this.clearControls();
-		this.isFighter = false;
 		this.inputOne.value = this.fourD6().toString();
 		this.inputTwo.value = this.fourD6().toString();
 		this.inputThree.value = this.fourD6().toString();
 		this.inputFour.value = this.fourD6().toString();
 		this.inputFive.value = this.fourD6().toString();
 		this.inputSix.value = this.fourD6().toString();
-		
-		this.labelPercent.innerText = '';
-		this.inputStr.value = '';
-		this.inputDex.value = '';
-		this.inputCon.value = '';
-		this.inputInt.value = '';
-		this.inputWis.value = '';
-		this.inputChr.value = '';
-
-		this.clearVals(this.stat1);
-		this.clearVals(this.stat2);
-		this.clearVals(this.stat3);
-		this.clearVals(this.stat4);
-		this.clearVals(this.stat5);
-		this.clearVals(this.stat6);
 	}
 
 	clearControls = () => {
+		this.isFighter = false;
 		this.inputOne.value = '';
 		this.inputTwo.value = '';
 		this.inputThree.value = '';
@@ -255,6 +240,21 @@ class Generator {
 		this.labelLoyaltyBs.innerText = '';
 		this.labelReactAdj.innerText = '';
 		this.labelHp.innerText = '';
+
+		this.labelPercent.innerText = '';
+		this.inputStr.value = '';
+		this.inputDex.value = '';
+		this.inputCon.value = '';
+		this.inputInt.value = '';
+		this.inputWis.value = '';
+		this.inputChr.value = '';
+
+		this.clearVals(this.stat1);
+		this.clearVals(this.stat2);
+		this.clearVals(this.stat3);
+		this.clearVals(this.stat4);
+		this.clearVals(this.stat5);
+		this.clearVals(this.stat6);
 
 		this.selectRace.selectedIndex = 0;
 		this.selectClass.selectedIndex = 0;
