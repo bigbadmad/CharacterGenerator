@@ -115,7 +115,7 @@ class Generator {
 		this.rollButton.addEventListener("click", this.roll);
 		this.getControls();
 	}
-
+ 
 	// Get the page controls
 	getControls = () => {
 		this.inputOne = <HTMLInputElement>document.getElementById("one");

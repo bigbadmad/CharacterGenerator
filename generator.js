@@ -1,4 +1,3 @@
-"use strict";
 // Global class object
 var gen;
 window.onload = function () {
