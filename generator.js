@@ -1,4 +1,3 @@
-"use strict";
 // Global class object
 var gen;
 window.onload = function () {
@@ -105,73 +104,115 @@ var Generator = /** @class */ (function () {
             _this.labelLoyaltyBs = document.getElementById("loyaltyBs");
             _this.labelReactAdj = document.getElementById("ReactAdj");
             _this.labelHp = document.getElementById("hp");
+            _this.selectRace = document.getElementById("race");
+            _this.selectClass = document.getElementById("class");
+            _this.selectLevel = document.getElementById("lvl");
+        };
+        this.clearVals = function (stat) {
+            stat.disabled = false;
+            stat.selectedIndex = 0;
+            var opt = stat.getElementsByTagName("option");
+            Array.prototype.slice.call(opt, 0).forEach(_this.enableOpts);
         };
         // roll stats and clear old values etc
         this.roll = function () {
-            _this.isFighter = false;
+            _this.clearControls();
             _this.inputOne.value = _this.fourD6().toString();
             _this.inputTwo.value = _this.fourD6().toString();
             _this.inputThree.value = _this.fourD6().toString();
             _this.inputFour.value = _this.fourD6().toString();
             _this.inputFive.value = _this.fourD6().toString();
             _this.inputSix.value = _this.fourD6().toString();
-            _this.labelPercent.innerText = '';
-            _this.stat1.disabled = false;
+        };
+        this.clearControls = function () {
+            _this.isFighter = false;
+            _this.inputOne.value = '';
+            _this.inputTwo.value = '';
+            _this.inputThree.value = '';
+            _this.inputFour.value = '';
+            _this.inputFive.value = '';
+            _this.inputSix.value = '';
+            _this.labelPercent.value = '';
             _this.stat1.selectedIndex = 0;
-            var opt1 = _this.stat1.getElementsByTagName("option");
-            Array.prototype.slice.call(opt1, 0).forEach(_this.enableOpts);
-            _this.inputStr.value = '';
-            _this.stat2.disabled = false;
             _this.stat2.selectedIndex = 0;
-            var opt2 = _this.stat2.getElementsByTagName("option");
-            Array.prototype.slice.call(opt2, 0).forEach(_this.enableOpts);
-            _this.inputDex.value = '';
-            _this.stat3.disabled = false;
             _this.stat3.selectedIndex = 0;
-            var opt3 = _this.stat3.getElementsByTagName("option");
-            Array.prototype.slice.call(opt3, 0).forEach(_this.enableOpts);
-            _this.inputCon.value = '';
-            _this.stat4.disabled = false;
             _this.stat4.selectedIndex = 0;
-            var opt4 = _this.stat4.getElementsByTagName("option");
-            Array.prototype.slice.call(opt4, 0).forEach(_this.enableOpts);
-            _this.inputInt.value = '';
-            _this.stat5.disabled = false;
             _this.stat5.selectedIndex = 0;
-            var opt5 = _this.stat5.getElementsByTagName("option");
-            Array.prototype.slice.call(opt5, 0).forEach(_this.enableOpts);
-            _this.inputWis.value = '';
-            _this.stat6.disabled = false;
             _this.stat6.selectedIndex = 0;
-            var opt6 = _this.stat6.getElementsByTagName("option");
-            Array.prototype.slice.call(opt6, 0).forEach(_this.enableOpts);
+            _this.inputStr.value = '';
+            _this.inputDex.value = '';
+            _this.inputCon.value = '';
+            _this.inputWis.value = '';
+            _this.inputInt.value = '';
             _this.inputChr.value = '';
+            _this.labelPercent.innerText = '';
+            _this.labelWgtAllow.innerText = '';
+            _this.labelMxPress.innerText = '';
+            _this.labelOpDrs.innerText = '';
+            _this.labelBndBrs.innerText = '';
+            _this.labelRctAdj.innerText = '';
+            _this.labelMislAdj.innerText = '';
+            _this.labelDefAdj.innerText = '';
+            _this.labelHpAdj.innerText = '';
+            _this.labelSysShk.innerText = '';
+            _this.labelResSurv.innerText = '';
+            _this.labelPoisSv.innerText = '';
+            _this.labelRegen.innerText = '';
+            _this.labelNoLang.innerText = '';
+            _this.labelSplLvl.innerText = '';
+            _this.labelChLrn.innerText = '';
+            _this.labelMxSplPLvl.innerText = '';
+            _this.labelSplImun.innerText = '';
+            _this.labelMagDefAdj.innerText = '';
+            _this.labelBonusSp.innerText = '';
+            _this.labelChnFail.innerText = '';
+            _this.labelSplImmune.innerText = '';
+            _this.labelMxHench.innerText = '';
+            _this.labelLoyaltyBs.innerText = '';
+            _this.labelReactAdj.innerText = '';
+            _this.labelHp.innerText = '';
+            _this.labelPercent.innerText = '';
+            _this.inputStr.value = '';
+            _this.inputDex.value = '';
+            _this.inputCon.value = '';
+            _this.inputInt.value = '';
+            _this.inputWis.value = '';
+            _this.inputChr.value = '';
+            _this.clearVals(_this.stat1);
+            _this.clearVals(_this.stat2);
+            _this.clearVals(_this.stat3);
+            _this.clearVals(_this.stat4);
+            _this.clearVals(_this.stat5);
+            _this.clearVals(_this.stat6);
+            _this.selectRace.selectedIndex = 0;
+            _this.selectClass.selectedIndex = 0;
+            _this.selectLevel.selectedIndex = 0;
         };
         // re-enable dropdown option
-        this.enableOpts = function (item, index) {
+        this.enableOpts = function (item) {
             item.disabled = false;
         };
-        this.getValue = function (box) {
+        this.getInputValue = function (box) {
             switch (box) {
                 case "one":
-                    return _this.stat1.value;
+                    return _this.inputOne.value;
                 case "two":
-                    return _this.stat2.value;
+                    return _this.inputTwo.value;
                 case "three":
-                    return _this.stat3.value;
+                    return _this.inputThree.value;
                 case "four":
-                    return _this.stat4.value;
+                    return _this.inputFour.value;
                 case "five":
-                    return _this.stat5.value;
+                    return _this.inputFive.value;
                 case "six":
-                    return _this.stat6.value;
+                    return _this.inputSix.value;
                 default:
-                    break;
+                    return Error("Unknown input");
             }
         };
         // assign stat from dropdown
         this.setOne = function (ddl, box) {
-            var val = parseInt(document.getElementById(box).value);
+            var val = parseInt(_this.getInputValue(box));
             switch (ddl.selectedIndex) {
                 case 1:
                     _this.strInit = val;
@@ -616,18 +657,12 @@ var Generator = /** @class */ (function () {
         };
         // Disable statistic option after its selected
         this.removeOption = function (index) {
-            var op1 = _this.stat1.getElementsByTagName("option");
-            op1[index].disabled = true;
-            var op2 = _this.stat2.getElementsByTagName("option");
-            op2[index].disabled = true;
-            var op3 = _this.stat3.getElementsByTagName("option");
-            op3[index].disabled = true;
-            var op4 = _this.stat4.getElementsByTagName("option");
-            op4[index].disabled = true;
-            var op5 = _this.stat5.getElementsByTagName("option");
-            op5[index].disabled = true;
-            var op6 = _this.stat6.getElementsByTagName("option");
-            op6[index].disabled = true;
+            _this.stat1.getElementsByTagName("option")[index].disabled = true;
+            _this.stat2.getElementsByTagName("option")[index].disabled = true;
+            _this.stat3.getElementsByTagName("option")[index].disabled = true;
+            _this.stat4.getElementsByTagName("option")[index].disabled = true;
+            _this.stat5.getElementsByTagName("option")[index].disabled = true;
+            _this.stat6.getElementsByTagName("option")[index].disabled = true;
         };
         // throw 4d6 remove lowest roll
         this.fourD6 = function () {
@@ -640,7 +675,7 @@ var Generator = /** @class */ (function () {
         };
         // random number generator
         this.getRndInteger = function (min, max) {
-            max = max + 1;
+            max++;
             return Math.floor(Math.random() * (max - min)) + min;
         };
         // Set the class

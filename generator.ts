@@ -107,12 +107,15 @@ class Generator {
 	labelLoyaltyBs: any;
 	labelReactAdj: any;
 	labelHp: any;
+	selectClass: any;
+	selectRace: any;
+	selectLevel: any;
 
 	setup = () => {
 		this.rollButton.addEventListener("click", this.roll);
 		this.getControls();
 	}
-
+ 
 	// Get the page controls
 	getControls = () => {
 		this.inputOne = <HTMLInputElement>document.getElementById("one");
@@ -163,84 +166,128 @@ class Generator {
 		this.labelLoyaltyBs = <HTMLLabelElement>document.getElementById("loyaltyBs");
 		this.labelReactAdj = <HTMLLabelElement>document.getElementById("ReactAdj");
 		this.labelHp = <HTMLLabelElement>document.getElementById("hp");
+
+		this.selectRace = <HTMLSelectElement>document.getElementById("race");
+		this.selectClass = <HTMLSelectElement>document.getElementById("class");
+		this.selectLevel = <HTMLSelectElement>document.getElementById("lvl");
+	}
+
+	clearVals = (stat:HTMLSelectElement) => {
+		stat.disabled = false;
+		stat.selectedIndex = 0;
+		let opt = stat.getElementsByTagName("option");
+		Array.prototype.slice.call(opt, 0 ).forEach(this.enableOpts);
 	}
 
 	// roll stats and clear old values etc
 	roll = () => {
-		this.isFighter = false;
+		this.clearControls();
 		this.inputOne.value = this.fourD6().toString();
 		this.inputTwo.value = this.fourD6().toString();
 		this.inputThree.value = this.fourD6().toString();
 		this.inputFour.value = this.fourD6().toString();
 		this.inputFive.value = this.fourD6().toString();
 		this.inputSix.value = this.fourD6().toString();
-		
-		this.labelPercent.innerText = '';
+	}
 
-		this.stat1.disabled = false;
+	clearControls = () => {
+		this.isFighter = false;
+		this.inputOne.value = '';
+		this.inputTwo.value = '';
+		this.inputThree.value = '';
+		this.inputFour.value = '';
+		this.inputFive.value = '';
+		this.inputSix.value = '';
+		this.labelPercent.value = '';
+
 		this.stat1.selectedIndex = 0;
-		let opt1 = this.stat1.getElementsByTagName("option");
-		Array.prototype.slice.call(opt1, 0 ).forEach(this.enableOpts);
-		this.inputStr.value = '';
-		
-		this.stat2.disabled = false;
 		this.stat2.selectedIndex = 0;
-		let opt2 = this.stat2.getElementsByTagName("option");
-		Array.prototype.slice.call(opt2, 0 ).forEach(this.enableOpts);
-		this.inputDex.value = '';
-		
-		this.stat3.disabled = false;
 		this.stat3.selectedIndex = 0;
-		let opt3 = this.stat3.getElementsByTagName("option");
-		Array.prototype.slice.call(opt3, 0 ).forEach(this.enableOpts);
-		this.inputCon.value = '';
-		
-		this.stat4.disabled = false;
 		this.stat4.selectedIndex = 0;
-		let opt4 = this.stat4.getElementsByTagName("option");
-		Array.prototype.slice.call(opt4, 0 ).forEach(this.enableOpts);
-		this.inputInt.value = '';
-		
-		this.stat5.disabled = false;
 		this.stat5.selectedIndex = 0;
-		let opt5 = this.stat5.getElementsByTagName("option");
-		Array.prototype.slice.call(opt5, 0 ).forEach(this.enableOpts);
-		this.inputWis.value = '';
-		
-		this.stat6.disabled = false;
 		this.stat6.selectedIndex = 0;
-		let opt6 = this.stat6.getElementsByTagName("option");
-		Array.prototype.slice.call(opt6, 0 ).forEach(this.enableOpts);
+
+		this.inputStr.value = '';
+		this.inputDex.value = '';
+		this.inputCon.value = '';
+		this.inputWis.value = '';
+		this.inputInt.value = '';
 		this.inputChr.value = '';
+
+		this.labelPercent.innerText = '';
+		this.labelWgtAllow.innerText = '';
+		this.labelMxPress.innerText = '';
+		this.labelOpDrs.innerText = '';
+		this.labelBndBrs.innerText = '';
+		this.labelRctAdj.innerText = '';
+		this.labelMislAdj.innerText = '';
+		this.labelDefAdj.innerText = '';
+		this.labelHpAdj.innerText = '';
+		this.labelSysShk.innerText = '';
+		this.labelResSurv.innerText = '';
+		this.labelPoisSv.innerText = '';
+		this.labelRegen.innerText = '';
+		this.labelNoLang.innerText = '';
+		this.labelSplLvl.innerText = '';
+		this.labelChLrn.innerText = '';
+		this.labelMxSplPLvl.innerText = '';
+		this.labelSplImun.innerText = '';
+		this.labelMagDefAdj.innerText = '';
+		this.labelBonusSp.innerText = '';
+		this.labelChnFail.innerText = '';
+		this.labelSplImmune.innerText = '';
+		this.labelMxHench.innerText = '';
+		this.labelLoyaltyBs.innerText = '';
+		this.labelReactAdj.innerText = '';
+		this.labelHp.innerText = '';
+
+		this.labelPercent.innerText = '';
+		this.inputStr.value = '';
+		this.inputDex.value = '';
+		this.inputCon.value = '';
+		this.inputInt.value = '';
+		this.inputWis.value = '';
+		this.inputChr.value = '';
+
+		this.clearVals(this.stat1);
+		this.clearVals(this.stat2);
+		this.clearVals(this.stat3);
+		this.clearVals(this.stat4);
+		this.clearVals(this.stat5);
+		this.clearVals(this.stat6);
+
+		this.selectRace.selectedIndex = 0;
+		this.selectClass.selectedIndex = 0;
+		this.selectLevel.selectedIndex = 0;
 	}
 
 	// re-enable dropdown option
-	enableOpts = (item: HTMLOptionElement, index: number) => {
+	enableOpts = (item: HTMLOptionElement) => {
 		item.disabled = false;
 	}
 
-	getValue = (box: string) => {
+	getInputValue = (box: string) => {
 		switch(box){
 			case "one":
-				return this.stat1.value
+				return this.inputOne.value;
 			case "two":
-				return this.stat2.value
+				return this.inputTwo.value;
 			case "three":
-				return this.stat3.value
+				return this.inputThree.value;
 			case "four":
-				return this.stat4.value
+				return this.inputFour.value;
 			case "five":
-				return this.stat5.value
+				return this.inputFive.value;
 			case "six":
-				return this.stat6.value
+				return this.inputSix.value;
 			default:
-				break;
+				return Error("Unknown input");
 		}
 	}
 
 	// assign stat from dropdown
 	setOne = (ddl: HTMLSelectElement, box: string) => {
-		let val = parseInt((<HTMLInputElement>document.getElementById(box)).value);
+		let val = parseInt(this.getInputValue(box));
 		switch(ddl.selectedIndex){
 			case 1:
 				this.strInit = val;
@@ -698,26 +745,19 @@ class Generator {
 
 	// Disable statistic option after its selected
 	removeOption = (index: number) => {
-		let op1 = this.stat1.getElementsByTagName("option");
-		op1[index].disabled = true;
-		let op2 = this.stat2.getElementsByTagName("option");
-		op2[index].disabled = true;
-		let op3 = this.stat3.getElementsByTagName("option");
-		op3[index].disabled = true;
-		let op4 = this.stat4.getElementsByTagName("option");
-		op4[index].disabled = true;
-		let op5 = this.stat5.getElementsByTagName("option");
-		op5[index].disabled = true;
-		let op6 = this.stat6.getElementsByTagName("option");
-		op6[index].disabled = true;
+		this.stat1.getElementsByTagName("option")[index].disabled = true;
+		this.stat2.getElementsByTagName("option")[index].disabled = true;
+		this.stat3.getElementsByTagName("option")[index].disabled = true;
+		this.stat4.getElementsByTagName("option")[index].disabled = true;
+		this.stat5.getElementsByTagName("option")[index].disabled = true;
+		this.stat6.getElementsByTagName("option")[index].disabled = true;
 	}
 
 	// throw 4d6 remove lowest roll
 	fourD6 = () => {
 		let one = this.getRndInteger(1,6);
 		let two = this.getRndInteger(1,6);
-		let 
-		three = this.getRndInteger(1,6);
+		let three = this.getRndInteger(1,6);
 		let four = this.getRndInteger(1,6);
 		let lowest = Math.min(one, two, three, four);
 		return (one + two + three + four) - lowest;
@@ -733,7 +773,7 @@ class Generator {
 
 	// random number generator
 	getRndInteger = (min: number, max: number) => {
-		max = max + 1;
+		max++;
 		return Math.floor(Math.random() * (max - min) ) + min;
 	}
 
@@ -805,7 +845,7 @@ class Generator {
 				this.applyRacialMods()
 				break;
 			case 4://gnome
-			// + 1 int - 1 wisdom
+				// + 1 int - 1 wisdom
 				this.zeroMOds();
 				this.intMod = 1;
 				this.wisMod = -1;
