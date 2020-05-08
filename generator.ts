@@ -745,26 +745,19 @@ class Generator {
 
 	// Disable statistic option after its selected
 	removeOption = (index: number) => {
-		let op1 = this.stat1.getElementsByTagName("option");
-		op1[index].disabled = true;
-		let op2 = this.stat2.getElementsByTagName("option");
-		op2[index].disabled = true;
-		let op3 = this.stat3.getElementsByTagName("option");
-		op3[index].disabled = true;
-		let op4 = this.stat4.getElementsByTagName("option");
-		op4[index].disabled = true;
-		let op5 = this.stat5.getElementsByTagName("option");
-		op5[index].disabled = true;
-		let op6 = this.stat6.getElementsByTagName("option");
-		op6[index].disabled = true;
+		this.stat1.getElementsByTagName("option")[index].disabled = true;
+		this.stat2.getElementsByTagName("option")[index].disabled = true;
+		this.stat3.getElementsByTagName("option")[index].disabled = true;
+		this.stat4.getElementsByTagName("option")[index].disabled = true;
+		this.stat5.getElementsByTagName("option")[index].disabled = true;
+		this.stat6.getElementsByTagName("option")[index].disabled = true;
 	}
 
 	// throw 4d6 remove lowest roll
 	fourD6 = () => {
 		let one = this.getRndInteger(1,6);
 		let two = this.getRndInteger(1,6);
-		let 
-		three = this.getRndInteger(1,6);
+		let three = this.getRndInteger(1,6);
 		let four = this.getRndInteger(1,6);
 		let lowest = Math.min(one, two, three, four);
 		return (one + two + three + four) - lowest;
@@ -780,7 +773,7 @@ class Generator {
 
 	// random number generator
 	getRndInteger = (min: number, max: number) => {
-		max = max + 1;
+		max++;
 		return Math.floor(Math.random() * (max - min) ) + min;
 	}
 
@@ -852,7 +845,7 @@ class Generator {
 				this.applyRacialMods()
 				break;
 			case 4://gnome
-			// + 1 int - 1 wisdom
+				// + 1 int - 1 wisdom
 				this.zeroMOds();
 				this.intMod = 1;
 				this.wisMod = -1;

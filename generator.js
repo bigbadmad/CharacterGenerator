@@ -658,18 +658,12 @@ var Generator = /** @class */ (function () {
         };
         // Disable statistic option after its selected
         this.removeOption = function (index) {
-            var op1 = _this.stat1.getElementsByTagName("option");
-            op1[index].disabled = true;
-            var op2 = _this.stat2.getElementsByTagName("option");
-            op2[index].disabled = true;
-            var op3 = _this.stat3.getElementsByTagName("option");
-            op3[index].disabled = true;
-            var op4 = _this.stat4.getElementsByTagName("option");
-            op4[index].disabled = true;
-            var op5 = _this.stat5.getElementsByTagName("option");
-            op5[index].disabled = true;
-            var op6 = _this.stat6.getElementsByTagName("option");
-            op6[index].disabled = true;
+            _this.stat1.getElementsByTagName("option")[index].disabled = true;
+            _this.stat2.getElementsByTagName("option")[index].disabled = true;
+            _this.stat3.getElementsByTagName("option")[index].disabled = true;
+            _this.stat4.getElementsByTagName("option")[index].disabled = true;
+            _this.stat5.getElementsByTagName("option")[index].disabled = true;
+            _this.stat6.getElementsByTagName("option")[index].disabled = true;
         };
         // throw 4d6 remove lowest roll
         this.fourD6 = function () {
@@ -682,7 +676,7 @@ var Generator = /** @class */ (function () {
         };
         // random number generator
         this.getRndInteger = function (min, max) {
-            max = max + 1;
+            max++;
             return Math.floor(Math.random() * (max - min)) + min;
         };
         // Set the class
