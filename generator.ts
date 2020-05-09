@@ -13,6 +13,15 @@ enum classes{
 	illusionist = 8
 }
 
+enum races{
+	human,
+	dwarf,
+	elf,
+	gnome,
+	halfling,
+	halfElf
+}
+
 let raceClassLimits = {
 	human:[classes.fighter,classes.thief,classes.cleric,classes.mage,classes.bard,classes.paladin,classes.ranger,classes.druid,classes.illusionist],
 	dwarf:[classes.fighter,classes.cleric,classes.thief],
@@ -836,50 +845,76 @@ class Generator {
 		this.inputWis.value = (this.wisInit + this.wisMod).toString();
 	}
 
+	enableClassDdl = (race: races) => {
+		debugger;
+		switch(race){
+			case races.human:
+				raceClassLimits.human.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				break;
+			case races.dwarf:
+				raceClassLimits.dwarf.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				break;
+			case races.elf:
+				raceClassLimits.elf.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				break;
+			case races.gnome:
+				raceClassLimits.gnome.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				break;
+			case races.halfElf:
+				raceClassLimits.halfElf.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				break;
+			case races.halfling:
+				raceClassLimits.halfElf.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				break;
+			default:
+				throw Error("No idea what species this is?");
+				
+		}
+	}
+
 	// Add racial mods
 	setRace = (ddl: HTMLSelectElement) => {
 		switch(ddl.selectedIndex){
 			case 1://human
-			this.zeroMOds();
-			this.applyRacialMods();
+				this.zeroMOds();
+				this.applyRacialMods();
+				this.enableClassDdl(races.human);
 				break;
 			case 2://dwarf
-				// + 1 con - 1 chr
-				// remove mage class option
 				this.zeroMOds();
 				this.conMod = 1; 
 				this.chrMod = -1;
 				this.applyRacialMods();
+				this.enableClassDdl(races.dwarf);
 				break;
 			case 3://elf
-				// + 1 dex - 1 con
 				this.zeroMOds();
 				this.dexMod = 1;
 				this.conMod = -1;
-				this.applyRacialMods()
+				this.applyRacialMods();
+				this.enableClassDdl(races.elf);
 				break;
 			case 4://gnome
-				// + 1 int - 1 wisdom
 				this.zeroMOds();
 				this.intMod = 1;
 				this.wisMod = -1;
 				this.applyRacialMods();
+				this.enableClassDdl(races.gnome);
 				break;
-			case 5://halfling
-				// + 1 dex - 1 str
+			case 5://halfling				
 				this.zeroMOds();
 				this.dexMod = 1;
 				this.strMod = -1;
 				this.applyRacialMods();
+				this.enableClassDdl(races.halfElf);
 				break;
 			case 6://half elf
 				this.zeroMOds();
 				this.applyRacialMods();
+				this.enableClassDdl(races.halfElf);
 				break;
 			default:
-				this.zeroMOds();
-				this.applyRacialMods();
-				break;
+				throw Error("How did you get here?");
 		}	
 	}
 

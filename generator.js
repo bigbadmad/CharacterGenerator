@@ -13,6 +13,15 @@ var classes;
     classes[classes["druid"] = 7] = "druid";
     classes[classes["illusionist"] = 8] = "illusionist";
 })(classes || (classes = {}));
+var races;
+(function (races) {
+    races[races["human"] = 0] = "human";
+    races[races["dwarf"] = 1] = "dwarf";
+    races[races["elf"] = 2] = "elf";
+    races[races["gnome"] = 3] = "gnome";
+    races[races["halfling"] = 4] = "halfling";
+    races[races["halfElf"] = 5] = "halfElf";
+})(races || (races = {}));
 var raceClassLimits = {
     human: [classes.fighter, classes.thief, classes.cleric, classes.mage, classes.bard, classes.paladin, classes.ranger, classes.druid, classes.illusionist],
     dwarf: [classes.fighter, classes.cleric, classes.thief],
@@ -735,50 +744,74 @@ var Generator = /** @class */ (function () {
             _this.inputInt.value = (_this.intInit + _this.intMod).toString();
             _this.inputWis.value = (_this.wisInit + _this.wisMod).toString();
         };
+        this.enableClassDdl = function (race) {
+            debugger;
+            switch (race) {
+                case races.human:
+                    raceClassLimits.human.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    break;
+                case races.dwarf:
+                    raceClassLimits.dwarf.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    break;
+                case races.elf:
+                    raceClassLimits.elf.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    break;
+                case races.gnome:
+                    raceClassLimits.gnome.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    break;
+                case races.halfElf:
+                    raceClassLimits.halfElf.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    break;
+                case races.halfling:
+                    raceClassLimits.halfElf.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    break;
+                default:
+                    throw Error("No idea what species this is?");
+            }
+        };
         // Add racial mods
         this.setRace = function (ddl) {
             switch (ddl.selectedIndex) {
                 case 1: //human
                     _this.zeroMOds();
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.human);
                     break;
                 case 2: //dwarf
-                    // + 1 con - 1 chr
-                    // remove mage class option
                     _this.zeroMOds();
                     _this.conMod = 1;
                     _this.chrMod = -1;
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.dwarf);
                     break;
                 case 3: //elf
-                    // + 1 dex - 1 con
                     _this.zeroMOds();
                     _this.dexMod = 1;
                     _this.conMod = -1;
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.elf);
                     break;
                 case 4: //gnome
-                    // + 1 int - 1 wisdom
                     _this.zeroMOds();
                     _this.intMod = 1;
                     _this.wisMod = -1;
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.gnome);
                     break;
-                case 5: //halfling
-                    // + 1 dex - 1 str
+                case 5: //halfling				
                     _this.zeroMOds();
                     _this.dexMod = 1;
                     _this.strMod = -1;
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.halfElf);
                     break;
                 case 6: //half elf
                     _this.zeroMOds();
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.halfElf);
                     break;
                 default:
-                    _this.zeroMOds();
-                    _this.applyRacialMods();
-                    break;
+                    throw Error("How did you get here?");
             }
         };
         // Calculate hp and thac0
