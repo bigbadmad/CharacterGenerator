@@ -1,6 +1,27 @@
 // Global class object
 let gen:any;
 
+enum classes{
+	fighter = 0,
+	thief = 1,
+	cleric = 2,
+	mage = 3,
+	bard = 4,
+	paladin = 5,
+	ranger = 6,
+	druid = 7,
+	illusionist = 8
+}
+
+let raceClassLimits = {
+	human:[classes.fighter,classes.thief,classes.cleric,classes.mage,classes.bard,classes.paladin,classes.ranger,classes.druid,classes.illusionist],
+	dwarf:[classes.fighter,classes.cleric,classes.thief],
+	elf:[ classes.fighter,classes.ranger,classes.cleric,classes.thief,classes.bard,classes.mage],
+	halfElf:[classes.fighter,classes.paladin,classes.ranger,classes.cleric,classes.druid,classes.thief,classes.bard,classes.mage],
+	gnome:[classes.fighter,classes.cleric,classes.thief,classes.mage,classes.illusionist],
+	halfling:[classes.fighter,classes.cleric,classes.thief]
+};
+
 window.onload = () => {
 	gen = new Generator(<HTMLInputElement>document.getElementById("roll"));
 	gen.setup();
@@ -22,8 +43,6 @@ function setClass(ddl: HTMLSelectElement){
 function setLevel(ddl: HTMLSelectElement){
     gen.setLevel(ddl);
 };
-
-//
 
 class Generator {
 	constructor(rollButton: HTMLInputElement){this.rollButton = rollButton};
@@ -292,48 +311,43 @@ class Generator {
 			case 1:
 				this.strInit = val;
 				this.inputStr.value = this.strInit.toString();
-				ddl.disabled = true;
 				this.removeOption(1);
 				this.checkForStrMods(this.strInit);
 				break;
 			case 2:
 				this.dexInit = val;
 				this.inputDex.value = this.dexInit.toString();
-				ddl.disabled = true;
 				this.removeOption(2);
 				this.setDexMods(this.dexInit);
 				break;
 			case 3:
 				this.conInit = val;
 				this.inputCon.value = this.conInit.toString();
-				ddl.disabled = true;
 				this.removeOption(3);
 				this.setConMods(this.conInit);
 				break;
 			case 4:
 				this.intInit = val;
 				this.inputInt.value = this.intInit.toString();
-				ddl.disabled = true;
 				this.removeOption(4);
 				this.setIntMods(this.intInit);
 				break;
 			case 5:
 				this.wisInit = val;
 				this.inputWis.value = this.wisInit.toString();
-				ddl.disabled = true;
 				this.removeOption(5);
 				this.setWisMods(this.wisInit);
 				break;
 			case 6:
 				this.chrInit = val;
 				this.inputChr.value = this.chrInit.toString();
-				ddl.disabled = true;
 				this.removeOption(6);
 				this.setCharMods(this.chrInit);
 				break;
 			default:
 				break;				
 		}
+		ddl.disabled = true;
 	}
 
 	// calculate strength modifiers

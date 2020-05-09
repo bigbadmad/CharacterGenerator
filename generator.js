@@ -1,5 +1,26 @@
+"use strict";
 // Global class object
 var gen;
+var classes;
+(function (classes) {
+    classes[classes["fighter"] = 0] = "fighter";
+    classes[classes["thief"] = 1] = "thief";
+    classes[classes["cleric"] = 2] = "cleric";
+    classes[classes["mage"] = 3] = "mage";
+    classes[classes["bard"] = 4] = "bard";
+    classes[classes["paladin"] = 5] = "paladin";
+    classes[classes["ranger"] = 6] = "ranger";
+    classes[classes["druid"] = 7] = "druid";
+    classes[classes["illusionist"] = 8] = "illusionist";
+})(classes || (classes = {}));
+var raceClassLimits = {
+    human: [classes.fighter, classes.thief, classes.cleric, classes.mage, classes.bard, classes.paladin, classes.ranger, classes.druid, classes.illusionist],
+    dwarf: [classes.fighter, classes.cleric, classes.thief],
+    elf: [classes.fighter, classes.ranger, classes.cleric, classes.thief, classes.bard, classes.mage],
+    halfElf: [classes.fighter, classes.paladin, classes.ranger, classes.cleric, classes.druid, classes.thief, classes.bard, classes.mage],
+    gnome: [classes.fighter, classes.cleric, classes.thief, classes.mage, classes.illusionist],
+    halfling: [classes.fighter, classes.cleric, classes.thief]
+};
 window.onload = function () {
     gen = new Generator(document.getElementById("roll"));
     gen.setup();
@@ -21,7 +42,6 @@ function setLevel(ddl) {
     gen.setLevel(ddl);
 }
 ;
-//
 var Generator = /** @class */ (function () {
     function Generator(rollButton) {
         var _this = this;
@@ -217,48 +237,43 @@ var Generator = /** @class */ (function () {
                 case 1:
                     _this.strInit = val;
                     _this.inputStr.value = _this.strInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(1);
                     _this.checkForStrMods(_this.strInit);
                     break;
                 case 2:
                     _this.dexInit = val;
                     _this.inputDex.value = _this.dexInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(2);
                     _this.setDexMods(_this.dexInit);
                     break;
                 case 3:
                     _this.conInit = val;
                     _this.inputCon.value = _this.conInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(3);
                     _this.setConMods(_this.conInit);
                     break;
                 case 4:
                     _this.intInit = val;
                     _this.inputInt.value = _this.intInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(4);
                     _this.setIntMods(_this.intInit);
                     break;
                 case 5:
                     _this.wisInit = val;
                     _this.inputWis.value = _this.wisInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(5);
                     _this.setWisMods(_this.wisInit);
                     break;
                 case 6:
                     _this.chrInit = val;
                     _this.inputChr.value = _this.chrInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(6);
                     _this.setCharMods(_this.chrInit);
                     break;
                 default:
                     break;
             }
+            ddl.disabled = true;
         };
         // calculate strength modifiers
         this.checkForStrMods = function (str) {
