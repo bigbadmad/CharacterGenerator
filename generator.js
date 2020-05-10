@@ -1,5 +1,35 @@
+"use strict";
 // Global class object
 var gen;
+var classes;
+(function (classes) {
+    classes["fighter"] = "fighter";
+    classes["thief"] = "thief";
+    classes["cleric"] = "cleric";
+    classes["mage"] = "mage";
+    classes["bard"] = "bard";
+    classes["paladin"] = "paladin";
+    classes["ranger"] = "ranger";
+    classes["druid"] = "druid";
+    classes["illusionist"] = "illusionist";
+})(classes || (classes = {}));
+var races;
+(function (races) {
+    races[races["human"] = 0] = "human";
+    races[races["dwarf"] = 1] = "dwarf";
+    races[races["elf"] = 2] = "elf";
+    races[races["gnome"] = 3] = "gnome";
+    races[races["halfling"] = 4] = "halfling";
+    races[races["halfElf"] = 5] = "halfElf";
+})(races || (races = {}));
+var raceClassLimits = {
+    human: [classes.fighter, classes.thief, classes.cleric, classes.mage, classes.bard, classes.paladin, classes.ranger, classes.druid, classes.illusionist],
+    dwarf: [classes.fighter, classes.cleric, classes.thief],
+    elf: [classes.fighter, classes.ranger, classes.cleric, classes.thief, classes.bard, classes.mage],
+    halfElf: [classes.fighter, classes.paladin, classes.ranger, classes.cleric, classes.druid, classes.thief, classes.bard, classes.mage],
+    gnome: [classes.fighter, classes.cleric, classes.thief, classes.illusionist],
+    halfling: [classes.fighter, classes.cleric, classes.thief]
+};
 window.onload = function () {
     gen = new Generator(document.getElementById("roll"));
     gen.setup();
@@ -21,7 +51,6 @@ function setLevel(ddl) {
     gen.setLevel(ddl);
 }
 ;
-//
 var Generator = /** @class */ (function () {
     function Generator(rollButton) {
         var _this = this;
@@ -192,6 +221,10 @@ var Generator = /** @class */ (function () {
         this.enableOpts = function (item) {
             item.disabled = false;
         };
+        // disable dropdown option
+        this.disableOpts = function (item) {
+            item.disabled = true;
+        };
         this.getInputValue = function (box) {
             switch (box) {
                 case "one":
@@ -217,48 +250,43 @@ var Generator = /** @class */ (function () {
                 case 1:
                     _this.strInit = val;
                     _this.inputStr.value = _this.strInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(1);
                     _this.checkForStrMods(_this.strInit);
                     break;
                 case 2:
                     _this.dexInit = val;
                     _this.inputDex.value = _this.dexInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(2);
                     _this.setDexMods(_this.dexInit);
                     break;
                 case 3:
                     _this.conInit = val;
                     _this.inputCon.value = _this.conInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(3);
                     _this.setConMods(_this.conInit);
                     break;
                 case 4:
                     _this.intInit = val;
                     _this.inputInt.value = _this.intInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(4);
                     _this.setIntMods(_this.intInit);
                     break;
                 case 5:
                     _this.wisInit = val;
                     _this.inputWis.value = _this.wisInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(5);
                     _this.setWisMods(_this.wisInit);
                     break;
                 case 6:
                     _this.chrInit = val;
                     _this.inputChr.value = _this.chrInit.toString();
-                    ddl.disabled = true;
                     _this.removeOption(6);
                     _this.setCharMods(_this.chrInit);
                     break;
                 default:
                     break;
             }
+            ddl.disabled = true;
         };
         // calculate strength modifiers
         this.checkForStrMods = function (str) {
@@ -657,12 +685,12 @@ var Generator = /** @class */ (function () {
         };
         // Disable statistic option after its selected
         this.removeOption = function (index) {
-            _this.stat1.getElementsByTagName("option")[index].disabled = true;
-            _this.stat2.getElementsByTagName("option")[index].disabled = true;
-            _this.stat3.getElementsByTagName("option")[index].disabled = true;
-            _this.stat4.getElementsByTagName("option")[index].disabled = true;
-            _this.stat5.getElementsByTagName("option")[index].disabled = true;
-            _this.stat6.getElementsByTagName("option")[index].disabled = true;
+            _this.disableOpts(_this.stat1.getElementsByTagName("option")[index]);
+            _this.disableOpts(_this.stat2.getElementsByTagName("option")[index]);
+            _this.disableOpts(_this.stat3.getElementsByTagName("option")[index]);
+            _this.disableOpts(_this.stat4.getElementsByTagName("option")[index]);
+            _this.disableOpts(_this.stat5.getElementsByTagName("option")[index]);
+            _this.disableOpts(_this.stat6.getElementsByTagName("option")[index]);
         };
         // throw 4d6 remove lowest roll
         this.fourD6 = function () {
@@ -720,50 +748,80 @@ var Generator = /** @class */ (function () {
             _this.inputInt.value = (_this.intInit + _this.intMod).toString();
             _this.inputWis.value = (_this.wisInit + _this.wisMod).toString();
         };
+        this.enableSelectOptionByVal = function (options, type) {
+            for (var i = 1; i < options.length; i++) {
+                if (options[i].value === type)
+                    options[i].disabled = false;
+            }
+        };
+        this.enableClassDdl = function (race) {
+            _this.disableSelectionOpts(_this.selectClass.getElementsByTagName("option"));
+            switch (race) {
+                case races.human:
+                    raceClassLimits.human.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
+                    break;
+                case races.dwarf:
+                    raceClassLimits.dwarf.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
+                    break;
+                case races.elf:
+                    raceClassLimits.elf.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
+                    break;
+                case races.gnome:
+                    raceClassLimits.gnome.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
+                    break;
+                case races.halfElf:
+                    raceClassLimits.halfElf.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
+                    break;
+                case races.halfling:
+                    raceClassLimits.halfling.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
+                    break;
+                default:
+                    throw Error("No idea what species this is?");
+            }
+        };
         // Add racial mods
         this.setRace = function (ddl) {
             switch (ddl.selectedIndex) {
                 case 1: //human
                     _this.zeroMOds();
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.human);
                     break;
                 case 2: //dwarf
-                    // + 1 con - 1 chr
-                    // remove mage class option
                     _this.zeroMOds();
                     _this.conMod = 1;
                     _this.chrMod = -1;
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.dwarf);
                     break;
                 case 3: //elf
-                    // + 1 dex - 1 con
                     _this.zeroMOds();
                     _this.dexMod = 1;
                     _this.conMod = -1;
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.elf);
                     break;
                 case 4: //gnome
-                    // + 1 int - 1 wisdom
                     _this.zeroMOds();
                     _this.intMod = 1;
                     _this.wisMod = -1;
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.gnome);
                     break;
-                case 5: //halfling
-                    // + 1 dex - 1 str
+                case 5: //halfling				
                     _this.zeroMOds();
                     _this.dexMod = 1;
                     _this.strMod = -1;
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.halfling);
                     break;
                 case 6: //half elf
                     _this.zeroMOds();
                     _this.applyRacialMods();
+                    _this.enableClassDdl(races.halfElf);
                     break;
                 default:
-                    _this.zeroMOds();
-                    _this.applyRacialMods();
-                    break;
+                    throw Error("How did you get here?");
             }
         };
         // Calculate hp and thac0
@@ -791,6 +849,11 @@ var Generator = /** @class */ (function () {
         var two = this.getRndInteger(1, 6);
         var three = this.getRndInteger(1, 6);
         return one + two + three;
+    };
+    Generator.prototype.disableSelectionOpts = function (options) {
+        for (var i = 0; i < options.length; i++) {
+            options[i].disabled = true;
+        }
     };
     return Generator;
 }());

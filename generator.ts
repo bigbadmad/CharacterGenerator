@@ -1,6 +1,36 @@
 // Global class object
 let gen:any;
 
+enum classes{
+	fighter = 'fighter',
+	thief = 'thief',
+	cleric = 'cleric',
+	mage = 'mage',
+	bard = 'bard',
+	paladin = 'paladin',
+	ranger = 'ranger',
+	druid = 'druid',
+	illusionist = 'illusionist'
+}
+
+enum races{
+	human,
+	dwarf,
+	elf,
+	gnome,
+	halfling,
+	halfElf
+}
+
+let raceClassLimits = {
+	human:[classes.fighter,classes.thief,classes.cleric,classes.mage,classes.bard,classes.paladin,classes.ranger,classes.druid,classes.illusionist],
+	dwarf:[classes.fighter,classes.cleric,classes.thief],
+	elf:[ classes.fighter,classes.ranger,classes.cleric,classes.thief,classes.bard,classes.mage],
+	halfElf:[classes.fighter,classes.paladin,classes.ranger,classes.cleric,classes.druid,classes.thief,classes.bard,classes.mage],
+	gnome:[classes.fighter,classes.cleric,classes.thief,classes.illusionist],
+	halfling:[classes.fighter,classes.cleric,classes.thief]
+};
+
 window.onload = () => {
 	gen = new Generator(<HTMLInputElement>document.getElementById("roll"));
 	gen.setup();
@@ -22,8 +52,6 @@ function setClass(ddl: HTMLSelectElement){
 function setLevel(ddl: HTMLSelectElement){
     gen.setLevel(ddl);
 };
-
-//
 
 class Generator {
 	constructor(rollButton: HTMLInputElement){this.rollButton = rollButton};
@@ -266,6 +294,11 @@ class Generator {
 		item.disabled = false;
 	}
 
+	// disable dropdown option
+	disableOpts = (item: HTMLOptionElement) => {
+		item.disabled = true;
+	}
+
 	getInputValue = (box: string) => {
 		switch(box){
 			case "one":
@@ -292,48 +325,43 @@ class Generator {
 			case 1:
 				this.strInit = val;
 				this.inputStr.value = this.strInit.toString();
-				ddl.disabled = true;
 				this.removeOption(1);
 				this.checkForStrMods(this.strInit);
 				break;
 			case 2:
 				this.dexInit = val;
 				this.inputDex.value = this.dexInit.toString();
-				ddl.disabled = true;
 				this.removeOption(2);
 				this.setDexMods(this.dexInit);
 				break;
 			case 3:
 				this.conInit = val;
 				this.inputCon.value = this.conInit.toString();
-				ddl.disabled = true;
 				this.removeOption(3);
 				this.setConMods(this.conInit);
 				break;
 			case 4:
 				this.intInit = val;
 				this.inputInt.value = this.intInit.toString();
-				ddl.disabled = true;
 				this.removeOption(4);
 				this.setIntMods(this.intInit);
 				break;
 			case 5:
 				this.wisInit = val;
 				this.inputWis.value = this.wisInit.toString();
-				ddl.disabled = true;
 				this.removeOption(5);
 				this.setWisMods(this.wisInit);
 				break;
 			case 6:
 				this.chrInit = val;
 				this.inputChr.value = this.chrInit.toString();
-				ddl.disabled = true;
 				this.removeOption(6);
 				this.setCharMods(this.chrInit);
 				break;
 			default:
 				break;				
 		}
+		ddl.disabled = true;
 	}
 
 	// calculate strength modifiers
@@ -745,12 +773,12 @@ class Generator {
 
 	// Disable statistic option after its selected
 	removeOption = (index: number) => {
-		this.stat1.getElementsByTagName("option")[index].disabled = true;
-		this.stat2.getElementsByTagName("option")[index].disabled = true;
-		this.stat3.getElementsByTagName("option")[index].disabled = true;
-		this.stat4.getElementsByTagName("option")[index].disabled = true;
-		this.stat5.getElementsByTagName("option")[index].disabled = true;
-		this.stat6.getElementsByTagName("option")[index].disabled = true;
+		this.disableOpts(this.stat1.getElementsByTagName("option")[index]);
+		this.disableOpts(this.stat2.getElementsByTagName("option")[index]);
+		this.disableOpts(this.stat3.getElementsByTagName("option")[index]);
+		this.disableOpts(this.stat4.getElementsByTagName("option")[index]);
+		this.disableOpts(this.stat5.getElementsByTagName("option")[index]);
+		this.disableOpts(this.stat6.getElementsByTagName("option")[index]);
 	}
 
 	// throw 4d6 remove lowest roll
@@ -822,50 +850,89 @@ class Generator {
 		this.inputWis.value = (this.wisInit + this.wisMod).toString();
 	}
 
+	disableSelectionOpts(options:HTMLOptionElement[]){
+		for(var i = 0; i < options.length; i++){
+			options[i].disabled = true;
+		}
+	}
+
+	enableSelectOptionByVal = (options:HTMLOptionElement[], type: string) => {
+		for(var i = 1; i < options.length; i++){
+			if(options[i].value === type)
+				options[i].disabled = false;
+		}
+	}
+
+	enableClassDdl = (race: races) => {
+		this.disableSelectionOpts(this.selectClass.getElementsByTagName("option"));
+		switch(race){
+			case races.human:
+				raceClassLimits.human.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
+				break;
+			case races.dwarf:
+				raceClassLimits.dwarf.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
+				break;
+			case races.elf:
+				raceClassLimits.elf.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
+				break;
+			case races.gnome:
+				raceClassLimits.gnome.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
+				break;
+			case races.halfElf:
+				raceClassLimits.halfElf.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
+				break;
+			case races.halfling:
+				raceClassLimits.halfling.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
+				break;
+			default:
+				throw Error("No idea what species this is?");
+				
+		}
+	}
+
 	// Add racial mods
 	setRace = (ddl: HTMLSelectElement) => {
 		switch(ddl.selectedIndex){
 			case 1://human
-			this.zeroMOds();
-			this.applyRacialMods();
+				this.zeroMOds();
+				this.applyRacialMods();
+				this.enableClassDdl(races.human);
 				break;
 			case 2://dwarf
-				// + 1 con - 1 chr
-				// remove mage class option
 				this.zeroMOds();
 				this.conMod = 1; 
 				this.chrMod = -1;
 				this.applyRacialMods();
+				this.enableClassDdl(races.dwarf);
 				break;
 			case 3://elf
-				// + 1 dex - 1 con
 				this.zeroMOds();
 				this.dexMod = 1;
 				this.conMod = -1;
-				this.applyRacialMods()
+				this.applyRacialMods();
+				this.enableClassDdl(races.elf);
 				break;
 			case 4://gnome
-				// + 1 int - 1 wisdom
 				this.zeroMOds();
 				this.intMod = 1;
 				this.wisMod = -1;
 				this.applyRacialMods();
+				this.enableClassDdl(races.gnome);
 				break;
-			case 5://halfling
-				// + 1 dex - 1 str
+			case 5://halfling				
 				this.zeroMOds();
 				this.dexMod = 1;
 				this.strMod = -1;
 				this.applyRacialMods();
+				this.enableClassDdl(races.halfling);
 				break;
 			case 6://half elf
 				this.zeroMOds();
 				this.applyRacialMods();
+				this.enableClassDdl(races.halfElf);
 				break;
 			default:
-				this.zeroMOds();
-				this.applyRacialMods();
-				break;
+				throw Error("How did you get here?");
 		}	
 	}
 
