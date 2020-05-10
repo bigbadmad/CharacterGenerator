@@ -3,15 +3,15 @@
 var gen;
 var classes;
 (function (classes) {
-    classes[classes["fighter"] = 0] = "fighter";
-    classes[classes["thief"] = 1] = "thief";
-    classes[classes["cleric"] = 2] = "cleric";
-    classes[classes["mage"] = 3] = "mage";
-    classes[classes["bard"] = 4] = "bard";
-    classes[classes["paladin"] = 5] = "paladin";
-    classes[classes["ranger"] = 6] = "ranger";
-    classes[classes["druid"] = 7] = "druid";
-    classes[classes["illusionist"] = 8] = "illusionist";
+    classes["fighter"] = "fighter";
+    classes["thief"] = "thief";
+    classes["cleric"] = "cleric";
+    classes["mage"] = "mage";
+    classes["bard"] = "bard";
+    classes["paladin"] = "paladin";
+    classes["ranger"] = "ranger";
+    classes["druid"] = "druid";
+    classes["illusionist"] = "illusionist";
 })(classes || (classes = {}));
 var races;
 (function (races) {
@@ -27,7 +27,7 @@ var raceClassLimits = {
     dwarf: [classes.fighter, classes.cleric, classes.thief],
     elf: [classes.fighter, classes.ranger, classes.cleric, classes.thief, classes.bard, classes.mage],
     halfElf: [classes.fighter, classes.paladin, classes.ranger, classes.cleric, classes.druid, classes.thief, classes.bard, classes.mage],
-    gnome: [classes.fighter, classes.cleric, classes.thief, classes.mage, classes.illusionist],
+    gnome: [classes.fighter, classes.cleric, classes.thief, classes.illusionist],
     halfling: [classes.fighter, classes.cleric, classes.thief]
 };
 window.onload = function () {
@@ -220,6 +220,10 @@ var Generator = /** @class */ (function () {
         // re-enable dropdown option
         this.enableOpts = function (item) {
             item.disabled = false;
+        };
+        // disable dropdown option
+        this.disableOpts = function (item) {
+            item.disabled = true;
         };
         this.getInputValue = function (box) {
             switch (box) {
@@ -681,12 +685,12 @@ var Generator = /** @class */ (function () {
         };
         // Disable statistic option after its selected
         this.removeOption = function (index) {
-            _this.stat1.getElementsByTagName("option")[index].disabled = true;
-            _this.stat2.getElementsByTagName("option")[index].disabled = true;
-            _this.stat3.getElementsByTagName("option")[index].disabled = true;
-            _this.stat4.getElementsByTagName("option")[index].disabled = true;
-            _this.stat5.getElementsByTagName("option")[index].disabled = true;
-            _this.stat6.getElementsByTagName("option")[index].disabled = true;
+            _this.disableOpts(_this.stat1.getElementsByTagName("option")[index]);
+            _this.disableOpts(_this.stat2.getElementsByTagName("option")[index]);
+            _this.disableOpts(_this.stat3.getElementsByTagName("option")[index]);
+            _this.disableOpts(_this.stat4.getElementsByTagName("option")[index]);
+            _this.disableOpts(_this.stat5.getElementsByTagName("option")[index]);
+            _this.disableOpts(_this.stat6.getElementsByTagName("option")[index]);
         };
         // throw 4d6 remove lowest roll
         this.fourD6 = function () {
@@ -744,26 +748,32 @@ var Generator = /** @class */ (function () {
             _this.inputInt.value = (_this.intInit + _this.intMod).toString();
             _this.inputWis.value = (_this.wisInit + _this.wisMod).toString();
         };
+        this.enableSelectOptionByVal = function (options, type) {
+            for (var i = 1; i < options.length; i++) {
+                if (options[i].value === type)
+                    options[i].disabled = false;
+            }
+        };
         this.enableClassDdl = function (race) {
-            debugger;
+            _this.disableSelectionOpts(_this.selectClass.getElementsByTagName("option"));
             switch (race) {
                 case races.human:
-                    raceClassLimits.human.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    raceClassLimits.human.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
                     break;
                 case races.dwarf:
-                    raceClassLimits.dwarf.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    raceClassLimits.dwarf.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
                     break;
                 case races.elf:
-                    raceClassLimits.elf.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    raceClassLimits.elf.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
                     break;
                 case races.gnome:
-                    raceClassLimits.gnome.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    raceClassLimits.gnome.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
                     break;
                 case races.halfElf:
-                    raceClassLimits.halfElf.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    raceClassLimits.halfElf.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
                     break;
                 case races.halfling:
-                    raceClassLimits.halfElf.forEach(function (item) { return _this.selectClass.getElementsByTagName("option")[item].disabled = false; });
+                    raceClassLimits.halfling.forEach(function (item) { return _this.enableSelectOptionByVal(_this.selectClass.getElementsByTagName("option"), item); });
                     break;
                 default:
                     throw Error("No idea what species this is?");
@@ -803,7 +813,7 @@ var Generator = /** @class */ (function () {
                     _this.dexMod = 1;
                     _this.strMod = -1;
                     _this.applyRacialMods();
-                    _this.enableClassDdl(races.halfElf);
+                    _this.enableClassDdl(races.halfling);
                     break;
                 case 6: //half elf
                     _this.zeroMOds();
@@ -839,6 +849,11 @@ var Generator = /** @class */ (function () {
         var two = this.getRndInteger(1, 6);
         var three = this.getRndInteger(1, 6);
         return one + two + three;
+    };
+    Generator.prototype.disableSelectionOpts = function (options) {
+        for (var i = 0; i < options.length; i++) {
+            options[i].disabled = true;
+        }
     };
     return Generator;
 }());

@@ -2,15 +2,15 @@
 let gen:any;
 
 enum classes{
-	fighter = 0,
-	thief = 1,
-	cleric = 2,
-	mage = 3,
-	bard = 4,
-	paladin = 5,
-	ranger = 6,
-	druid = 7,
-	illusionist = 8
+	fighter = 'fighter',
+	thief = 'thief',
+	cleric = 'cleric',
+	mage = 'mage',
+	bard = 'bard',
+	paladin = 'paladin',
+	ranger = 'ranger',
+	druid = 'druid',
+	illusionist = 'illusionist'
 }
 
 enum races{
@@ -27,7 +27,7 @@ let raceClassLimits = {
 	dwarf:[classes.fighter,classes.cleric,classes.thief],
 	elf:[ classes.fighter,classes.ranger,classes.cleric,classes.thief,classes.bard,classes.mage],
 	halfElf:[classes.fighter,classes.paladin,classes.ranger,classes.cleric,classes.druid,classes.thief,classes.bard,classes.mage],
-	gnome:[classes.fighter,classes.cleric,classes.thief,classes.mage,classes.illusionist],
+	gnome:[classes.fighter,classes.cleric,classes.thief,classes.illusionist],
 	halfling:[classes.fighter,classes.cleric,classes.thief]
 };
 
@@ -292,6 +292,11 @@ class Generator {
 	// re-enable dropdown option
 	enableOpts = (item: HTMLOptionElement) => {
 		item.disabled = false;
+	}
+
+	// disable dropdown option
+	disableOpts = (item: HTMLOptionElement) => {
+		item.disabled = true;
 	}
 
 	getInputValue = (box: string) => {
@@ -768,12 +773,12 @@ class Generator {
 
 	// Disable statistic option after its selected
 	removeOption = (index: number) => {
-		this.stat1.getElementsByTagName("option")[index].disabled = true;
-		this.stat2.getElementsByTagName("option")[index].disabled = true;
-		this.stat3.getElementsByTagName("option")[index].disabled = true;
-		this.stat4.getElementsByTagName("option")[index].disabled = true;
-		this.stat5.getElementsByTagName("option")[index].disabled = true;
-		this.stat6.getElementsByTagName("option")[index].disabled = true;
+		this.disableOpts(this.stat1.getElementsByTagName("option")[index]);
+		this.disableOpts(this.stat2.getElementsByTagName("option")[index]);
+		this.disableOpts(this.stat3.getElementsByTagName("option")[index]);
+		this.disableOpts(this.stat4.getElementsByTagName("option")[index]);
+		this.disableOpts(this.stat5.getElementsByTagName("option")[index]);
+		this.disableOpts(this.stat6.getElementsByTagName("option")[index]);
 	}
 
 	// throw 4d6 remove lowest roll
@@ -845,26 +850,39 @@ class Generator {
 		this.inputWis.value = (this.wisInit + this.wisMod).toString();
 	}
 
+	disableSelectionOpts(options:HTMLOptionElement[]){
+		for(var i = 0; i < options.length; i++){
+			options[i].disabled = true;
+		}
+	}
+
+	enableSelectOptionByVal = (options:HTMLOptionElement[], type: string) => {
+		for(var i = 1; i < options.length; i++){
+			if(options[i].value === type)
+				options[i].disabled = false;
+		}
+	}
+
 	enableClassDdl = (race: races) => {
-		debugger;
+		this.disableSelectionOpts(this.selectClass.getElementsByTagName("option"));
 		switch(race){
 			case races.human:
-				raceClassLimits.human.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				raceClassLimits.human.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
 				break;
 			case races.dwarf:
-				raceClassLimits.dwarf.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				raceClassLimits.dwarf.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
 				break;
 			case races.elf:
-				raceClassLimits.elf.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				raceClassLimits.elf.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
 				break;
 			case races.gnome:
-				raceClassLimits.gnome.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				raceClassLimits.gnome.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
 				break;
 			case races.halfElf:
-				raceClassLimits.halfElf.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				raceClassLimits.halfElf.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
 				break;
 			case races.halfling:
-				raceClassLimits.halfElf.forEach(item => this.selectClass.getElementsByTagName("option")[item].disabled = false);
+				raceClassLimits.halfling.forEach(item => this.enableSelectOptionByVal(this.selectClass.getElementsByTagName("option"),item));
 				break;
 			default:
 				throw Error("No idea what species this is?");
@@ -906,7 +924,7 @@ class Generator {
 				this.dexMod = 1;
 				this.strMod = -1;
 				this.applyRacialMods();
-				this.enableClassDdl(races.halfElf);
+				this.enableClassDdl(races.halfling);
 				break;
 			case 6://half elf
 				this.zeroMOds();
