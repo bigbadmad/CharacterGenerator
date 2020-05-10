@@ -30,6 +30,12 @@ var raceClassLimits = {
     gnome: [classes.fighter, classes.cleric, classes.thief, classes.illusionist],
     halfling: [classes.fighter, classes.cleric, classes.thief]
 };
+var thac0s = {
+    fighter: [20, 19, 18, 17, 16, 15, 14, 13, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+    cleric: [20, 19, 18, 17, 16, 15, 14, 13, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+    rogue: [20, 19, 18, 17, 16, 15, 14, 13, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+    mage: [20, 19, 18, 17, 16, 15, 14, 13, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+};
 window.onload = function () {
     gen = new Generator(document.getElementById("roll"));
     gen.setup();

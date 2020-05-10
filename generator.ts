@@ -23,13 +23,20 @@ enum races{
 }
 
 let raceClassLimits = {
-	human:[classes.fighter,classes.thief,classes.cleric,classes.mage,classes.bard,classes.paladin,classes.ranger,classes.druid,classes.illusionist],
-	dwarf:[classes.fighter,classes.cleric,classes.thief],
-	elf:[ classes.fighter,classes.ranger,classes.cleric,classes.thief,classes.bard,classes.mage],
-	halfElf:[classes.fighter,classes.paladin,classes.ranger,classes.cleric,classes.druid,classes.thief,classes.bard,classes.mage],
-	gnome:[classes.fighter,classes.cleric,classes.thief,classes.illusionist],
-	halfling:[classes.fighter,classes.cleric,classes.thief]
+	human:[classes.fighter, classes.thief, classes.cleric, classes.mage, classes.bard, classes.paladin, classes.ranger, classes.druid, classes.illusionist],
+	dwarf:[classes.fighter, classes.cleric, classes.thief],
+	elf:[classes.fighter, classes.ranger, classes.cleric, classes.thief, classes.bard, classes.mage],
+	halfElf:[classes.fighter, classes.paladin, classes.ranger, classes.cleric, classes.druid, classes.thief, classes.bard, classes.mage],
+	gnome:[classes.fighter, classes.cleric, classes.thief, classes.illusionist],
+	halfling:[classes.fighter, classes.cleric, classes.thief]
 };
+
+let thac0s = {
+	fighter:[20, 19, 18, 17, 16, 15, 14, 13, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+	cleric:[20, 19, 18, 17, 16, 15, 14, 13, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+	rogue:[20, 19, 18, 17, 16, 15, 14, 13, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+	mage:[20, 19, 18, 17, 16, 15, 14, 13, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+}
 
 window.onload = () => {
 	gen = new Generator(<HTMLInputElement>document.getElementById("roll"));
