@@ -174,6 +174,11 @@ class Generator {
 	labelReactAdj: any;
 	labelHp: any;
 	labelThac0: any;
+	labelSvPara: any;
+	labelSvRod: any;
+	labelSvPoly: any;
+	labelSvSpell: any;
+	labelSvBreath: any;
 	selectClass: any;
 	selectRace: any;
 	selectLevel: any;
@@ -233,7 +238,12 @@ class Generator {
 		this.labelLoyaltyBs = <HTMLLabelElement>document.getElementById("loyaltyBs");
 		this.labelReactAdj = <HTMLLabelElement>document.getElementById("ReactAdj");
 		this.labelHp = <HTMLLabelElement>document.getElementById("hp");
-		this.labelThac0 =<HTMLElement>document.getElementById("thaco");
+		this.labelThac0 = <HTMLElement>document.getElementById("thaco");
+		this.labelSvBreath = <HTMLElement>document.getElementById("breath");
+		this.labelSvPara = <HTMLElement>document.getElementById("para");
+		this.labelSvPoly = <HTMLElement>document.getElementById("poly");
+		this.labelSvRod = <HTMLElement>document.getElementById("rod");
+		this.labelSvSpell = <HTMLElement>document.getElementById("spell");
 
 		this.selectRace = <HTMLSelectElement>document.getElementById("race");
 		this.selectClass = <HTMLSelectElement>document.getElementById("class");
@@ -988,18 +998,38 @@ class Generator {
 			case 6:
 			case 7:
 				this.labelThac0.innerText = thac0s.fighter[ddl.selectedIndex];
+				this.labelSvBreath.innerText = savingThrows.fighter.breath[ddl.selectedIndex];
+				this.labelSvPara.innerText = savingThrows.fighter.para[ddl.selectedIndex];
+				this.labelSvPoly.innerText = savingThrows.fighter.poly[ddl.selectedIndex];
+				this.labelSvRod.innerText = savingThrows.fighter.rod[ddl.selectedIndex];
+				this.labelSvSpell.innerText = savingThrows.fighter.spell[ddl.selectedIndex];
 				break;
 			case 2: // rogue
 			case 5:
 				this.labelThac0.innerText = thac0s.rogue[ddl.selectedIndex];
+				this.labelSvBreath.innerText = savingThrows.rogue.breath[ddl.selectedIndex];
+				this.labelSvPara.innerText = savingThrows.rogue.para[ddl.selectedIndex];
+				this.labelSvPoly.innerText = savingThrows.rogue.poly[ddl.selectedIndex];
+				this.labelSvRod.innerText = savingThrows.rogue.rod[ddl.selectedIndex];
+				this.labelSvSpell.innerText = savingThrows.rogue.spell[ddl.selectedIndex];
 				break;
 			case 3: // priest
 			case 8:
 				this.labelThac0.innerText = thac0s.cleric[ddl.selectedIndex];
+				this.labelSvBreath.innerText = savingThrows.cleric.breath[ddl.selectedIndex];
+				this.labelSvPara.innerText = savingThrows.cleric.para[ddl.selectedIndex];
+				this.labelSvPoly.innerText = savingThrows.cleric.poly[ddl.selectedIndex];
+				this.labelSvRod.innerText = savingThrows.cleric.rod[ddl.selectedIndex];
+				this.labelSvSpell.innerText = savingThrows.cleric.spell[ddl.selectedIndex];
 				break;
 			case 4: // wizard
 			case 9:
 				this.labelThac0.innerText = thac0s.mage[ddl.selectedIndex];
+				this.labelSvBreath.innerText = savingThrows.mage.breath[ddl.selectedIndex];
+				this.labelSvPara.innerText = savingThrows.mage.para[ddl.selectedIndex];
+				this.labelSvPoly.innerText = savingThrows.mage.poly[ddl.selectedIndex];
+				this.labelSvRod.innerText = savingThrows.mage.rod[ddl.selectedIndex];
+				this.labelSvSpell.innerText = savingThrows.mage.spell[ddl.selectedIndex];
 				break;
 		}
 	}
