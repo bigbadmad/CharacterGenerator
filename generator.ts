@@ -22,14 +22,52 @@ enum races{
 	halfElf
 }
 
-let raceClassLimits = {
-	human:[classes.fighter,classes.thief,classes.cleric,classes.mage,classes.bard,classes.paladin,classes.ranger,classes.druid,classes.illusionist],
-	dwarf:[classes.fighter,classes.cleric,classes.thief],
-	elf:[ classes.fighter,classes.ranger,classes.cleric,classes.thief,classes.bard,classes.mage],
-	halfElf:[classes.fighter,classes.paladin,classes.ranger,classes.cleric,classes.druid,classes.thief,classes.bard,classes.mage],
-	gnome:[classes.fighter,classes.cleric,classes.thief,classes.illusionist],
-	halfling:[classes.fighter,classes.cleric,classes.thief]
+let raceClassLimits = { 
+	human:[classes.fighter, classes.thief, classes.cleric, classes.mage, classes.bard, classes.paladin, classes.ranger, classes.druid, classes.illusionist],
+	dwarf:[classes.fighter, classes.cleric, classes.thief],
+	elf:[classes.fighter, classes.ranger, classes.cleric, classes.thief, classes.bard, classes.mage],
+	halfElf:[classes.fighter, classes.paladin, classes.ranger, classes.cleric, classes.druid, classes.thief, classes.bard, classes.mage],
+	gnome:[classes.fighter, classes.cleric, classes.thief, classes.illusionist],
+	halfling:[classes.fighter, classes.cleric, classes.thief]
 };
+
+let thac0s = {
+	fighter:[20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+	cleric:[20, 20, 20, 18, 18, 18, 16, 16, 16, 14, 14, 14, 12, 12, 12, 10, 10, 10, 8, 8],
+	rogue:[20, 20, 19, 19, 18, 18, 17, 17, 16, 16, 15, 15, 14, 14, 13, 13, 12, 12, 11, 11],
+	mage:[20, 20, 20, 19, 19, 19, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15, 15, 14, 14]
+}
+
+let savingThrows = {
+	fighter:{
+		para:[14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3],
+		rod:[16, 16, 15, 15, 13, 13, 12, 12, 10, 10, 9, 9, 7, 7, 6, 6, 5, 5, 5, 5],
+		poly:[15, 15, 14, 14, 12, 12, 11, 11, 9, 9, 8, 8, 6, 6, 5, 5, 4, 4, 4, 4],
+		breath:[17, 17, 16, 16, 13, 13, 12, 12, 9, 9, 8, 8, 5, 5, 4, 4, 4, 4, 4, 4],
+		spell:[17, 17, 16, 16, 14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 6, 6, 6, 6]
+	},
+	cleric:{
+		para:[10, 10, 10, 9, 9, 9, 7, 7, 7, 6, 6, 6, 5, 5, 5, 4, 4, 4, 2, 2],
+		rod:[14, 14, 14, 13, 13, 13, 11, 11, 11, 10, 10, 1, 9, 9, 9, 8, 8, 8, 6, 6],
+		poly:[13, 13, 13, 12, 12, 12, 10, 10, 10, 9, 9, 9, 8, 8, 8, 7, 7, 7, 5, 5],
+		breath:[16, 16, 16, 15, 15, 15, 13, 13, 13, 12, 12, 12, 11, 11, 11, 10, 10, 10, 8, 8],
+		spell:[15, 15, 15, 14, 14, 14, 12, 12, 12, 11, 11, 11, 10, 10, 10, 9, 9, 9, 7, 7]
+	},
+	rogue:{
+		para:[13, 13, 13, 13, 12, 12, 12, 12, 11, 11, 11, 11, 10, 10, 10, 10, 9, 9, 9, 9],
+		rod:[14, 14, 14, 14, 12, 12, 12, 12, 10, 10, 10, 10, 8, 8, 8, 8, 6, 6, 6, 6],
+		poly:[12, 12, 12, 12, 11, 11, 11, 11, 10, 10, 10, 10, 9, 9, 9, 9, 8, 8, 8, 8],
+		breath:[16, 16, 16, 15, 15, 15, 15, 15, 14, 14, 14, 14, 13, 13, 13, 13, 12, 12, 12, 12],
+		spell:[15, 15, 15, 15, 13, 13, 13, 13, 11, 11, 11, 11, 9, 9, 9, 9, 7, 7, 7, 7]
+	},
+	mage:{
+		para:[14, 14, 14, 14, 14, 13, 13, 13, 13, 13, 11, 11, 11, 11, 11, 10, 10, 10, 10, 10],
+		rod:[11, 11, 11, 11, 11, 9, 9, 9, 9, 9, 7, 7, 7, 7, 7, 5, 5, 5, 5, 5],
+		poly:[13, 13, 13, 13, 13, 11, 11, 11, 11, 11, 9, 9, 9, 9, 9, 7, 7, 7, 7, 7],
+		breath:[15, 15, 15, 15, 15, 13, 13, 13, 13, 13, 11, 11, 11, 11, 11, 9, 9, 9, 9, 9],
+		spell:[12, 12, 12, 12, 12, 10, 10, 10, 10, 10, 8, 8, 8, 8, 8, 6, 6, 6, 6, 6]
+	}
+}
 
 window.onload = () => {
 	gen = new Generator(<HTMLInputElement>document.getElementById("roll"));
@@ -135,6 +173,12 @@ class Generator {
 	labelLoyaltyBs: any;
 	labelReactAdj: any;
 	labelHp: any;
+	labelThac0: any;
+	labelSvPara: any;
+	labelSvRod: any;
+	labelSvPoly: any;
+	labelSvSpell: any;
+	labelSvBreath: any;
 	selectClass: any;
 	selectRace: any;
 	selectLevel: any;
@@ -194,6 +238,12 @@ class Generator {
 		this.labelLoyaltyBs = <HTMLLabelElement>document.getElementById("loyaltyBs");
 		this.labelReactAdj = <HTMLLabelElement>document.getElementById("ReactAdj");
 		this.labelHp = <HTMLLabelElement>document.getElementById("hp");
+		this.labelThac0 = <HTMLElement>document.getElementById("thaco");
+		this.labelSvBreath = <HTMLElement>document.getElementById("breath");
+		this.labelSvPara = <HTMLElement>document.getElementById("para");
+		this.labelSvPoly = <HTMLElement>document.getElementById("poly");
+		this.labelSvRod = <HTMLElement>document.getElementById("rod");
+		this.labelSvSpell = <HTMLElement>document.getElementById("spell");
 
 		this.selectRace = <HTMLSelectElement>document.getElementById("race");
 		this.selectClass = <HTMLSelectElement>document.getElementById("class");
@@ -943,6 +993,45 @@ class Generator {
 			hit += this.calcHPRoll();
 		}
 		this.labelHp.innerHTML = hit.toString();
+		switch(this.selectClass.selectedIndex){
+			case 1: // warrior
+			case 6:
+			case 7:
+				this.labelThac0.innerText = thac0s.fighter[ddl.selectedIndex];
+				this.labelSvBreath.innerText = savingThrows.fighter.breath[ddl.selectedIndex];
+				this.labelSvPara.innerText = savingThrows.fighter.para[ddl.selectedIndex];
+				this.labelSvPoly.innerText = savingThrows.fighter.poly[ddl.selectedIndex];
+				this.labelSvRod.innerText = savingThrows.fighter.rod[ddl.selectedIndex];
+				this.labelSvSpell.innerText = savingThrows.fighter.spell[ddl.selectedIndex];
+				break;
+			case 2: // rogue
+			case 5:
+				this.labelThac0.innerText = thac0s.rogue[ddl.selectedIndex];
+				this.labelSvBreath.innerText = savingThrows.rogue.breath[ddl.selectedIndex];
+				this.labelSvPara.innerText = savingThrows.rogue.para[ddl.selectedIndex];
+				this.labelSvPoly.innerText = savingThrows.rogue.poly[ddl.selectedIndex];
+				this.labelSvRod.innerText = savingThrows.rogue.rod[ddl.selectedIndex];
+				this.labelSvSpell.innerText = savingThrows.rogue.spell[ddl.selectedIndex];
+				break;
+			case 3: // priest
+			case 8:
+				this.labelThac0.innerText = thac0s.cleric[ddl.selectedIndex];
+				this.labelSvBreath.innerText = savingThrows.cleric.breath[ddl.selectedIndex];
+				this.labelSvPara.innerText = savingThrows.cleric.para[ddl.selectedIndex];
+				this.labelSvPoly.innerText = savingThrows.cleric.poly[ddl.selectedIndex];
+				this.labelSvRod.innerText = savingThrows.cleric.rod[ddl.selectedIndex];
+				this.labelSvSpell.innerText = savingThrows.cleric.spell[ddl.selectedIndex];
+				break;
+			case 4: // wizard
+			case 9:
+				this.labelThac0.innerText = thac0s.mage[ddl.selectedIndex];
+				this.labelSvBreath.innerText = savingThrows.mage.breath[ddl.selectedIndex];
+				this.labelSvPara.innerText = savingThrows.mage.para[ddl.selectedIndex];
+				this.labelSvPoly.innerText = savingThrows.mage.poly[ddl.selectedIndex];
+				this.labelSvRod.innerText = savingThrows.mage.rod[ddl.selectedIndex];
+				this.labelSvSpell.innerText = savingThrows.mage.spell[ddl.selectedIndex];
+				break;
+		}
 	}
 
 	// Hit dice roll with con mod, minimum roll 1
