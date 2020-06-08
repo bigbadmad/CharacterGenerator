@@ -187,13 +187,16 @@ var Generator = /** @class */ (function () {
         };
         // roll stats and clear old values etc
         this.roll = function () {
+            alert(_this.rollType);
             _this.clearControls();
+            //if 4d6
             _this.inputOne.value = _this.fourD6().toString();
             _this.inputTwo.value = _this.fourD6().toString();
             _this.inputThree.value = _this.fourD6().toString();
             _this.inputFour.value = _this.fourD6().toString();
             _this.inputFive.value = _this.fourD6().toString();
             _this.inputSix.value = _this.fourD6().toString();
+            //else 3d6
         };
         this.clearControls = function () {
             _this.isFighter = false;
@@ -282,7 +285,7 @@ var Generator = /** @class */ (function () {
                 case "six":
                     return _this.inputSix.value;
                 default:
-                    return Error("Unknown input");
+                    throw Error("Unknown input");
             }
         };
         // assign stat from dropdown
