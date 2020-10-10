@@ -2,16 +2,27 @@ html, body, *{
 	font-family:sans-serif;
 }
 
+.title h1{
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	margin: 1em;
+}
+
 .roller{
 	padding:1em;
 	margin:1em;
 	display:inline-block;
 	border:solid 1px #ccc;
 	vertical-align:top;
+	min-height: 240px;
+	min-width: 350px;
 }
 
 .roller p{
 	margin: .5em;;
+}
+
+.m1{
+	margin: 1em;
 }
 
 .roller div{

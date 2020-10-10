@@ -182,6 +182,7 @@ class Generator {
 	selectClass: any;
 	selectRace: any;
 	selectLevel: any;
+	rollType: any;
 
 	setup = () => {
 		this.rollButton.addEventListener("click", this.roll);
@@ -259,13 +260,16 @@ class Generator {
 
 	// roll stats and clear old values etc
 	roll = () => {
+		alert(this.rollType);
 		this.clearControls();
+		//if 4d6
 		this.inputOne.value = this.fourD6().toString();
 		this.inputTwo.value = this.fourD6().toString();
 		this.inputThree.value = this.fourD6().toString();
 		this.inputFour.value = this.fourD6().toString();
 		this.inputFive.value = this.fourD6().toString();
 		this.inputSix.value = this.fourD6().toString();
+		//else 3d6
 	}
 
 	clearControls = () => {
@@ -364,7 +368,7 @@ class Generator {
 			case "six":
 				return this.inputSix.value;
 			default:
-				return Error("Unknown input");
+				throw Error("Unknown input");
 		}
 	}
 

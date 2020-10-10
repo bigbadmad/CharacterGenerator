@@ -7,6 +7,16 @@
 	  <script type="text/javascript" src="generator.js"></script>
    </head>
    <body>
+	<div class="title">
+		<h1>AD&D 2nd Edition Character Generator</h1>
+	</div>
+	<div class="m1">
+		<input type="radio" id="fourd6" name="rolltype" value="4*D6" checked>
+		<label for="fourd6">Four D6 drop the lowest</label>
+		<br>
+		<input type="radio" id="threed6" name="rolltype" value="3*D6">
+		<label for="threed6">Three D6</label>		
+	</div>
 	<div class="roller">
 		<div>
 			<input type="number" id="one" readonly />
@@ -143,7 +153,6 @@
 			<option>20</option>
 		</select>
 		<p>HP <label id="hp"></label></p>
-		<p>AC <label id="ac"></label></p>
 		<p>THACO <label id="thaco"></label></p>
 	</div>
 	<div class="roller">
