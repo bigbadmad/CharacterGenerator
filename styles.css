@@ -2,6 +2,23 @@ html, body, *{
 	font-family:sans-serif;
 }
 
+.loadingspinner {
+	pointer-events: none;
+	width: 2.5em;
+	height: 2.5em;
+	border: 0.4em solid transparent;
+	border-color: #eee;
+	border-top-color: #3E67EC;
+	border-radius: 50%;
+	animation: loadingspin 1s linear infinite;
+}
+
+@keyframes loadingspin {
+	100% {
+			transform: rotate(360deg)
+	}
+}
+
 .title h1{
 	font-family: Georgia, 'Times New Roman', Times, serif;
 	margin: 1em;
