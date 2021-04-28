@@ -2,7 +2,19 @@ html, body, *{
 	font-family:sans-serif;
 }
 
+#spinner{
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top:0;
+	left:0;
+	display: none;
+}
+
 .loadingspinner {
+	position: absolute;
+  	top: 45%;
+  	left: 45%;
 	pointer-events: none;
 	width: 2.5em;
 	height: 2.5em;
