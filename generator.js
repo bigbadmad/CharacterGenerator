@@ -213,6 +213,8 @@ var Generator = /** @class */ (function () {
             _this.selectRace = document.getElementById("race");
             _this.selectClass = document.getElementById("class");
             _this.selectLevel = document.getElementById("lvl");
+            _this.rollType = document.getElementsByName('rolltype');
+            _this.spinner = document.getElementById("spinner");
         };
         this.clearVals = function (stat) {
             stat.disabled = false;
@@ -222,32 +224,57 @@ var Generator = /** @class */ (function () {
         };
         // roll stats and clear old values etc
         this.roll = function () {
-            _this.rollButton.disabled = true;
-            var roller = document.getElementsByClassName("roller")[0];
-            roller.classList.add("loadingspinner");
+            _this.spinnerOn();
             _this.clearControls();
-            //if 4d6
-            _this.fourD6().then(function (value) {
-                _this.inputOne.value = value;
-            });
-            _this.fourD6().then(function (value) {
-                _this.inputTwo.value = value;
-            });
-            _this.fourD6().then(function (value) {
-                _this.inputThree.value = value;
-            });
-            _this.fourD6().then(function (value) {
-                _this.inputFour.value = value;
-            });
-            _this.fourD6().then(function (value) {
-                _this.inputFive.value = value;
-            });
-            _this.fourD6().then(function (value) {
-                _this.inputSix.value = value;
-                _this.rollButton.disabled = false;
-                roller.classList.remove("loadingspinner");
-            });
-            //else 3d6
+            console.log(_this.rollType);
+            if (_this.rollType[0].checked) {
+                _this.fourD6().then(function (value) {
+                    _this.inputOne.value = value;
+                });
+                _this.fourD6().then(function (value) {
+                    _this.inputTwo.value = value;
+                });
+                _this.fourD6().then(function (value) {
+                    _this.inputThree.value = value;
+                });
+                _this.fourD6().then(function (value) {
+                    _this.inputFour.value = value;
+                });
+                _this.fourD6().then(function (value) {
+                    _this.inputFive.value = value;
+                });
+                _this.fourD6().then(function (value) {
+                    _this.inputSix.value = value;
+                    _this.spinnerOff();
+                });
+            }
+            else if (_this.rollType[1].checked) {
+                _this.threeD6().then(function (value) {
+                    _this.inputOne.value = value;
+                });
+                _this.threeD6().then(function (value) {
+                    _this.inputTwo.value = value;
+                });
+                _this.threeD6().then(function (value) {
+                    _this.inputThree.value = value;
+                });
+                _this.threeD6().then(function (value) {
+                    _this.inputFour.value = value;
+                });
+                _this.threeD6().then(function (value) {
+                    _this.inputFive.value = value;
+                });
+                _this.threeD6().then(function (value) {
+                    _this.inputSix.value = value;
+                    _this.spinnerOff();
+                });
+            }
+        };
+        this.spinnerOn = function () {
+            _this.spinner.style.display = "block";
+        };
+        this.spinnerOff = function () {
+            _this.spinner.style.display = "none";
         };
         this.clearControls = function () {
             _this.isFighter = false;

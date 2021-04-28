@@ -183,6 +183,7 @@ class Generator {
 	selectRace: any;
 	selectLevel: any;
 	rollType: any;
+	spinner: any;
 
 	setup = () => {
 		this.rollButton.addEventListener("click", this.roll);
@@ -249,6 +250,9 @@ class Generator {
 		this.selectRace = <HTMLSelectElement>document.getElementById("race");
 		this.selectClass = <HTMLSelectElement>document.getElementById("class");
 		this.selectLevel = <HTMLSelectElement>document.getElementById("lvl");
+
+		this.rollType = document.getElementsByName('rolltype');
+		this.spinner = <HTMLElement>document.getElementById("spinner");
 	}
 
 	clearVals = (stat:HTMLSelectElement) => {
@@ -260,32 +264,59 @@ class Generator {
 
 	// roll stats and clear old values etc
 	roll = () => {
-		this.rollButton.disabled = true;
-		const roller = document.getElementsByClassName("roller")[0];
-		roller.classList.add("loadingspinner");
+		this.spinnerOn();
 		this.clearControls();
-		//if 4d6
-		this.fourD6().then((value) => {
-			this.inputOne.value = value;
-		});
-		this.fourD6().then((value) => {
-			this.inputTwo.value = value;
-		});
-		this.fourD6().then((value) => {
-			this.inputThree.value = value;
-		});
-		this.fourD6().then((value) => {
-			this.inputFour.value = value;
-		});
-		this.fourD6().then((value) => {
-			this.inputFive.value = value;
-		});
-		this.fourD6().then((value) => {
-			this.inputSix.value = value;
-			this.rollButton.disabled = false;
-			roller.classList.remove("loadingspinner");
-		});
-		//else 3d6
+		console.log(this.rollType);
+		if(this.rollType[0].checked) {
+			this.fourD6().then((value) => {
+				this.inputOne.value = value;
+			});
+			this.fourD6().then((value) => {
+				this.inputTwo.value = value;
+			});
+			this.fourD6().then((value) => {
+				this.inputThree.value = value;
+			});
+			this.fourD6().then((value) => {
+				this.inputFour.value = value;
+			});
+			this.fourD6().then((value) => {
+				this.inputFive.value = value;
+			});
+			this.fourD6().then((value) => {
+				this.inputSix.value = value;
+				this.spinnerOff();
+			});
+		}
+		else if(this.rollType[1].checked){
+			this.threeD6().then((value) => {
+				this.inputOne.value = value;
+			});
+			this.threeD6().then((value) => {
+				this.inputTwo.value = value;
+			});
+			this.threeD6().then((value) => {
+				this.inputThree.value = value;
+			});
+			this.threeD6().then((value) => {
+				this.inputFour.value = value;
+			});
+			this.threeD6().then((value) => {
+				this.inputFive.value = value;
+			});
+			this.threeD6().then((value) => {
+				this.inputSix.value = value;
+				this.spinnerOff();
+			});
+		}
+	}
+
+	spinnerOn = () => {
+		this.spinner.style.display = "block"
+	}
+
+	spinnerOff = () => {
+		this.spinner.style.display = "none"
 	}
 
 	clearControls = () => {
