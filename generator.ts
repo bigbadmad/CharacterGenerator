@@ -260,15 +260,31 @@ class Generator {
 
 	// roll stats and clear old values etc
 	roll = () => {
-		alert(this.rollType);
+		this.rollButton.disabled = true;
+		const roller = document.getElementsByClassName("roller")[0];
+		roller.classList.add("loadingspinner");
 		this.clearControls();
 		//if 4d6
-		this.inputOne.value = this.fourD6().toString();
-		this.inputTwo.value = this.fourD6().toString();
-		this.inputThree.value = this.fourD6().toString();
-		this.inputFour.value = this.fourD6().toString();
-		this.inputFive.value = this.fourD6().toString();
-		this.inputSix.value = this.fourD6().toString();
+		this.fourD6().then((value) => {
+			this.inputOne.value = value;
+		});
+		this.fourD6().then((value) => {
+			this.inputTwo.value = value;
+		});
+		this.fourD6().then((value) => {
+			this.inputThree.value = value;
+		});
+		this.fourD6().then((value) => {
+			this.inputFour.value = value;
+		});
+		this.fourD6().then((value) => {
+			this.inputFive.value = value;
+		});
+		this.fourD6().then((value) => {
+			this.inputSix.value = value;
+			this.rollButton.disabled = false;
+			roller.classList.remove("loadingspinner");
+		});
 		//else 3d6
 	}
 
@@ -419,10 +435,10 @@ class Generator {
 	}
 
 	// calculate strength modifiers
-	checkForStrMods = (str: number) => {
+	checkForStrMods = async (str: number) => {
 		let prcStr = 101;
 		if(str == 18 && this.isFighter){
-			prcStr = this.getRndInteger(1,100);
+			prcStr = await this.rollTheDice(100);
 			this.labelPercent.innerText = prcStr.toString();
 		}
 		switch(str){
@@ -836,27 +852,33 @@ class Generator {
 	}
 
 	// throw 4d6 remove lowest roll
-	fourD6 = () => {
-		let one = this.getRndInteger(1,6);
-		let two = this.getRndInteger(1,6);
-		let three = this.getRndInteger(1,6);
-		let four = this.getRndInteger(1,6);
+	fourD6 = async () => {
+		let one = await this.rollTheDice(6);
+		let two = await this.rollTheDice(6);
+		let three = await this.rollTheDice(6);
+		let four = await this.rollTheDice(6);
 		let lowest = Math.min(one, two, three, four);
 		return (one + two + three + four) - lowest;
 	}
 
 	// throw 3d6
-	threeD6(){
-		let one = this.getRndInteger(1,6);
-		let two = this.getRndInteger(1,6);
-		let three = this.getRndInteger(1,6);
+	threeD6 = async () => {
+		let one = await this.rollTheDice(6);
+		let two = await this.rollTheDice(6);
+		let three = await this.rollTheDice(6);
 		return one + two + three;
 	}
 
 	// random number generator
-	getRndInteger = (min: number, max: number) => {
-		max++;
-		return Math.floor(Math.random() * (max - min) ) + min;
+	rollTheDice = async (die: number) => {
+		try{
+			const response = await fetch('http://roll.diceapi.com/json/d' + die);
+			const diceThrow = await response.json();
+			return diceThrow.dice[0].value;
+		}
+		catch(error){
+			return Math.floor(Math.random() * (die - 2)) + 2;
+		}
 	}
 
 	// Set the class
@@ -991,10 +1013,10 @@ class Generator {
 	}
 
 	// Calculate hp and thac0
-	setLevel = (ddl: HTMLSelectElement) => {	
+	setLevel = async (ddl: HTMLSelectElement) => {	
 		let hit = 0;
 		for(let i = 0; i < ddl.selectedIndex; i++){
-			hit += this.calcHPRoll();
+			hit += await this.calcHPRoll();
 		}
 		this.labelHp.innerHTML = hit.toString();
 		switch(this.selectClass.selectedIndex){
@@ -1039,11 +1061,8 @@ class Generator {
 	}
 
 	// Hit dice roll with con mod, minimum roll 1
-	calcHPRoll = () => {
-		let hp = this.getRndInteger(1, this.hitdice) + this.hpAdj;
-		if (hp < 1)
-			return 1
-		else
-			return hp;
+	calcHPRoll = async () => {
+		let hp = await this.rollTheDice(this.hitdice) + this.hpAdj;
+		return (hp < 1) ? 1 :  hp;
 	}
 };
