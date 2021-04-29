@@ -122,6 +122,9 @@ function setLevel(ddl) {
     gen.setLevel(ddl);
 }
 ;
+function noRollType(radio) {
+    radio.checked ? gen.dmMode() : gen.genMode();
+}
 var Generator = /** @class */ (function () {
     function Generator(rollButton) {
         var _this = this;
@@ -226,7 +229,6 @@ var Generator = /** @class */ (function () {
         this.roll = function () {
             _this.spinnerOn();
             _this.clearControls();
-            console.log(_this.rollType);
             if (_this.rollType[0].checked) {
                 _this.fourD6().then(function (value) {
                     _this.inputOne.value = value;
@@ -958,6 +960,22 @@ var Generator = /** @class */ (function () {
                 default:
                     throw Error("No idea what species this is?");
             }
+        };
+        this.dmMode = function () {
+            gen.inputStr.readOnly = false;
+            gen.inputDex.readOnly = false;
+            gen.inputCon.readOnly = false;
+            gen.inputInt.readOnly = false;
+            gen.inputWis.readOnly = false;
+            gen.inputChr.readOnly = false;
+        };
+        this.genMode = function () {
+            gen.inputStr.readOnly = true;
+            gen.inputDex.readOnly = true;
+            gen.inputCon.readOnly = true;
+            gen.inputInt.readOnly = true;
+            gen.inputWis.readOnly = true;
+            gen.inputChr.readOnly = true;
         };
         // Add racial mods
         this.setRace = function (ddl) {

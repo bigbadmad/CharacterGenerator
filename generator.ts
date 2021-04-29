@@ -91,6 +91,10 @@ function setLevel(ddl: HTMLSelectElement){
     gen.setLevel(ddl);
 };
 
+function noRollType(radio: HTMLInputElement){
+	radio.checked ? gen.dmMode() : gen.genMode();
+}
+
 class Generator {
 	constructor(rollButton: HTMLInputElement){this.rollButton = rollButton};
 	rollButton: HTMLInputElement; // roll the dice button
@@ -266,7 +270,6 @@ class Generator {
 	roll = () => {
 		this.spinnerOn();
 		this.clearControls();
-		console.log(this.rollType);
 		if(this.rollType[0].checked) {
 			this.fourD6().then((value) => {
 				this.inputOne.value = value;
@@ -995,6 +998,24 @@ class Generator {
 				throw Error("No idea what species this is?");
 				
 		}
+	}
+
+	dmMode = () => {
+		gen.inputStr.readOnly = false;
+		gen.inputDex.readOnly = false;
+		gen.inputCon.readOnly = false;
+		gen.inputInt.readOnly = false;
+		gen.inputWis.readOnly = false;
+		gen.inputChr.readOnly = false;
+	}
+
+	genMode = () => {
+		gen.inputStr.readOnly = true;
+		gen.inputDex.readOnly = true;
+		gen.inputCon.readOnly = true;
+		gen.inputInt.readOnly = true;
+		gen.inputWis.readOnly = true;
+		gen.inputChr.readOnly = true;
 	}
 
 	// Add racial mods
