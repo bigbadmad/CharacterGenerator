@@ -11,11 +11,14 @@
 		<h1>AD&D 2nd Edition Character Generator</h1>
 	</div>
 	<div class="m1">
-		<input type="radio" id="fourd6" name="rolltype" value="4*D6" checked>
+		<input type="radio" id="fourd6" name="rolltype" value="4*D6" checked onchange="rollerType()">
 		<label for="fourd6">Four D6 drop the lowest</label>
 		<br>
-		<input type="radio" id="threed6" name="rolltype" value="3*D6">
-		<label for="threed6">Three D6</label>		
+		<input type="radio" id="threed6" name="rolltype" value="3*D6" onchange="rollerType()">
+		<label for="threed6">Three D6</label>
+		<br>
+		<input type="radio" id="none" name="rolltype" value="none" onchange="noRollType()">
+		<label for="none">DM Mode</label>	
 	</div>
 	<div class="roller">
 		<div>
