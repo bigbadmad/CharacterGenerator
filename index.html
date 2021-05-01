@@ -11,14 +11,14 @@
 		<h1>AD&D 2nd Edition Character Generator</h1>
 	</div>
 	<div class="m1">
-		<input type="radio" id="fourd6" name="rolltype" value="4*D6" checked>
+		<input type="radio" id="fourd6" name="rolltype" value="4*D6" checked onchange="rollerType()">
 		<label for="fourd6">Four D6 drop the lowest</label>
 		<br>
-		<input type="radio" id="threed6" name="rolltype" value="3*D6">
+		<input type="radio" id="threed6" name="rolltype" value="3*D6" onchange="rollerType()">
 		<label for="threed6">Three D6</label>
 		<br>
-		<input type="radio" id="none" name="rolltype" value="none" onchange="noRollType(this)">
-		<label for="none">Enter values manually</label>	
+		<input type="radio" id="none" name="rolltype" value="none" onchange="noRollType()">
+		<label for="none">DM Mode</label>	
 	</div>
 	<div class="roller">
 		<div>
@@ -33,7 +33,7 @@
 				<option value="chr">charisma</option>
 			</select>
 			<label for="str">Strength</label>
-			<input type="number" id="str" min="3" max="18" readonly />
+			<input type="number" id="str" readonly />
 			<label id="percent"></label>
 		</div>
 		<div>
@@ -48,7 +48,7 @@
 				<option value="chr">charisma</option>
 			</select>
 			<label for="str">Dexterity</label>
-			<input type="number" id="dex" min="3" max="18" readonly />
+			<input type="number" id="dex" readonly />
 		</div>
 		<div>
 			<input type="number" id="three" readonly />
@@ -62,7 +62,7 @@
 				<option value="chr">charisma</option>
 			</select>
 			<label for="str">Constitution</label>
-			<input type="number" id="con" min="3" max="18" readonly />
+			<input type="number" id="con" readonly />
 		</div>
 		<div>
 			<input type="number" id="four" readonly />
@@ -76,7 +76,7 @@
 				<option value="chr">charisma</option>
 			</select>
 			<label for="str">Intelligence</label>
-			<input type="number" id="int" min="3" max="18" readonly />
+			<input type="number" id="int" readonly />
 		</div>
 		<div>
 			<input type="number" id="five" readonly />
@@ -90,7 +90,7 @@
 				<option value="chr">charisma</option>
 			</select>
 			<label for="str">Wisdom</label>
-			<input type="number" id="wis" min="3" max="18" readonly />
+			<input type="number" id="wis" readonly />
 		</div>
 		<div>
 			<input type="number" id="six" readonly />
@@ -104,7 +104,7 @@
 				<option value="chr">charisma</option>
 			</select>
 			<label for="str">Charisma</label>
-			<input type="number" id="chr" min="3" max="18" readonly />
+			<input type="number" id="chr" readonly />
 		</div>
 		<div>
 			<input type="button" id="roll" value="Roll dem bones" />

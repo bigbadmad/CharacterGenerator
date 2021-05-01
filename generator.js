@@ -122,8 +122,11 @@ function setLevel(ddl) {
     gen.setLevel(ddl);
 }
 ;
-function noRollType(radio) {
-    radio.checked ? gen.dmMode() : gen.genMode();
+function noRollType() {
+    gen.dmMode();
+}
+function rollerType() {
+    gen.genMode();
 }
 var Generator = /** @class */ (function () {
     function Generator(rollButton) {
@@ -325,6 +328,7 @@ var Generator = /** @class */ (function () {
             _this.labelLoyaltyBs.innerText = '';
             _this.labelReactAdj.innerText = '';
             _this.labelHp.innerText = '';
+            _this.labelThac0.innerText = '';
             _this.labelPercent.innerText = '';
             _this.inputStr.value = '';
             _this.inputDex.value = '';
@@ -421,9 +425,11 @@ var Generator = /** @class */ (function () {
                     case 0:
                         prcStr = 101;
                         if (!(str == 18 && this.isFighter)) return [3 /*break*/, 2];
+                        this.spinnerOn();
                         return [4 /*yield*/, this.rollTheDice(100)];
                     case 1:
                         prcStr = _a.sent();
+                        this.spinnerOff();
                         this.labelPercent.innerText = prcStr.toString();
                         _a.label = 2;
                     case 2:
@@ -923,12 +929,12 @@ var Generator = /** @class */ (function () {
             _this.chrMod = 0;
         };
         this.applyRacialMods = function () {
-            _this.inputStr.value = (_this.strInit + _this.strMod).toString();
-            _this.inputDex.value = (_this.dexInit + _this.dexMod).toString();
-            _this.inputChr.value = (_this.chrInit + _this.chrMod).toString();
-            _this.inputCon.value = (_this.conInit + _this.conMod).toString();
-            _this.inputInt.value = (_this.intInit + _this.intMod).toString();
-            _this.inputWis.value = (_this.wisInit + _this.wisMod).toString();
+            _this.inputStr.value = (_this.strInit ? _this.strInit : parseInt(_this.inputStr.value) + _this.strMod).toString();
+            _this.inputDex.value = (_this.dexInit ? _this.dexInit : parseInt(_this.inputDex.value) + _this.dexMod).toString();
+            _this.inputChr.value = (_this.chrInit ? _this.chrInit : parseInt(_this.inputChr.value) + _this.chrMod).toString();
+            _this.inputCon.value = (_this.conInit ? _this.conInit : parseInt(_this.inputCon.value) + _this.conMod).toString();
+            _this.inputInt.value = (_this.intInit ? _this.intInit : parseInt(_this.inputInt.value) + _this.intMod).toString();
+            _this.inputWis.value = (_this.wisInit ? _this.wisInit : parseInt(_this.inputWis.value) + _this.wisMod).toString();
         };
         this.enableSelectOptionByVal = function (options, type) {
             for (var i = 1; i < options.length; i++) {
@@ -962,65 +968,82 @@ var Generator = /** @class */ (function () {
             }
         };
         this.dmMode = function () {
-            gen.inputStr.readOnly = false;
-            gen.inputDex.readOnly = false;
-            gen.inputCon.readOnly = false;
-            gen.inputInt.readOnly = false;
-            gen.inputWis.readOnly = false;
-            gen.inputChr.readOnly = false;
+            _this.clearControls();
+            _this.enableDisableStats(true);
+            _this.zeroMOds();
+            _this.strInit = 0;
+            _this.dexInit = 0;
+            _this.conInit = 0;
+            _this.intInit = 0;
+            _this.wisInit = 0;
+            _this.chrInit = 0;
+            _this.rollButton.disabled = true;
+            _this.inputStr.readOnly = false;
+            _this.inputDex.readOnly = false;
+            _this.inputCon.readOnly = false;
+            _this.inputInt.readOnly = false;
+            _this.inputWis.readOnly = false;
+            _this.inputChr.readOnly = false;
         };
         this.genMode = function () {
-            gen.inputStr.readOnly = true;
-            gen.inputDex.readOnly = true;
-            gen.inputCon.readOnly = true;
-            gen.inputInt.readOnly = true;
-            gen.inputWis.readOnly = true;
-            gen.inputChr.readOnly = true;
+            _this.clearControls();
+            _this.enableDisableStats(false);
+            _this.rollButton.disabled = false;
+            _this.inputStr.readOnly = true;
+            _this.inputDex.readOnly = true;
+            _this.inputCon.readOnly = true;
+            _this.inputInt.readOnly = true;
+            _this.inputWis.readOnly = true;
+            _this.inputChr.readOnly = true;
+        };
+        this.enableDisableStats = function (disable) {
+            _this.inputOne.disabled = disable;
+            _this.inputTwo.disabled = disable;
+            _this.inputThree.disabled = disable;
+            _this.inputFour.disabled = disable;
+            _this.inputFive.disabled = disable;
+            _this.inputSix.disabled = disable;
+            _this.stat1.disabled = disable;
+            _this.stat2.disabled = disable;
+            _this.stat3.disabled = disable;
+            _this.stat4.disabled = disable;
+            _this.stat5.disabled = disable;
+            _this.stat6.disabled = disable;
         };
         // Add racial mods
         this.setRace = function (ddl) {
+            _this.zeroMOds();
             switch (ddl.selectedIndex) {
                 case 1: //human
-                    _this.zeroMOds();
-                    _this.applyRacialMods();
                     _this.enableClassDdl(races.human);
                     break;
                 case 2: //dwarf
-                    _this.zeroMOds();
                     _this.conMod = 1;
                     _this.chrMod = -1;
-                    _this.applyRacialMods();
                     _this.enableClassDdl(races.dwarf);
                     break;
                 case 3: //elf
-                    _this.zeroMOds();
                     _this.dexMod = 1;
                     _this.conMod = -1;
-                    _this.applyRacialMods();
                     _this.enableClassDdl(races.elf);
                     break;
                 case 4: //gnome
-                    _this.zeroMOds();
                     _this.intMod = 1;
                     _this.wisMod = -1;
-                    _this.applyRacialMods();
                     _this.enableClassDdl(races.gnome);
                     break;
                 case 5: //halfling				
-                    _this.zeroMOds();
                     _this.dexMod = 1;
                     _this.strMod = -1;
-                    _this.applyRacialMods();
                     _this.enableClassDdl(races.halfling);
                     break;
                 case 6: //half elf
-                    _this.zeroMOds();
-                    _this.applyRacialMods();
                     _this.enableClassDdl(races.halfElf);
                     break;
                 default:
                     throw Error("How did you get here?");
             }
+            _this.applyRacialMods();
         };
         // Calculate hp and thac0
         this.setLevel = function (ddl) { return __awaiter(_this, void 0, void 0, function () {

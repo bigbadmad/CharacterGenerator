@@ -91,8 +91,12 @@ function setLevel(ddl: HTMLSelectElement){
     gen.setLevel(ddl);
 };
 
-function noRollType(radio: HTMLInputElement){
-	radio.checked ? gen.dmMode() : gen.genMode();
+function noRollType(){
+	gen.dmMode()
+}
+
+function rollerType(){
+	gen.genMode()
 }
 
 class Generator {
@@ -372,6 +376,7 @@ class Generator {
 		this.labelLoyaltyBs.innerText = '';
 		this.labelReactAdj.innerText = '';
 		this.labelHp.innerText = '';
+		this.labelThac0.innerText = '';
 
 		this.labelPercent.innerText = '';
 		this.inputStr.value = '';
@@ -472,7 +477,9 @@ class Generator {
 	checkForStrMods = async (str: number) => {
 		let prcStr = 101;
 		if(str == 18 && this.isFighter){
+			this.spinnerOn();
 			prcStr = await this.rollTheDice(100);
+			this.spinnerOff();
 			this.labelPercent.innerText = prcStr.toString();
 		}
 		switch(str){
@@ -952,12 +959,12 @@ class Generator {
 	}
 
 	applyRacialMods = () => {
-		this.inputStr.value = (this.strInit + this.strMod).toString();
-		this.inputDex.value = (this.dexInit + this.dexMod).toString();
-		this.inputChr.value = (this.chrInit + this.chrMod).toString();
-		this.inputCon.value = (this.conInit + this.conMod).toString();
-		this.inputInt.value = (this.intInit + this.intMod).toString();
-		this.inputWis.value = (this.wisInit + this.wisMod).toString();
+		this.inputStr.value = (this.strInit ? this.strInit : parseInt(this.inputStr.value) + this.strMod).toString();
+		this.inputDex.value = (this.dexInit ? this.dexInit : parseInt(this.inputDex.value) + this.dexMod).toString();
+		this.inputChr.value = (this.chrInit ? this.chrInit : parseInt(this.inputChr.value) + this.chrMod).toString();
+		this.inputCon.value = (this.conInit ? this.conInit : parseInt(this.inputCon.value) + this.conMod).toString();
+		this.inputInt.value = (this.intInit ? this.intInit : parseInt(this.inputInt.value) + this.intMod).toString();
+		this.inputWis.value = (this.wisInit ? this.wisInit : parseInt(this.inputWis.value) + this.wisMod).toString();
 	}
 
 	disableSelectionOpts(options:HTMLOptionElement[]){
@@ -1001,67 +1008,85 @@ class Generator {
 	}
 
 	dmMode = () => {
-		gen.inputStr.readOnly = false;
-		gen.inputDex.readOnly = false;
-		gen.inputCon.readOnly = false;
-		gen.inputInt.readOnly = false;
-		gen.inputWis.readOnly = false;
-		gen.inputChr.readOnly = false;
+		this.clearControls();
+		this.enableDisableStats(true);
+		this.zeroMOds();
+		this.strInit = 0;
+		this.dexInit = 0;
+		this.conInit = 0;
+		this.intInit = 0;
+		this.wisInit = 0;
+		this.chrInit = 0; 
+		this.rollButton.disabled = true;
+		this.inputStr.readOnly = false;
+		this.inputDex.readOnly = false;
+		this.inputCon.readOnly = false;
+		this.inputInt.readOnly = false;
+		this.inputWis.readOnly = false;
+		this.inputChr.readOnly = false;
 	}
 
 	genMode = () => {
-		gen.inputStr.readOnly = true;
-		gen.inputDex.readOnly = true;
-		gen.inputCon.readOnly = true;
-		gen.inputInt.readOnly = true;
-		gen.inputWis.readOnly = true;
-		gen.inputChr.readOnly = true;
+		this.clearControls();
+		this.enableDisableStats(false);
+		this.rollButton.disabled = false;
+		this.inputStr.readOnly = true;
+		this.inputDex.readOnly = true;
+		this.inputCon.readOnly = true;
+		this.inputInt.readOnly = true;
+		this.inputWis.readOnly = true;
+		this.inputChr.readOnly = true;
+	}
+
+	enableDisableStats = (disable: boolean) => {
+		this.inputOne.disabled = disable;
+		this.inputTwo.disabled = disable;
+		this.inputThree.disabled = disable;
+		this.inputFour.disabled = disable;
+		this.inputFive.disabled = disable;
+		this.inputSix.disabled = disable;
+		this.stat1.disabled = disable;
+		this.stat2.disabled = disable;
+		this.stat3.disabled = disable;
+		this.stat4.disabled = disable;
+		this.stat5.disabled = disable;
+		this.stat6.disabled = disable;
 	}
 
 	// Add racial mods
 	setRace = (ddl: HTMLSelectElement) => {
+		this.zeroMOds();		
 		switch(ddl.selectedIndex){
 			case 1://human
-				this.zeroMOds();
-				this.applyRacialMods();
 				this.enableClassDdl(races.human);
 				break;
 			case 2://dwarf
-				this.zeroMOds();
 				this.conMod = 1; 
 				this.chrMod = -1;
-				this.applyRacialMods();
 				this.enableClassDdl(races.dwarf);
 				break;
 			case 3://elf
-				this.zeroMOds();
 				this.dexMod = 1;
 				this.conMod = -1;
-				this.applyRacialMods();
 				this.enableClassDdl(races.elf);
 				break;
 			case 4://gnome
-				this.zeroMOds();
 				this.intMod = 1;
 				this.wisMod = -1;
-				this.applyRacialMods();
 				this.enableClassDdl(races.gnome);
 				break;
 			case 5://halfling				
-				this.zeroMOds();
 				this.dexMod = 1;
 				this.strMod = -1;
-				this.applyRacialMods();
 				this.enableClassDdl(races.halfling);
 				break;
 			case 6://half elf
-				this.zeroMOds();
-				this.applyRacialMods();
 				this.enableClassDdl(races.halfElf);
 				break;
 			default:
 				throw Error("How did you get here?");
-		}	
+		}
+		this.applyRacialMods();
 	}
 
 	// Calculate hp and thac0
