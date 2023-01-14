@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -67,9 +68,9 @@ var raceClassLimits = {
 };
 var thac0s = {
     fighter: [20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-    cleric: [20, 20, 20, 18, 18, 18, 16, 16, 16, 14, 14, 14, 12, 12, 12, 10, 10, 10, 8, 8],
     rogue: [20, 20, 19, 19, 18, 18, 17, 17, 16, 16, 15, 15, 14, 14, 13, 13, 12, 12, 11, 11],
-    mage: [20, 20, 20, 19, 19, 19, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15, 15, 14, 14]
+    cleric: [20, 20, 20, 18, 18, 18, 16, 16, 16, 14, 14, 14, 12, 12, 12, 10, 10, 10, 8, 8],
+    mage: [20, 20, 20, 19, 19, 19, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15, 15, 14, 14],
 };
 var savingThrows = {
     fighter: {
@@ -302,34 +303,34 @@ var Generator = /** @class */ (function () {
             _this.inputWis.value = '';
             _this.inputInt.value = '';
             _this.inputChr.value = '';
-            _this.labelPercent.innerText = '';
-            _this.labelWgtAllow.innerText = '';
-            _this.labelMxPress.innerText = '';
-            _this.labelOpDrs.innerText = '';
-            _this.labelBndBrs.innerText = '';
-            _this.labelRctAdj.innerText = '';
-            _this.labelMislAdj.innerText = '';
-            _this.labelDefAdj.innerText = '';
-            _this.labelHpAdj.innerText = '';
-            _this.labelSysShk.innerText = '';
-            _this.labelResSurv.innerText = '';
-            _this.labelPoisSv.innerText = '';
-            _this.labelRegen.innerText = '';
-            _this.labelNoLang.innerText = '';
-            _this.labelSplLvl.innerText = '';
-            _this.labelChLrn.innerText = '';
-            _this.labelMxSplPLvl.innerText = '';
-            _this.labelSplImun.innerText = '';
-            _this.labelMagDefAdj.innerText = '';
-            _this.labelBonusSp.innerText = '';
-            _this.labelChnFail.innerText = '';
-            _this.labelSplImmune.innerText = '';
-            _this.labelMxHench.innerText = '';
-            _this.labelLoyaltyBs.innerText = '';
-            _this.labelReactAdj.innerText = '';
-            _this.labelHp.innerText = '';
-            _this.labelThac0.innerText = '';
-            _this.labelPercent.innerText = '';
+            _this.labelPercent.textContent = '';
+            _this.labelWgtAllow.textContent = '';
+            _this.labelMxPress.textContent = '';
+            _this.labelOpDrs.textContent = '';
+            _this.labelBndBrs.textContent = '';
+            _this.labelRctAdj.textContent = '';
+            _this.labelMislAdj.textContent = '';
+            _this.labelDefAdj.textContent = '';
+            _this.labelHpAdj.textContent = '';
+            _this.labelSysShk.textContent = '';
+            _this.labelResSurv.textContent = '';
+            _this.labelPoisSv.textContent = '';
+            _this.labelRegen.textContent = '';
+            _this.labelNoLang.textContent = '';
+            _this.labelSplLvl.textContent = '';
+            _this.labelChLrn.textContent = '';
+            _this.labelMxSplPLvl.textContent = '';
+            _this.labelSplImun.textContent = '';
+            _this.labelMagDefAdj.textContent = '';
+            _this.labelBonusSp.textContent = '';
+            _this.labelChnFail.textContent = '';
+            _this.labelSplImmune.textContent = '';
+            _this.labelMxHench.textContent = '';
+            _this.labelLoyaltyBs.textContent = '';
+            _this.labelReactAdj.textContent = '';
+            _this.labelHp.textContent = '';
+            _this.labelThac0.textContent = '';
+            _this.labelPercent.textContent = '';
             _this.inputStr.value = '';
             _this.inputDex.value = '';
             _this.inputCon.value = '';
@@ -413,7 +414,7 @@ var Generator = /** @class */ (function () {
                     _this.setCharMods(_this.chrInit);
                     break;
                 default:
-                    break;
+                    throw new Error("Impossible stat selected");
             }
             ddl.disabled = true;
         };
@@ -430,7 +431,7 @@ var Generator = /** @class */ (function () {
                     case 1:
                         prcStr = _a.sent();
                         this.spinnerOff();
-                        this.labelPercent.innerText = prcStr.toString();
+                        this.labelPercent.textContent = prcStr.toString();
                         _a.label = 2;
                     case 2:
                         switch (str) {
@@ -528,7 +529,7 @@ var Generator = /** @class */ (function () {
         }); };
         // set strength adjustments
         this.setStrChecks = function (wAllow, mPres, oDrs, bBrs) {
-            _this.labelWgtAllow.innerText = wAllow.toString();
+            _this.labelWgtAllow.textContent = wAllow.toString();
             _this.labelMxPress.innerHTML = mPres.toString();
             _this.labelOpDrs.innerHTML = oDrs.toString();
             _this.labelBndBrs.innerHTML = bBrs.toString();
@@ -873,27 +874,6 @@ var Generator = /** @class */ (function () {
                 }
             });
         }); };
-        // random number generator
-        this.rollTheDice = function (die) { return __awaiter(_this, void 0, void 0, function () {
-            var response, diceThrow, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, fetch('http://roll.diceapi.com/json/d' + die)];
-                    case 1:
-                        response = _a.sent();
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        diceThrow = _a.sent();
-                        return [2 /*return*/, diceThrow.dice[0].value];
-                    case 3:
-                        error_1 = _a.sent();
-                        return [2 /*return*/, Math.floor(Math.random() * (die - 2)) + 2];
-                    case 4: return [2 /*return*/];
-                }
-            });
-        }); };
         // Set the class
         this.setClass = function (ddl) {
             switch (ddl.selectedIndex) {
@@ -917,7 +897,7 @@ var Generator = /** @class */ (function () {
                     _this.hitdice = 4;
                     break;
                 default:
-                    break;
+                    throw new Error("Uknown class type");
             }
         };
         this.zeroMOds = function () {
@@ -929,12 +909,12 @@ var Generator = /** @class */ (function () {
             _this.chrMod = 0;
         };
         this.applyRacialMods = function () {
-            _this.inputStr.value = (_this.strInit ? _this.strInit : parseInt(_this.inputStr.value) + _this.strMod).toString();
-            _this.inputDex.value = (_this.dexInit ? _this.dexInit : parseInt(_this.inputDex.value) + _this.dexMod).toString();
-            _this.inputChr.value = (_this.chrInit ? _this.chrInit : parseInt(_this.inputChr.value) + _this.chrMod).toString();
-            _this.inputCon.value = (_this.conInit ? _this.conInit : parseInt(_this.inputCon.value) + _this.conMod).toString();
-            _this.inputInt.value = (_this.intInit ? _this.intInit : parseInt(_this.inputInt.value) + _this.intMod).toString();
-            _this.inputWis.value = (_this.wisInit ? _this.wisInit : parseInt(_this.inputWis.value) + _this.wisMod).toString();
+            _this.inputStr.value = (_this.strMod == 0 ? _this.strInit : parseInt(_this.inputStr.value) + _this.strMod).toString();
+            _this.inputDex.value = (_this.dexMod == 0 ? _this.dexInit : parseInt(_this.inputDex.value) + _this.dexMod).toString();
+            _this.inputChr.value = (_this.chrMod == 0 ? _this.chrInit : parseInt(_this.inputChr.value) + _this.chrMod).toString();
+            _this.inputCon.value = (_this.conMod == 0 ? _this.conInit : parseInt(_this.inputCon.value) + _this.conMod).toString();
+            _this.inputInt.value = (_this.intMod == 0 ? _this.intInit : parseInt(_this.inputInt.value) + _this.intMod).toString();
+            _this.inputWis.value = (_this.wisMod == 0 ? _this.wisInit : parseInt(_this.inputWis.value) + _this.wisMod).toString();
         };
         this.enableSelectOptionByVal = function (options, type) {
             for (var i = 1; i < options.length; i++) {
@@ -1032,7 +1012,7 @@ var Generator = /** @class */ (function () {
                     _this.wisMod = -1;
                     _this.enableClassDdl(races.gnome);
                     break;
-                case 5: //halfling				
+                case 5: //halfling               
                     _this.dexMod = 1;
                     _this.strMod = -1;
                     _this.enableClassDdl(races.halfling);
@@ -1041,13 +1021,13 @@ var Generator = /** @class */ (function () {
                     _this.enableClassDdl(races.halfElf);
                     break;
                 default:
-                    throw Error("How did you get here?");
+                    throw Error("Uknown race");
             }
             _this.applyRacialMods();
         };
         // Calculate hp and thac0
         this.setLevel = function (ddl) { return __awaiter(_this, void 0, void 0, function () {
-            var hit, i, _a;
+            var hit, i, _a, classIndex, classType;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -1066,45 +1046,30 @@ var Generator = /** @class */ (function () {
                         return [3 /*break*/, 1];
                     case 4:
                         this.labelHp.innerHTML = hit.toString();
-                        switch (this.selectClass.selectedIndex) {
-                            case 1: // warrior
+                        classIndex = this.selectClass.selectedIndex;
+                        classType = 'fighter';
+                        switch (classIndex) {
+                            case 1:
                             case 6:
                             case 7:
-                                this.labelThac0.innerText = thac0s.fighter[ddl.selectedIndex];
-                                this.labelSvBreath.innerText = savingThrows.fighter.breath[ddl.selectedIndex];
-                                this.labelSvPara.innerText = savingThrows.fighter.para[ddl.selectedIndex];
-                                this.labelSvPoly.innerText = savingThrows.fighter.poly[ddl.selectedIndex];
-                                this.labelSvRod.innerText = savingThrows.fighter.rod[ddl.selectedIndex];
-                                this.labelSvSpell.innerText = savingThrows.fighter.spell[ddl.selectedIndex];
+                                classType = 'fighter';
                                 break;
-                            case 2: // rogue
+                            case 2:
                             case 5:
-                                this.labelThac0.innerText = thac0s.rogue[ddl.selectedIndex];
-                                this.labelSvBreath.innerText = savingThrows.rogue.breath[ddl.selectedIndex];
-                                this.labelSvPara.innerText = savingThrows.rogue.para[ddl.selectedIndex];
-                                this.labelSvPoly.innerText = savingThrows.rogue.poly[ddl.selectedIndex];
-                                this.labelSvRod.innerText = savingThrows.rogue.rod[ddl.selectedIndex];
-                                this.labelSvSpell.innerText = savingThrows.rogue.spell[ddl.selectedIndex];
+                                classType = 'rogue';
                                 break;
-                            case 3: // priest
-                            case 8:
-                                this.labelThac0.innerText = thac0s.cleric[ddl.selectedIndex];
-                                this.labelSvBreath.innerText = savingThrows.cleric.breath[ddl.selectedIndex];
-                                this.labelSvPara.innerText = savingThrows.cleric.para[ddl.selectedIndex];
-                                this.labelSvPoly.innerText = savingThrows.cleric.poly[ddl.selectedIndex];
-                                this.labelSvRod.innerText = savingThrows.cleric.rod[ddl.selectedIndex];
-                                this.labelSvSpell.innerText = savingThrows.cleric.spell[ddl.selectedIndex];
-                                break;
-                            case 4: // wizard
                             case 9:
-                                this.labelThac0.innerText = thac0s.mage[ddl.selectedIndex];
-                                this.labelSvBreath.innerText = savingThrows.mage.breath[ddl.selectedIndex];
-                                this.labelSvPara.innerText = savingThrows.mage.para[ddl.selectedIndex];
-                                this.labelSvPoly.innerText = savingThrows.mage.poly[ddl.selectedIndex];
-                                this.labelSvRod.innerText = savingThrows.mage.rod[ddl.selectedIndex];
-                                this.labelSvSpell.innerText = savingThrows.mage.spell[ddl.selectedIndex];
+                            case 4:
+                                classType = 'mage';
                                 break;
+                            case 3:
+                            case 8:
+                                classType = 'cleric';
+                                break;
+                            default:
+                                throw new Error("Unknown meta class");
                         }
+                        this.setLabelValues(classType, ddl.selectedIndex);
                         return [2 /*return*/];
                 }
             });
@@ -1121,9 +1086,23 @@ var Generator = /** @class */ (function () {
                 }
             });
         }); };
+        this.setLabelValues = function (classType, level) {
+            _this.labelThac0.innerText = thac0s[classType][level - 1];
+            _this.labelSvBreath.innerText = savingThrows[classType].breath[level];
+            _this.labelSvPara.innerText = savingThrows[classType].para[level];
+            _this.labelSvPoly.innerText = savingThrows[classType].poly[level];
+            _this.labelSvRod.innerText = savingThrows[classType].rod[level];
+            _this.labelSvSpell.innerText = savingThrows[classType].spell[level];
+        };
         this.rollButton = rollButton;
     }
     ;
+    // random number generator
+    Generator.prototype.rollTheDice = function (die) {
+        var random = new Uint32Array(1);
+        window.crypto.getRandomValues(random);
+        return (random[0] % die) + 1;
+    };
     Generator.prototype.disableSelectionOpts = function (options) {
         for (var i = 0; i < options.length; i++) {
             options[i].disabled = true;
