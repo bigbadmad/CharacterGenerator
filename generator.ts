@@ -1,5 +1,35 @@
-// Global class object
+interface RaceClassLimits { 
+    human: classes[];
+    dwarf: classes[];
+    elf: classes[];
+    halfElf: classes[];
+    gnome: classes[];
+    halfling: classes[];
+}
+// Global class object 2
 let gen:any;
+
+interface THAC0S {
+    fighter: number[];
+    rogue: number[];
+    cleric: number[];
+    mage: number[];
+}
+
+interface ISavingThrows {
+    fighter: IClassSavingThrows;
+    cleric: IClassSavingThrows;
+    rogue: IClassSavingThrows;
+    mage: IClassSavingThrows;
+}
+  
+interface IClassSavingThrows {
+    para: number[];
+    rod: number[];
+    poly: number[];
+    breath: number[];
+    spell: number[];
+}
 
 enum classes{
     fighter = 'fighter',
@@ -14,15 +44,15 @@ enum classes{
 }
 
 enum races{
-    human,
-    dwarf,
-    elf,
-    gnome,
-    halfling,
-    halfElf
+    human = 'human',
+    dwarf = 'dwarf',
+    elf = 'elf',
+    gnome = 'gnome',
+    halfling = 'halfling',
+    halfElf = 'halfElf'
 }
 
-const raceClassLimits = { 
+const raceClassLimits : RaceClassLimits = { 
     human:[classes.fighter, classes.thief, classes.cleric, classes.mage, classes.bard, classes.paladin, classes.ranger, classes.druid, classes.illusionist],
     dwarf:[classes.fighter, classes.cleric, classes.thief],
     elf:[classes.fighter, classes.ranger, classes.cleric, classes.thief, classes.bard, classes.mage],
@@ -31,13 +61,6 @@ const raceClassLimits = {
     halfling:[classes.fighter, classes.cleric, classes.thief]
 };
 
-interface THAC0S {
-    fighter: number[];
-    rogue: number[];
-    cleric: number[];
-    mage: number[];
-}
-
 const thac0s: THAC0S = {
     fighter: [20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
     rogue: [20, 20, 19, 19, 18, 18, 17, 17, 16, 16, 15, 15, 14, 14, 13, 13, 12, 12, 11, 11],
@@ -45,7 +68,7 @@ const thac0s: THAC0S = {
     mage: [20, 20, 20, 19, 19, 19, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15, 15, 14, 14],
 };
 
-const savingThrows = {
+const savingThrows: ISavingThrows = {
     fighter:{
         para:[14, 14, 13, 13, 11, 11, 10, 10, 8, 8, 7, 7, 5, 5, 4, 4, 3, 3, 3, 3],
         rod:[16, 16, 15, 15, 13, 13, 12, 12, 10, 10, 9, 9, 7, 7, 6, 6, 5, 5, 5, 5],
@@ -961,15 +984,15 @@ class Generator {
     }
 
     applyRacialMods = () => {
-        this.inputStr.value = (this.strMod == 0 ? this.strInit : parseInt(this.inputStr.value) + this.strMod).toString();
-        this.inputDex.value = (this.dexMod == 0 ? this.dexInit : parseInt(this.inputDex.value) + this.dexMod).toString();
-        this.inputChr.value = (this.chrMod == 0 ? this.chrInit : parseInt(this.inputChr.value) + this.chrMod).toString();
-        this.inputCon.value = (this.conMod == 0 ? this.conInit : parseInt(this.inputCon.value) + this.conMod).toString();
-        this.inputInt.value = (this.intMod == 0 ? this.intInit : parseInt(this.inputInt.value) + this.intMod).toString();
-        this.inputWis.value = (this.wisMod == 0 ? this.wisInit : parseInt(this.inputWis.value) + this.wisMod).toString();
+        this.inputStr.value = (this.strMod == 0 ? this.inputStr.value : parseInt(this.inputStr.value) + this.strMod).toString();
+        this.inputDex.value = (this.dexMod == 0 ? this.inputDex.value : parseInt(this.inputDex.value) + this.dexMod).toString();
+        this.inputChr.value = (this.chrMod == 0 ? this.inputChr.value : parseInt(this.inputChr.value) + this.chrMod).toString();
+        this.inputCon.value = (this.conMod == 0 ? this.inputCon.value : parseInt(this.inputCon.value) + this.conMod).toString();
+        this.inputInt.value = (this.intMod == 0 ? this.inputInt.value : parseInt(this.inputInt.value) + this.intMod).toString();
+        this.inputWis.value = (this.wisMod == 0 ? this.inputWis.value : parseInt(this.inputWis.value) + this.wisMod).toString();
     }
 
-    disableSelectionOpts(options:HTMLOptionElement[]){
+    disableSelectionOpts(options:HTMLOptionElement[]) {
         for(var i = 0; i < options.length; i++){
             options[i].disabled = true;
         }
@@ -1123,7 +1146,7 @@ class Generator {
                 throw new Error("Unknown meta class");  
         }
     
-        this.setLabelValues(classType, ddl.selectedIndex);
+        this.setLabelValues(classType, ddl.selectedIndex -1);
     }
 
     // Hit dice roll with con mod, minimum roll 1
@@ -1133,11 +1156,11 @@ class Generator {
     }
 
     setLabelValues = (classType: keyof THAC0S, level: number) => {
-        this.labelThac0.innerText = thac0s[classType][level -1];
+        this.labelThac0.innerText = thac0s[classType][level];
         this.labelSvBreath.innerText = savingThrows[classType].breath[level];
         this.labelSvPara.innerText = savingThrows[classType].para[level];
         this.labelSvPoly.innerText = savingThrows[classType].poly[level];
         this.labelSvRod.innerText = savingThrows[classType].rod[level];
         this.labelSvSpell.innerText = savingThrows[classType].spell[level];
-    }
+    } 
 };

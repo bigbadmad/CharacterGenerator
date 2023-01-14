@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-// Global class object
+// Global class object 2
 var gen;
 var classes;
 (function (classes) {
@@ -51,12 +51,12 @@ var classes;
 })(classes || (classes = {}));
 var races;
 (function (races) {
-    races[races["human"] = 0] = "human";
-    races[races["dwarf"] = 1] = "dwarf";
-    races[races["elf"] = 2] = "elf";
-    races[races["gnome"] = 3] = "gnome";
-    races[races["halfling"] = 4] = "halfling";
-    races[races["halfElf"] = 5] = "halfElf";
+    races["human"] = "human";
+    races["dwarf"] = "dwarf";
+    races["elf"] = "elf";
+    races["gnome"] = "gnome";
+    races["halfling"] = "halfling";
+    races["halfElf"] = "halfElf";
 })(races || (races = {}));
 var raceClassLimits = {
     human: [classes.fighter, classes.thief, classes.cleric, classes.mage, classes.bard, classes.paladin, classes.ranger, classes.druid, classes.illusionist],
@@ -909,12 +909,12 @@ var Generator = /** @class */ (function () {
             _this.chrMod = 0;
         };
         this.applyRacialMods = function () {
-            _this.inputStr.value = (_this.strMod == 0 ? _this.strInit : parseInt(_this.inputStr.value) + _this.strMod).toString();
-            _this.inputDex.value = (_this.dexMod == 0 ? _this.dexInit : parseInt(_this.inputDex.value) + _this.dexMod).toString();
-            _this.inputChr.value = (_this.chrMod == 0 ? _this.chrInit : parseInt(_this.inputChr.value) + _this.chrMod).toString();
-            _this.inputCon.value = (_this.conMod == 0 ? _this.conInit : parseInt(_this.inputCon.value) + _this.conMod).toString();
-            _this.inputInt.value = (_this.intMod == 0 ? _this.intInit : parseInt(_this.inputInt.value) + _this.intMod).toString();
-            _this.inputWis.value = (_this.wisMod == 0 ? _this.wisInit : parseInt(_this.inputWis.value) + _this.wisMod).toString();
+            _this.inputStr.value = (_this.strMod == 0 ? _this.inputStr.value : parseInt(_this.inputStr.value) + _this.strMod).toString();
+            _this.inputDex.value = (_this.dexMod == 0 ? _this.inputDex.value : parseInt(_this.inputDex.value) + _this.dexMod).toString();
+            _this.inputChr.value = (_this.chrMod == 0 ? _this.inputChr.value : parseInt(_this.inputChr.value) + _this.chrMod).toString();
+            _this.inputCon.value = (_this.conMod == 0 ? _this.inputCon.value : parseInt(_this.inputCon.value) + _this.conMod).toString();
+            _this.inputInt.value = (_this.intMod == 0 ? _this.inputInt.value : parseInt(_this.inputInt.value) + _this.intMod).toString();
+            _this.inputWis.value = (_this.wisMod == 0 ? _this.inputWis.value : parseInt(_this.inputWis.value) + _this.wisMod).toString();
         };
         this.enableSelectOptionByVal = function (options, type) {
             for (var i = 1; i < options.length; i++) {
@@ -1069,7 +1069,7 @@ var Generator = /** @class */ (function () {
                             default:
                                 throw new Error("Unknown meta class");
                         }
-                        this.setLabelValues(classType, ddl.selectedIndex);
+                        this.setLabelValues(classType, ddl.selectedIndex - 1);
                         return [2 /*return*/];
                 }
             });
@@ -1087,7 +1087,7 @@ var Generator = /** @class */ (function () {
             });
         }); };
         this.setLabelValues = function (classType, level) {
-            _this.labelThac0.innerText = thac0s[classType][level - 1];
+            _this.labelThac0.innerText = thac0s[classType][level];
             _this.labelSvBreath.innerText = savingThrows[classType].breath[level];
             _this.labelSvPara.innerText = savingThrows[classType].para[level];
             _this.labelSvPoly.innerText = savingThrows[classType].poly[level];
