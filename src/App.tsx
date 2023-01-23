@@ -1,15 +1,73 @@
 import React from 'react';
 import { IDropdownProps } from './interfaces/interfaces';
-//import { classes, races } from './enums/enums';
 import './App.css';
 import Dropdown from './components/dropdown';
 import AbilitySelector from './components/abilitySelector';
 
-const stats = { strength: undefined, dexterity: undefined, constitution: undefined, intelligence: undefined, wisdom: undefined, charisma: undefined };
+const stats = { 
+	strength: undefined,
+	dexterity: undefined,
+	constitution: undefined,
+	intelligence: undefined,
+	wisdom: undefined, 
+	charisma: undefined
+};
+
 const races: IDropdownProps = {
-    options: [{value: "", text: ""}, {value: "human", text: "Human"}, {value: "dwarf", text: "Dwarf"}, {value: "elf", text: "Elf"}, {value: "gnome", text: "Gnome"}, {value: "halfling", text: "Halfling"}, {value: "halfelf", text: "Half Elf"}],
+    options: [
+		{value: "", text: ""},
+		{value: "human", text: "Human"},
+		{value: "dwarf", text: "Dwarf"},
+		{value: "elf", text: "Elf"},
+		{value: "gnome",text: "Gnome"},
+		{value: "halfling", text: "Halfling"},
+		{value: "halfelf", text: "Half Elf"}
+	],
+    onSelect: (selected: string) => console.log(selected)
+};
+
+const classes: IDropdownProps = {
+	options: [
+		{value: "", text: ""},
+		{value: "fighter", text: "Fighter"},
+		{value: "thief", text: "Thief"},
+		{value: "cleric", text: "Cleric"},
+		{value: "mage", text: "Mage"},
+		{value: "bard", text: "Bard"},
+		{value: "paladin", text: "Paladin"},
+		{value: "ranger", text: "Ranger"},
+		{value: "druid", text: "Druid"},
+		{value: "illusionist", text: "Illusionist"}
+	],
     onSelect: (selected: string) => console.log(selected)
 }
+
+const levels: IDropdownProps = {
+    options: [
+		{value: "", text: ""},
+		{value: "1", text: "1"},
+		{value: "2", text: "2"},
+		{value: "3", text: "3"},
+		{value: "4", text: "4"},
+		{value: "5", text: "5"},
+		{value: "6", text: "6"},
+		{value: "7", text: "7"},
+		{value: "8", text: "8"},
+		{value: "9", text: "9"},
+		{value: "10", text: "10"},
+		{value: "11", text: "11"},
+		{value: "12", text: "12"},
+		{value: "13", text: "13"},
+		{value: "14", text: "14"},
+		{value: "15", text: "15"},
+		{value: "16", text: "16"},
+		{value: "17", text: "17"},
+		{value: "18", text: "18"},
+		{value: "19", text: "19"},
+		{value: "20", text: "20"}
+	],
+    onSelect: (selected: string) => console.log(selected)
+};
 
 function App() {
   return (
@@ -40,41 +98,8 @@ function App() {
 	</div>
 	<div className="roller">
 		<Dropdown {...races} />
-		<select id="className">
-			<option></option>
-			<option value="fighter" disabled>fighter</option>
-			<option value="thief" disabled>thief</option>
-			<option value="cleric" disabled>cleric</option>
-			<option value="mage" disabled>mage</option>
-			<option value="bard" disabled>bard</option>
-			<option value="paladin" disabled>paladin</option>
-			<option value="ranger" disabled>ranger</option>
-			<option value="druid" disabled>druid</option>
-			<option value="illusionist" disabled>illusionist</option>
-		</select>		
-		<select id="lvl">
-			<option></option>
-			<option>1</option>
-			<option>2</option>
-			<option>3</option>
-			<option>4</option>
-			<option>5</option>
-			<option>6</option>
-			<option>7</option>
-			<option>8</option>
-			<option>9</option>
-			<option>10</option>
-			<option>11</option>
-			<option>12</option>
-			<option>13</option>
-			<option>14</option>
-			<option>15</option>
-			<option>16</option>
-			<option>17</option>
-			<option>18</option>
-			<option>19</option>
-			<option>20</option>
-		</select>
+		<Dropdown {...classes} />		
+		<Dropdown {...levels} />
 		<p>HP <label id="hp"></label></p>
 		<p>THACO <label id="thaco"></label></p>
 	</div>
