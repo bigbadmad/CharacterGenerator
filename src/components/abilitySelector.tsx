@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useState } from 'react';
+import { FC } from 'react';
 import { IDropdownProps } from '../interfaces/interfaces';
 import Dropdown from './dropdown';
 
@@ -9,17 +9,17 @@ const abilities: IDropdownProps = {
 }
 
 interface IAbilitySelectorProps {
-    dropdownValues: IDropdownProps;
-
+    roll?: number,
+    label: string
 }
 
-const AbilitySelector: FC<IAbilitySelectorProps> = ({ dropdownValues }) => {
+const AbilitySelector: FC<IAbilitySelectorProps> = ({roll, label}) => {
 
     return (
         <div>
-            <input type="number" id="one" readOnly />
+            <input type="number" id="one" readOnly value={roll} />
             <Dropdown {...abilities} />
-            <label htmlFor="str">Strength</label>
+            <label htmlFor="str">{ label }</label>
             <input type="number" id="str" readOnly />
             <label id="percent"></label>
         </div>

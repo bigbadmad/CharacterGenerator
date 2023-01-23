@@ -1,13 +1,13 @@
 import React from 'react';
-import { Ithac0s, IClassSavingThrows, ISavingThrows, IRaceClassLimits, IDropdownProps } from './interfaces/interfaces';
-import { classes, races } from './enums/enums';
-
+import { IDropdownProps } from './interfaces/interfaces';
+//import { classes, races } from './enums/enums';
 import './App.css';
 import Dropdown from './components/dropdown';
 import AbilitySelector from './components/abilitySelector';
 
-const abilities: IDropdownProps = {
-    options: [{value: "", text: ""}, {value: "str", text: "strength"}, {value: "dex", text: "dexterity"}, {value: "con", text: "constitution"}, {value: "wis", text: "wisdom"}, {value: "int", text: "intelligence"}, {value: "chr", text: "charisma"}],
+const stats = { strength: undefined, dexterity: undefined, constitution: undefined, intelligence: undefined, wisdom: undefined, charisma: undefined };
+const races: IDropdownProps = {
+    options: [{value: "", text: ""}, {value: "human", text: "Human"}, {value: "dwarf", text: "Dwarf"}, {value: "elf", text: "Elf"}, {value: "gnome", text: "Gnome"}, {value: "halfling", text: "Halfling"}, {value: "halfelf", text: "Half Elf"}],
     onSelect: (selected: string) => console.log(selected)
 }
 
@@ -28,26 +28,18 @@ function App() {
 		<label htmlFor="none">DM Mode</label>	
 	</div>
 	<div className="roller">
-		<AbilitySelector dropdownValues={abilities} />
-		<AbilitySelector dropdownValues={abilities} />
-		<AbilitySelector dropdownValues={abilities} />
-		<AbilitySelector dropdownValues={abilities} />
-		<AbilitySelector dropdownValues={abilities} />
-		<AbilitySelector dropdownValues={abilities} />
+		<AbilitySelector label='Strength' roll={stats.strength} />
+		<AbilitySelector label='Dexterity' roll={stats.dexterity} />
+		<AbilitySelector label='Constitution' roll={stats.constitution} />
+		<AbilitySelector label='Intelligence' roll={stats.intelligence} />
+		<AbilitySelector label='Wisdom' roll={stats.wisdom} />
+		<AbilitySelector label='Charisma' roll={stats.charisma} />
 		<div>
 			<input type="button" id="roll" value="Roll dem bones" />
 		</div>
 	</div>
 	<div className="roller">
-		<select id="race">
-			<option></option>
-			<option>human</option>
-			<option>dwarf</option>
-			<option>elf</option>
-			<option>gnome</option>
-			<option>halfling</option>
-			<option>half elf</option>
-		</select>
+		<Dropdown {...races} />
 		<select id="className">
 			<option></option>
 			<option value="fighter" disabled>fighter</option>
