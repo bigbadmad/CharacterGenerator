@@ -1,0 +1,85 @@
+html, body, *{
+	font-family:sans-serif;
+}
+
+#spinner{
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top:0;
+	left:0;
+	display: none;
+}
+
+.loadingspinner {
+	position: absolute;
+  	top: 45%;
+  	left: 45%;
+	pointer-events: none;
+	width: 2.5em;
+	height: 2.5em;
+	border: 0.4em solid transparent;
+	border-color: #eee;
+	border-top-color: #3E67EC;
+	border-radius: 50%;
+	animation: loadingspin 1s linear infinite;
+}
+
+@keyframes loadingspin {
+	100% {
+			transform: rotate(360deg)
+	}
+}
+
+.title h1{
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	margin: 1em;
+}
+
+.roller{
+	padding:1em;
+	margin:1em;
+	display:inline-block;
+	border:solid 1px #ccc;
+	vertical-align:top;
+	min-height: 240px;
+	min-width: 350px;
+}
+
+.roller p{
+	margin: .5em;;
+}
+
+.m1{
+	margin: 1em;
+}
+
+.roller div{
+	margin-bottom:1em;
+}
+
+.roller div:last-child{
+	margin-bottom:0em;
+}
+
+.roller div label{
+	margin-left:2em;
+	display:inline-block;
+	width:85px;
+}
+
+.roller div input[type=number]{
+	width:30px;
+	-moz-appearance: textfield;
+}
+
+.roller div select{
+	padding:1.5px;
+}
+
+#percent{
+	display: inline-block;
+	font-size:6pt;
+	width: 30px;
+	margin-left:0;
+}
