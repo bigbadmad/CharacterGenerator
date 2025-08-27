@@ -10,6 +10,19 @@
 			],
 			"group": "build",
 			"label": "tsc: watch - tsconfig.json"
+		},
+		{
+			"label": "build: tsc",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
 		}
 	]
 }
