@@ -582,7 +582,7 @@ export class Generator {
         this.hitdice = 4;
         break;
       default:
-        throw new Error('Uknown class type');
+        throw new Error('Unknown class type');
     }
   };
 
