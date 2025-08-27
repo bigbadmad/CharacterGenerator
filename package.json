@@ -4,7 +4,11 @@
   "description": "AD&D 2e Character Generator",
   "main": "generator.js",
   "scripts": {
-    "start": "index.html",
+  "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+  "build": "tsc",
+  "build:clean": "npm run clean && npm run build",
+  "start": "tsc -w",
+  "serve": "npx http-server -c-1 -p 5173 .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

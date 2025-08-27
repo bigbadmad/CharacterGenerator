@@ -1,3 +1,6 @@
+// NOTE: This legacy file has been modularised. See src/ for current code.
+// Keeping this file for reference only; it's no longer used by index.html.
+
 interface RaceClassLimits { 
     human: classes[];
     dwarf: classes[];
