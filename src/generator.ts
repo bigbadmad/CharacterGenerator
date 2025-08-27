@@ -667,7 +667,7 @@ export class Generator {
       case 4: this.intMod = 1; this.wisMod = -1; this.enableClassDdl(Races.gnome); break; // gnome
       case 5: this.dexMod = 1; this.strMod = -1; this.enableClassDdl(Races.halfling); break; // halfling
       case 6: this.enableClassDdl(Races.halfElf); break; // half elf
-      default: throw Error('Uknown race');
+      default: throw Error('Unknown race');
     }
     this.applyRacialMods();
   };
