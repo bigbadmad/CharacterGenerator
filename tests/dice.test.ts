@@ -9,9 +9,9 @@ function setMockRandomSequence(seq: number[]) {
   if (!c || typeof c.getRandomValues !== 'function') {
     throw new Error('crypto.getRandomValues is not available in test environment');
   }
-  vi.spyOn(c as any, 'getRandomValues').mockImplementation((arr: any) => {
+  vi.spyOn(c as any, 'getRandomValues').mockImplementation((arr: ArrayBufferView) => {
     const v = seq[i++ % seq.length] >>> 0;
-    arr[0] = v;
+    (arr as any)[0] = v;
     return arr;
   });
 }
