@@ -5,7 +5,7 @@ if (typeof globalThis.window !== 'undefined') {
     w.crypto = {};
   }
   if (typeof w.crypto.getRandomValues !== 'function') {
-    w.crypto.getRandomValues = (arr: any) => {
+    w.crypto.getRandomValues = (arr: Uint8Array | Uint16Array | Uint32Array) => {
       // Fallback mock fills zeros (tests can override per-suite via vi.spyOn)
       if (arr && typeof arr.length === 'number') {
         for (let i = 0; i < arr.length; i++) arr[i] = 0;
