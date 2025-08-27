@@ -9,7 +9,8 @@
   "build:clean": "npm run clean && npm run build",
   "start": "tsc -w",
   "serve": "npx http-server -c-1 -p 5173 .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "test": "npm run build && vitest run --reporter=dot",
+  "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,11 @@
   },
   "homepage": "https://github.com/bigbadmad/CharacterGenerator#readme",
   "devDependencies": {
+  "@types/jsdom": "^21.1.7",
     "@types/yargs": "^17.0.33",
+  "jsdom": "^24.1.0",
     "typescript": "^5.9.2"
+  ,
+  "vitest": "^2.0.5"
   }
 }
