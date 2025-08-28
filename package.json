@@ -27,6 +27,6 @@
     "@types/yargs": "^17.0.33",
   "jsdom": "^24.1.0",
     "typescript": "^5.9.2",
-  "vitest": "^2.0.5"
+  "vitest": "^3.2.4"
   }
 }
