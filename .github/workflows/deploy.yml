@@ -24,6 +24,12 @@ jobs:
       - name: Test & Build
         run: npm test
 
+      - name: Assemble deploy package
+        run: |
+          mkdir deploy
+          cp index.html styles.css deploy/
+          cp -r dist deploy/dist
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -31,21 +37,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /htdocs/dnd/
-          local-dir: ./
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/tests/**
-            **/src/**
-            .github/**
-            .vscode/**
-            tsconfig.json
-            vitest.config.ts
-            vitest.setup.ts
-            package.json
-            package-lock.json
-            README.md
-            generator.ts
-            generator.js
-            "AD&D 2nd Edition Character Sheet - Sheet1.csv"
+          local-dir: ./deploy/
