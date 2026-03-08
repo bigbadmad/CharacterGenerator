@@ -47,16 +47,15 @@ export interface CharacterData {
 }
 
 /** Convert a string to a number if possible, otherwise keep as string */
-function cv(val: string): string | number {
+export function cv(val: string): string | number {
   if (val === '' || val === null || val === undefined) return '';
   const n = Number(val);
   return isNaN(n) ? val : n;
 }
 
-export function exportCharacterSheet(d: CharacterData): void {
+/** Build the array-of-arrays sheet data from a CharacterData object */
+export function buildSheetData(d: CharacterData): (string | number)[][] {
   const E = '';
-
-  // Array-of-arrays matching the original character sheet CSV layout.
   // Columns A–O (indices 0–14). Data values are placed in the row below their label row.
   // Saving throw values go in col M (index 12) on the same row as their col-L label.
   const aoa: (string | number)[][] = [
@@ -141,7 +140,11 @@ export function exportCharacterSheet(d: CharacterData): void {
     [8, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
     [9, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
   ];
+  return aoa;
+}
 
+export function exportCharacterSheet(d: CharacterData): void {
+  const aoa = buildSheetData(d);
   const ws = XLSX.utils.aoa_to_sheet(aoa);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Character Sheet');
