@@ -614,8 +614,16 @@ export class Generator {
   private getSelectedClasses = (): Classes[] => {
     const multi = this.selectMulticlass as HTMLSelectElement | null;
     if (multi && multi.style.display !== 'none' && multi.selectedOptions && multi.selectedOptions.length > 0) {
-      const first = multi.selectedOptions[0].value; // e.g., "fighter+mage"
-      return first.split('+') as Classes[];
+      const selectedClasses: Classes[] = [];
+      for (const option of Array.from(multi.selectedOptions)) {
+        const value = option.value; // e.g., "fighter+mage"
+        if (value) {
+          selectedClasses.push(...(value.split('+') as Classes[]));
+        }
+      }
+      if (selectedClasses.length > 0) {
+        return selectedClasses;
+      }
     }
     const single = this.selectClass as HTMLSelectElement;
     const v = single.options[single.selectedIndex]?.value as Classes | undefined;
