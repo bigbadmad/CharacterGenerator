@@ -9,6 +9,7 @@ declare global {
     setLevel: (ddl: HTMLSelectElement) => void;
     noRollType: () => void;
     rollerType: () => void;
+    exportSheet: () => void;
   }
 }
 
@@ -26,4 +27,5 @@ window.addEventListener('load', () => {
   window.setLevel = (ddl) => gen.setLevel(ddl);
   window.noRollType = () => gen.dmMode();
   window.rollerType = () => gen.genMode();
+  window.exportSheet = () => gen.exportSheet();
 });

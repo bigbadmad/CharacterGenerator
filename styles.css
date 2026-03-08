@@ -442,6 +442,40 @@ body {
   grid-template-columns: repeat(2, auto 1fr);
 }
 
+/* ── Export Button ──────────────────────────────────────────── */
+.export-wrap {
+  padding: 0.6rem 1rem;
+  background: var(--parchment-mid);
+  border-top: 1px solid var(--parchment-edge);
+}
+
+.export-btn {
+  width: 100%;
+  padding: 0.5rem 1.2rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  background: transparent;
+  border: 2px solid var(--gold);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.export-btn:hover {
+  background: var(--gold);
+  color: #1c0902;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.35);
+  transform: translateY(-1px);
+}
+
+.export-btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 1150px) {
   .stats-area {

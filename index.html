@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>AD&amp;D 2e Character Generator</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     <script type="module" src="dist/main.js"></script>
   </head>
   <body>
@@ -214,6 +215,11 @@
               <span class="derived-label">THAC0</span>
               <strong class="derived-value" id="thaco"></strong>
             </div>
+          </div>
+          <div class="export-wrap">
+            <button class="export-btn" onclick="exportSheet()" title="Download character sheet as Excel">
+              &#8595; Export to Excel
+            </button>
           </div>
         </div>
 
