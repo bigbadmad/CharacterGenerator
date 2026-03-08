@@ -24,6 +24,9 @@ jobs:
       - name: Test & Build
         run: npm test
 
+      - name: Allow dist folder to be deployed
+        run: sed -i '/^dist/d' .gitignore
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
