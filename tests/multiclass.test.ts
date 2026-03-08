@@ -16,7 +16,7 @@ describe('multiclass rules', () => {
     // elf can do fighter/ranger if meets all mins
     const labels = combos.map(c => c.join('+'));
     expect(labels).toContain([Classes.fighter, Classes.ranger].join('+'));
-    // should not include cleric/thief if dex below 9 (set to 8 ensures removal)
+    // should not include fighter/thief if dex below 9 (set to 8 ensures removal)
     const combos2 = getEligibleMulticlassCombos(Races.elf, { ...abil, dex: 8 });
     const labels2 = combos2.map(c => c.join('+'));
     expect(labels2).not.toContain([Classes.fighter, Classes.thief].join('+'));
