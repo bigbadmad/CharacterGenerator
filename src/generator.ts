@@ -2,6 +2,7 @@ import { Classes, Races, THAC0S } from './types.js';
 import { raceClassLimits, thac0s, savingThrows } from './data.js';
 import { comboToLabel, getEligibleMulticlassCombos, AbilityScores } from './multiclass.js';
 import { rollDie, roll3d6, roll4d6DropLowest } from './dice.js';
+import { exportCharacterSheet } from './exporter.js';
 
 export class Generator {
   constructor(rollButton: HTMLInputElement) { this.rollButton = rollButton; }
@@ -822,4 +823,54 @@ export class Generator {
     this.labelSvRod.innerText = savingThrows[classType].rod[level] as unknown as string;
     this.labelSvSpell.innerText = savingThrows[classType].spell[level] as unknown as string;
   };
+
+  getCharacterData = () => {
+    const classes = this.getSelectedClasses();
+    return {
+      className: classes.join('+'),
+      level:     (this.selectLevel as HTMLSelectElement).value || '',
+      race:      (this.selectRace  as HTMLSelectElement).value || '',
+      str:       this.inputStr?.value  || '',
+      dex:       this.inputDex?.value  || '',
+      con:       this.inputCon?.value  || '',
+      int:       this.inputInt?.value  || '',
+      wis:       this.inputWis?.value  || '',
+      chr:       this.inputChr?.value  || '',
+      hitProb:   this.hitProb.toString(),
+      dmgAdj:    this.DmgAdj.toString(),
+      wgtAllow:  this.labelWgtAllow?.textContent  || '',
+      maxPress:  this.labelMxPress?.textContent   || '',
+      opnDoor:   this.labelOpDrs?.textContent     || '',
+      bbLg:      this.labelBndBrs?.textContent    || '',
+      rctnAdj:   this.labelRctAdj?.textContent    || '',
+      missileAdj:this.labelMislAdj?.textContent   || '',
+      defAdj:    this.labelDefAdj?.textContent    || '',
+      hpAdj:     this.labelHpAdj?.textContent     || '',
+      sysShk:    this.labelSysShk?.textContent    || '',
+      resSurv:   this.labelResSurv?.textContent   || '',
+      poisonSv:  this.labelPoisSv?.textContent    || '',
+      regen:     this.labelRegen?.textContent     || '',
+      noLang:    this.labelNoLang?.textContent    || '',
+      splLvl:    this.labelSplLvl?.textContent    || '',
+      lrnSpl:    this.labelChLrn?.textContent     || '',
+      splPerLvl: this.labelMxSplPLvl?.textContent || '',
+      splImun:   this.labelSplImun?.textContent   || '',
+      mgcDefAdj: this.labelMagDefAdj?.textContent || '',
+      bonusSp:   this.labelBonusSp?.textContent   || '',
+      chnFail:   this.labelChnFail?.textContent   || '',
+      splImmune: this.labelSplImmune?.textContent || '',
+      mxHench:   this.labelMxHench?.textContent   || '',
+      loyalBs:   this.labelLoyaltyBs?.textContent || '',
+      reactAdj:  this.labelReactAdj?.textContent  || '',
+      hp:        this.labelHp?.textContent        || '',
+      thac0:     this.labelThac0?.textContent     || '',
+      para:      this.labelSvPara?.textContent    || '',
+      rod:       this.labelSvRod?.textContent     || '',
+      poly:      this.labelSvPoly?.textContent    || '',
+      breath:    this.labelSvBreath?.textContent  || '',
+      spell:     this.labelSvSpell?.textContent   || '',
+    };
+  };
+
+  exportSheet = () => exportCharacterSheet(this.getCharacterData());
 }
