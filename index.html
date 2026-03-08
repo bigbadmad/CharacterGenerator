@@ -1,208 +1,299 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-	<meta charset="utf-8"/>
-      <title>Character generator</title>
-	  <link rel="stylesheet" type="text/css" href="styles.css" />
-	  <script type="module" src="dist/main.js"></script>
-   </head>
-   <body>
-	<div class="title">
-		<h1>AD&D 2nd Edition Character Generator</h1>
-	</div>
-	<div class="m1">
-		<input type="radio" id="fourd6" name="rolltype" value="4*D6" checked onchange="rollerType()">
-		<label for="fourd6">Four D6 drop the lowest</label>
-		<br>
-		<input type="radio" id="threed6" name="rolltype" value="3*D6" onchange="rollerType()">
-		<label for="threed6">Three D6</label>
-		<br>
-		<input type="radio" id="none" name="rolltype" value="none" onchange="noRollType()">
-		<label for="none">DM Mode</label>	
-	</div>
-	<div class="roller">
-		<div>
-			<input type="number" id="one" readonly />
-			<select id="stat1" onchange="setOne(this,'one')">
-				<option></option>
-				<option value="str">strength</option>
-				<option value="dex">dexterity</option>
-				<option value="con">constitution</option>
-				<option value="int">intelligence</option>
-				<option value="wis">wisdom</option>
-				<option value="chr">charisma</option>
-			</select>
-			<label for="str">Strength</label>
-			<input type="number" id="str" readonly />
-			<label id="percent"></label>
-		</div>
-		<div>
-			<input type="number" id="two" readonly />
-			<select id="stat2" onchange="setOne(this,'two')">
-				<option></option>
-				<option value="str">strength</option>
-				<option value="dex">dexterity</option>
-				<option value="con">constitution</option>
-				<option value="int">intelligence</option>
-				<option value="wis">wisdom</option>
-				<option value="chr">charisma</option>
-			</select>
-			<label for="str">Dexterity</label>
-			<input type="number" id="dex" readonly />
-		</div>
-		<div>
-			<input type="number" id="three" readonly />
-			<select id="stat3" onchange="setOne(this,'three')">
-				<option></option>
-				<option value="str">strength</option>
-				<option value="dex">dexterity</option>
-				<option value="con">constitution</option>
-				<option value="int">intelligence</option>
-				<option value="wis">wisdom</option>
-				<option value="chr">charisma</option>
-			</select>
-			<label for="str">Constitution</label>
-			<input type="number" id="con" readonly />
-		</div>
-		<div>
-			<input type="number" id="four" readonly />
-			<select id="stat4" onchange="setOne(this,'four')">
-				<option></option>
-				<option value="str">strength</option>
-				<option value="dex">dexterity</option>
-				<option value="con">constitution</option>
-				<option value="int">intelligence</option>
-				<option value="wis">wisdom</option>
-				<option value="chr">charisma</option>
-			</select>
-			<label for="str">Intelligence</label>
-			<input type="number" id="int" readonly />
-		</div>
-		<div>
-			<input type="number" id="five" readonly />
-			<select id="stat5" onchange="setOne(this,'five')">
-				<option></option>
-				<option value="str">strength</option>
-				<option value="dex">dexterity</option>
-				<option value="con">constitution</option>
-				<option value="int">intelligence</option>
-				<option value="wis">wisdom</option>
-				<option value="chr">charisma</option>
-			</select>
-			<label for="str">Wisdom</label>
-			<input type="number" id="wis" readonly />
-		</div>
-		<div>
-			<input type="number" id="six" readonly />
-			<select id="stat6" onchange="setOne(this,'six')">
-				<option></option>
-				<option value="str">strength</option>
-				<option value="dex">dexterity</option>
-				<option value="con">constitution</option>
-				<option value="int">intelligence</option>
-				<option value="wis">wisdom</option>
-				<option value="chr">charisma</option>
-			</select>
-			<label for="str">Charisma</label>
-			<input type="number" id="chr" readonly />
-		</div>
-		<div>
-			<input type="button" id="roll" value="Roll dem bones" />
-		</div>
-	</div>
-	<div class="roller">
-		<select id="race" onchange="setRace(this)">
-			<option></option>
-			<option>human</option>
-			<option>dwarf</option>
-			<option>elf</option>
-			<option>gnome</option>
-			<option>halfling</option>
-			<option>half elf</option>
-		</select>
-		<select id="class" onchange="setClass(this)">
-			<option></option>
-			<option value="fighter" disabled>fighter</option>
-			<option value="thief" disabled>thief</option>
-			<option value="cleric" disabled>cleric</option>
-			<option value="mage" disabled>mage</option>
-			<option value="bard" disabled>bard</option>
-			<option value="paladin" disabled>paladin</option>
-			<option value="ranger" disabled>ranger</option>
-			<option value="druid" disabled>druid</option>
-			<option value="illusionist" disabled>illusionist</option>
-		</select>		
-		<select id="lvl" onchange="setLevel(this)">
-			<option></option>
-			<option>1</option>
-			<option>2</option>
-			<option>3</option>
-			<option>4</option>
-			<option>5</option>
-			<option>6</option>
-			<option>7</option>
-			<option>8</option>
-			<option>9</option>
-			<option>10</option>
-			<option>11</option>
-			<option>12</option>
-			<option>13</option>
-			<option>14</option>
-			<option>15</option>
-			<option>16</option>
-			<option>17</option>
-			<option>18</option>
-			<option>19</option>
-			<option>20</option>
-		</select>
-		<p>HP <label id="hp"></label></p>
-		<p>THACO <label id="thaco"></label></p>
-	</div>
-	<div id="spinner">
-		<div class="loadingspinner"></div>
-	</div>
-	<div class="roller">
-		<p>Weight Allowance: <label id="wghtAllow"></label></p>
-		<p>Max Press: <label id="MxPres"></label></p>
-		<p>Open Doors: <label id="opDrs"></label></p>
-		<p>Bend Bars: <label id="bndBrs"></label>%</p>
-	</div>
-	<div class="roller">
-		<p>Reaction Adj: <label id="rctAdj"></label></p>
-		<p>Missile Attack Adj: <label id="mislAdj"></label></p>
-		<p>Defensive Adj: <label id="defAdj"></label></p>
-	</div>
-	<div class="roller">
-		<p>HP Adj: <label id="hpAdj"></label></p>
-		<p>System Shock: <label id="sysShk"></label></p>
-		<p>Res Survival: <label id="resSurv"></label></p>
-		<p>Poison Save: <label id="posSv"></label></p>
-		<p>Regeneration: <label id="regen"></label></p>
-	</div>
-	<div class="roller">
-		<p>No. Lang: <label id="noOfLang"></label></p>
-		<p>Spell Level: <label id="spellLvl"></label></p>
-		<p>Chance to learn: <label id="chnLearn"></label></p>
-		<p>Max spells/level: <label id="maxSplPerLvl"></label></p>
-		<p>Spell Immune: <label id="splImun"></label></p>
-	</div>
-	<div class="roller">
-		<p>Magic Def Bonus: <label id="magDefAdj"></label></p>
-		<p>Bonus Spells: <label id="BonusSp"></label></p>
-		<p>Chance Spell Fail: <label id="chnFail"></label></p>
-		<p>Spell Immune: <label id="splImmune"></label></p>
-	</div>
-	<div class="roller">
-		<p>Max Henchmen: <label id="mxHench"></label></p>
-		<p>Loyalty Base: <label id="loyaltyBs"></label></p>
-		<p>Reaction Adj: <label id="ReactAdj"></label></p>
-	</div>
-	<div class="roller">
-		<p>Poison/Paralysis: <label id="para"></label></p>
-		<p>Rod/wand/staff: <label id="rod"></label></p>
-		<p>Polymorph: <label id="poly"></label></p>
-		<p>Breath weapon: <label id="breath"></label></p>
-		<p>Spell: <label id="spell"></label></p>
-	</div>
-   </body>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AD&amp;D 2e Character Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="dist/main.js"></script>
+  </head>
+  <body>
+
+    <div id="spinner"><div class="loadingspinner"></div></div>
+
+    <header class="site-header">
+      <h1>AD&amp;D 2<sup>nd</sup> Edition &mdash; <span>Character Generator</span></h1>
+    </header>
+
+    <main class="layout">
+
+      <!-- ── LEFT: BUILDER ─────────────────────────── -->
+      <aside class="builder">
+
+        <!-- Roll Method -->
+        <div class="card">
+          <h2 class="card-title">Roll Method</h2>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" id="fourd6" name="rolltype" value="4*D6" checked onchange="rollerType()">
+              <span>4d6 &mdash; drop lowest</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" id="threed6" name="rolltype" value="3*D6" onchange="rollerType()">
+              <span>3d6 straight</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" id="none" name="rolltype" value="none" onchange="noRollType()">
+              <span>DM Mode (manual entry)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Ability Scores -->
+        <div class="card">
+          <h2 class="card-title">Ability Scores</h2>
+          <table class="score-table">
+            <thead>
+              <tr>
+                <th>Rolled</th>
+                <th>Assign to</th>
+                <th>Stat</th>
+                <th>Final</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="number" id="one" class="roll-num" readonly /></td>
+                <td>
+                  <select id="stat1" onchange="setOne(this,'one')">
+                    <option></option>
+                    <option value="str">strength</option>
+                    <option value="dex">dexterity</option>
+                    <option value="con">constitution</option>
+                    <option value="int">intelligence</option>
+                    <option value="wis">wisdom</option>
+                    <option value="chr">charisma</option>
+                  </select>
+                </td>
+                <td class="stat-name">Strength</td>
+                <td class="stat-final-cell">
+                  <input type="number" id="str" class="stat-num" readonly />
+                  <label id="percent" class="pct-label"></label>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="number" id="two" class="roll-num" readonly /></td>
+                <td>
+                  <select id="stat2" onchange="setOne(this,'two')">
+                    <option></option>
+                    <option value="str">strength</option>
+                    <option value="dex">dexterity</option>
+                    <option value="con">constitution</option>
+                    <option value="int">intelligence</option>
+                    <option value="wis">wisdom</option>
+                    <option value="chr">charisma</option>
+                  </select>
+                </td>
+                <td class="stat-name">Dexterity</td>
+                <td><input type="number" id="dex" class="stat-num" readonly /></td>
+              </tr>
+              <tr>
+                <td><input type="number" id="three" class="roll-num" readonly /></td>
+                <td>
+                  <select id="stat3" onchange="setOne(this,'three')">
+                    <option></option>
+                    <option value="str">strength</option>
+                    <option value="dex">dexterity</option>
+                    <option value="con">constitution</option>
+                    <option value="int">intelligence</option>
+                    <option value="wis">wisdom</option>
+                    <option value="chr">charisma</option>
+                  </select>
+                </td>
+                <td class="stat-name">Constitution</td>
+                <td><input type="number" id="con" class="stat-num" readonly /></td>
+              </tr>
+              <tr>
+                <td><input type="number" id="four" class="roll-num" readonly /></td>
+                <td>
+                  <select id="stat4" onchange="setOne(this,'four')">
+                    <option></option>
+                    <option value="str">strength</option>
+                    <option value="dex">dexterity</option>
+                    <option value="con">constitution</option>
+                    <option value="int">intelligence</option>
+                    <option value="wis">wisdom</option>
+                    <option value="chr">charisma</option>
+                  </select>
+                </td>
+                <td class="stat-name">Intelligence</td>
+                <td><input type="number" id="int" class="stat-num" readonly /></td>
+              </tr>
+              <tr>
+                <td><input type="number" id="five" class="roll-num" readonly /></td>
+                <td>
+                  <select id="stat5" onchange="setOne(this,'five')">
+                    <option></option>
+                    <option value="str">strength</option>
+                    <option value="dex">dexterity</option>
+                    <option value="con">constitution</option>
+                    <option value="int">intelligence</option>
+                    <option value="wis">wisdom</option>
+                    <option value="chr">charisma</option>
+                  </select>
+                </td>
+                <td class="stat-name">Wisdom</td>
+                <td><input type="number" id="wis" class="stat-num" readonly /></td>
+              </tr>
+              <tr>
+                <td><input type="number" id="six" class="roll-num" readonly /></td>
+                <td>
+                  <select id="stat6" onchange="setOne(this,'six')">
+                    <option></option>
+                    <option value="str">strength</option>
+                    <option value="dex">dexterity</option>
+                    <option value="con">constitution</option>
+                    <option value="int">intelligence</option>
+                    <option value="wis">wisdom</option>
+                    <option value="chr">charisma</option>
+                  </select>
+                </td>
+                <td class="stat-name">Charisma</td>
+                <td><input type="number" id="chr" class="stat-num" readonly /></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="roll-btn-wrap">
+            <input type="button" id="roll" class="roll-btn" value="&#9858;  Roll Dem Bones" />
+          </div>
+        </div>
+
+        <!-- Character Details -->
+        <div class="card">
+          <h2 class="card-title">Character</h2>
+          <div class="char-fields">
+            <div class="field-row">
+              <label class="field-label" for="race">Race</label>
+              <select id="race" onchange="setRace(this)">
+                <option></option>
+                <option>human</option>
+                <option>dwarf</option>
+                <option>elf</option>
+                <option>gnome</option>
+                <option>halfling</option>
+                <option>half elf</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <label class="field-label" for="class">Class</label>
+              <select id="class" onchange="setClass(this)">
+                <option></option>
+                <option value="fighter"    disabled>fighter</option>
+                <option value="thief"      disabled>thief</option>
+                <option value="cleric"     disabled>cleric</option>
+                <option value="mage"       disabled>mage</option>
+                <option value="bard"       disabled>bard</option>
+                <option value="paladin"    disabled>paladin</option>
+                <option value="ranger"     disabled>ranger</option>
+                <option value="druid"      disabled>druid</option>
+                <option value="illusionist" disabled>illusionist</option>
+              </select>
+            </div>
+            <div class="field-row multiclass-row">
+              <label class="field-label" for="multiclass">Multi</label>
+              <!-- Populated dynamically; hidden unless race allows multiclass -->
+              <select id="multiclass" size="6" style="display:none" onchange="setClass(this)"></select>
+            </div>
+            <div class="field-row">
+              <label class="field-label" for="lvl">Level</label>
+              <select id="lvl" onchange="setLevel(this)">
+                <option></option>
+                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+                <option>11</option><option>12</option><option>13</option><option>14</option><option>15</option>
+                <option>16</option><option>17</option><option>18</option><option>19</option><option>20</option>
+              </select>
+            </div>
+          </div>
+          <div class="derived-stats">
+            <div class="derived-stat">
+              <span class="derived-label">Hit Points</span>
+              <strong class="derived-value" id="hp"></strong>
+            </div>
+            <div class="derived-stat">
+              <span class="derived-label">THAC0</span>
+              <strong class="derived-value" id="thaco"></strong>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- ── RIGHT: STAT PANELS ─────────────────────── -->
+      <div class="stats-area">
+
+        <div class="stat-card">
+          <h3 class="stat-card-title">Strength</h3>
+          <dl class="stat-dl">
+            <dt>Weight Allowance</dt><dd id="wghtAllow"></dd>
+            <dt>Max Press</dt><dd id="MxPres"></dd>
+            <dt>Open Doors</dt><dd id="opDrs"></dd>
+            <dt>Bend Bars / Lift Gates</dt><dd id="bndBrs"></dd>
+          </dl>
+        </div>
+
+        <div class="stat-card">
+          <h3 class="stat-card-title">Dexterity</h3>
+          <dl class="stat-dl">
+            <dt>Reaction Adj</dt><dd id="rctAdj"></dd>
+            <dt>Missile Attack Adj</dt><dd id="mislAdj"></dd>
+            <dt>Defensive Adj</dt><dd id="defAdj"></dd>
+          </dl>
+        </div>
+
+        <div class="stat-card">
+          <h3 class="stat-card-title">Constitution</h3>
+          <dl class="stat-dl">
+            <dt>HP Adj</dt><dd id="hpAdj"></dd>
+            <dt>System Shock</dt><dd id="sysShk"></dd>
+            <dt>Resurrection Survival</dt><dd id="resSurv"></dd>
+            <dt>Poison Save</dt><dd id="posSv"></dd>
+            <dt>Regeneration</dt><dd id="regen"></dd>
+          </dl>
+        </div>
+
+        <div class="stat-card">
+          <h3 class="stat-card-title">Intelligence</h3>
+          <dl class="stat-dl">
+            <dt>No. of Languages</dt><dd id="noOfLang"></dd>
+            <dt>Spell Level</dt><dd id="spellLvl"></dd>
+            <dt>Chance to Learn</dt><dd id="chnLearn"></dd>
+            <dt>Max Spells / Level</dt><dd id="maxSplPerLvl"></dd>
+            <dt>Spell Immunity</dt><dd id="splImun"></dd>
+          </dl>
+        </div>
+
+        <div class="stat-card">
+          <h3 class="stat-card-title">Wisdom</h3>
+          <dl class="stat-dl">
+            <dt>Magic Defense Bonus</dt><dd id="magDefAdj"></dd>
+            <dt>Bonus Spells</dt><dd id="BonusSp"></dd>
+            <dt>Chance of Spell Failure</dt><dd id="chnFail"></dd>
+            <dt>Spell Immunity</dt><dd id="splImmune"></dd>
+          </dl>
+        </div>
+
+        <div class="stat-card">
+          <h3 class="stat-card-title">Charisma</h3>
+          <dl class="stat-dl">
+            <dt>Max Henchmen</dt><dd id="mxHench"></dd>
+            <dt>Loyalty Base</dt><dd id="loyaltyBs"></dd>
+            <dt>Reaction Adj</dt><dd id="ReactAdj"></dd>
+          </dl>
+        </div>
+
+        <div class="stat-card saves-card">
+          <h3 class="stat-card-title">Saving Throws</h3>
+          <dl class="stat-dl saves-dl">
+            <dt>Paralysis / Poison</dt><dd id="para"></dd>
+            <dt>Rod / Wand / Staff</dt><dd id="rod"></dd>
+            <dt>Petrification / Polymorph</dt><dd id="poly"></dd>
+            <dt>Breath Weapon</dt><dd id="breath"></dd>
+            <dt>Spell</dt><dd id="spell"></dd>
+          </dl>
+        </div>
+
+      </div>
+    </main>
+  </body>
 </html>
