@@ -1,8 +1,13 @@
 // Crypto-safe dice helpers (sync)
 
 export function rollDie(die: number): number {
+  // Rejection sampling eliminates modulo bias.
+  // Values in the biased tail are discarded and redrawn.
+  const limit = Math.floor(0x100000000 / die) * die; // largest multiple of die ≤ 2^32
   const random = new Uint32Array(1);
-  window.crypto.getRandomValues(random);
+  do {
+    window.crypto.getRandomValues(random);
+  } while (random[0] >= limit);
   return (random[0] % die) + 1;
 }
 
