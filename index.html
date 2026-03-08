@@ -163,7 +163,7 @@
           <h2 class="card-title">Character</h2>
           <div class="char-fields">
             <div class="field-row">
-              <label class="field-label">Race</label>
+              <label class="field-label" for="race">Race</label>
               <select id="race" onchange="setRace(this)">
                 <option></option>
                 <option>human</option>
@@ -175,7 +175,7 @@
               </select>
             </div>
             <div class="field-row">
-              <label class="field-label">Class</label>
+              <label class="field-label" for="class">Class</label>
               <select id="class" onchange="setClass(this)">
                 <option></option>
                 <option value="fighter"    disabled>fighter</option>
@@ -190,12 +190,12 @@
               </select>
             </div>
             <div class="field-row multiclass-row">
-              <label class="field-label">Multi</label>
+              <label class="field-label" for="multiclass">Multi</label>
               <!-- Populated dynamically; hidden unless race allows multiclass -->
               <select id="multiclass" size="6" style="display:none" onchange="setClass(this)"></select>
             </div>
             <div class="field-row">
-              <label class="field-label">Level</label>
+              <label class="field-label" for="lvl">Level</label>
               <select id="lvl" onchange="setLevel(this)">
                 <option></option>
                 <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>

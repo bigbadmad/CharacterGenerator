@@ -309,6 +309,7 @@ export class Generator {
     this.selectRace.selectedIndex = 0;
     this.selectClass.selectedIndex = 0;
     this.selectLevel.selectedIndex = 0;
+    this.refreshMulticlassOptions();
   };
 
   // re-enable dropdown option
