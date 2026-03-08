@@ -131,6 +131,10 @@
 			<option value="ranger" disabled>ranger</option>
 			<option value="druid" disabled>druid</option>
 			<option value="illusionist" disabled>illusionist</option>
+		</select>
+		<!-- Multiclass selector: options are populated/enabled by logic; hidden unless race allows -->
+		<select id="multiclass" multiple size="6" style="display:none" onchange="setClass(this)">
+			<!-- Options will be added dynamically via JS using allowed combinations per race -->
 		</select>		
 		<select id="lvl" onchange="setLevel(this)">
 			<option></option>

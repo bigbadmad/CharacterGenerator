@@ -1,5 +1,6 @@
 import { Classes, Races, THAC0S } from './types.js';
 import { raceClassLimits, thac0s, savingThrows } from './data.js';
+import { comboToLabel, getAllowedCombosForRace, getEligibleMulticlassCombos, AbilityScores } from './multiclass.js';
 import { rollDie, roll3d6, roll4d6DropLowest } from './dice.js';
 
 export class Generator {
@@ -91,6 +92,7 @@ export class Generator {
   labelSvSpell: any;
   labelSvBreath: any;
   selectClass: any;
+  selectMulticlass: any;
   selectRace: any;
   selectLevel: any;
   rollType: any;
@@ -159,10 +161,57 @@ export class Generator {
 
     this.selectRace = document.getElementById('race') as HTMLSelectElement;
     this.selectClass = document.getElementById('class') as HTMLSelectElement;
+  this.selectMulticlass = document.getElementById('multiclass') as HTMLSelectElement | null;
     this.selectLevel = document.getElementById('lvl') as HTMLSelectElement;
 
     this.rollType = document.getElementsByName('rolltype') as any;
     this.spinner = document.getElementById('spinner') as HTMLElement;
+  };
+
+  // Compose current ability scores (after racial mods) from inputs
+  private getAbilities = (): AbilityScores => ({
+    str: parseInt(this.inputStr.value || '0') || 0,
+    dex: parseInt(this.inputDex.value || '0') || 0,
+    con: parseInt(this.inputCon.value || '0') || 0,
+    int: parseInt(this.inputInt.value || '0') || 0,
+    wis: parseInt(this.inputWis.value || '0') || 0,
+    chr: parseInt(this.inputChr.value || '0') || 0,
+  });
+
+  // Update multiclass selector based on race and ability minimums
+  private refreshMulticlassOptions = () => {
+    if (!this.selectMulticlass) return;
+    const el = this.selectMulticlass as HTMLSelectElement;
+    const raceIdx = (this.selectRace as HTMLSelectElement).selectedIndex;
+    let race: Races | null = null;
+    switch (raceIdx) {
+      case 1: race = Races.human; break;
+      case 2: race = Races.dwarf; break;
+      case 3: race = Races.elf; break;
+      case 4: race = Races.gnome; break;
+      case 5: race = Races.halfling; break;
+      case 6: race = Races.halfElf; break;
+      default: race = null;
+    }
+
+    // Humans have no multiclass; hide unless eligible combos exist
+    if (!race || race === Races.human) {
+      el.style.display = 'none';
+      el.innerHTML = '';
+      return;
+    }
+
+    const abilities = this.getAbilities();
+    const combos = getEligibleMulticlassCombos(race, abilities);
+    el.innerHTML = '';
+    for (const combo of combos) {
+      const opt = document.createElement('option');
+      opt.value = combo.join('+');
+      opt.text = comboToLabel(combo);
+      el.appendChild(opt);
+    }
+    el.size = Math.min(Math.max(combos.length, 0), 8) || 4;
+    el.style.display = combos.length ? '' : 'none';
   };
 
   clearVals = (stat: HTMLSelectElement) => {
@@ -323,6 +372,8 @@ export class Generator {
         throw new Error('Impossible stat selected');
     }
     ddl.disabled = true;
+  // Stats changed; recompute multiclass options
+  this.refreshMulticlassOptions();
   };
 
   // calculate strength modifiers
@@ -559,8 +610,56 @@ export class Generator {
     this.disableOpts(this.stat6.getElementsByTagName('option')[index]);
   };
 
-  // Set the class
+  // Derive meta-class for multi or single selection (for THAC0/Saves and con/fighter flags)
+  private getSelectedClasses = (): Classes[] => {
+    const multi = this.selectMulticlass as HTMLSelectElement | null;
+    if (multi && multi.style.display !== 'none' && multi.selectedOptions && multi.selectedOptions.length > 0) {
+      const first = multi.selectedOptions[0].value; // e.g., "fighter+mage"
+      return first.split('+') as Classes[];
+    }
+    const single = this.selectClass as HTMLSelectElement;
+    const v = single.options[single.selectedIndex]?.value as Classes | undefined;
+    return v ? [v] : [];
+  };
+
+  private getMetaClass = (classes: Classes[]): keyof THAC0S => {
+    // Order of precedence for meta tables: fighter > cleric > rogue > mage
+    if (classes.some(c => c === Classes.fighter || c === Classes.paladin || c === Classes.ranger)) return 'fighter';
+    if (classes.some(c => c === Classes.cleric || c === Classes.druid)) return 'cleric';
+    if (classes.some(c => c === Classes.thief || c === Classes.bard)) return 'rogue';
+    return 'mage';
+  };
+
+  // Set the class (single or multiclass)
   setClass = (ddl: HTMLSelectElement) => {
+    const selected = this.getSelectedClasses();
+    const hasFightery = selected.some(c => c === Classes.fighter || c === Classes.paladin || c === Classes.ranger);
+    this.isFighter = hasFightery;
+    this.checkForStrMods(this.strInit);
+    this.setConMods(this.conInit);
+
+    // Hit dice heuristic: pick the highest HD among selected classes (Ftr d10, Priest d8, Rogue d6, Wizard d4)
+    const hdFor = (c: Classes) => {
+      switch (c) {
+        case Classes.fighter:
+        case Classes.paladin:
+        case Classes.ranger: return 10;
+        case Classes.cleric:
+        case Classes.druid: return 8;
+        case Classes.thief:
+        case Classes.bard: return 6;
+        case Classes.mage:
+        case Classes.illusionist: return 4;
+        default: return 6;
+      }
+    };
+    if (selected.length) {
+      const hds = selected.map(hdFor) as number[];
+      this.hitdice = Math.max(...hds);
+      return;
+    }
+
+    // Fallback to legacy single-class by dropdown index
     switch (ddl.selectedIndex) {
       case 1: // Fighters
       case 6:
@@ -670,6 +769,8 @@ export class Generator {
       default: throw Error('Unknown race');
     }
     this.applyRacialMods();
+  // Race changed; refresh multiclass options
+  this.refreshMulticlassOptions();
   };
 
   // Calculate hp and thac0
@@ -678,21 +779,24 @@ export class Generator {
     for (let i = 0; i < ddl.selectedIndex; i++) { hit += this.calcHPRoll(); }
     this.labelHp.innerHTML = hit.toString();
 
-    const classIndex = this.selectClass.selectedIndex;
-    let classType: keyof THAC0S = 'fighter';
-    switch (classIndex) {
-      case 1:
-      case 6:
-      case 7: classType = 'fighter'; break;
-      case 2:
-      case 5: classType = 'rogue'; break;
-      case 9:
-      case 4: classType = 'mage'; break;
-      case 3:
-      case 8: classType = 'cleric'; break;
-      default: throw new Error('Unknown meta class');
-    }
-    this.setLabelValues(classType, ddl.selectedIndex - 1);
+    const sel = this.getSelectedClasses();
+    const meta = sel.length ? this.getMetaClass(sel) : (() => {
+      // derive from single-class dropdown
+      const classIndex = this.selectClass.selectedIndex;
+      switch (classIndex) {
+        case 1:
+        case 6:
+        case 7: return 'fighter' as const;
+        case 2:
+        case 5: return 'rogue' as const;
+        case 9:
+        case 4: return 'mage' as const;
+        case 3:
+        case 8: return 'cleric' as const;
+        default: throw new Error('Unknown meta class');
+      }
+    })();
+    this.setLabelValues(meta, ddl.selectedIndex - 1);
   };
 
   // Hit dice roll with con mod, minimum roll 1
