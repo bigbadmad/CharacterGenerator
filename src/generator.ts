@@ -299,6 +299,11 @@ export class Generator {
     this.labelReactAdj.textContent = '';
     this.labelHp.textContent = '';
     this.labelThac0.textContent = '';
+    this.labelSvPara.textContent = '';
+    this.labelSvRod.textContent = '';
+    this.labelSvPoly.textContent = '';
+    this.labelSvBreath.textContent = '';
+    this.labelSvSpell.textContent = '';
 
     this.clearVals(this.stat1);
     this.clearVals(this.stat2);
@@ -741,6 +746,18 @@ export class Generator {
     }
   };
 
+  private dmListeners: (() => void)[] = [];
+
+  private addDmListener = (input: HTMLInputElement, handler: (val: number) => void) => {
+    const fn = () => {
+      const val = parseInt(input.value) || 0;
+      handler(val);
+      this.refreshMulticlassOptions();
+    };
+    input.addEventListener('input', fn);
+    this.dmListeners.push(() => input.removeEventListener('input', fn));
+  };
+
   dmMode = () => {
     this.clearControls();
     this.enableDisableStats(true);
@@ -749,9 +766,18 @@ export class Generator {
     this.rollButton.disabled = true;
     this.inputStr.readOnly = false; this.inputDex.readOnly = false; this.inputCon.readOnly = false;
     this.inputInt.readOnly = false; this.inputWis.readOnly = false; this.inputChr.readOnly = false;
+
+    this.addDmListener(this.inputStr, (v) => { this.strInit = v; this.checkForStrMods(v); });
+    this.addDmListener(this.inputDex, (v) => { this.dexInit = v; this.setDexMods(v); });
+    this.addDmListener(this.inputCon, (v) => { this.conInit = v; this.setConMods(v); });
+    this.addDmListener(this.inputInt, (v) => { this.intInit = v; this.setIntMods(v); });
+    this.addDmListener(this.inputWis, (v) => { this.wisInit = v; this.setWisMods(v); });
+    this.addDmListener(this.inputChr, (v) => { this.chrInit = v; this.setCharMods(v); });
   };
 
   genMode = () => {
+    this.dmListeners.forEach(remove => remove());
+    this.dmListeners = [];
     this.clearControls();
     this.enableDisableStats(false);
     this.rollButton.disabled = false;
