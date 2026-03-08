@@ -38,6 +38,8 @@ jobs:
             **/node_modules/**
             **/tests/**
             **/src/**
+            .github/**
+            .vscode/**
             tsconfig.json
             vitest.config.ts
             vitest.setup.ts
