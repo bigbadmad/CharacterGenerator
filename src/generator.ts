@@ -1,6 +1,6 @@
 import { Classes, Races, THAC0S } from './types.js';
 import { raceClassLimits, thac0s, savingThrows } from './data.js';
-import { comboToLabel, getAllowedCombosForRace, getEligibleMulticlassCombos, AbilityScores } from './multiclass.js';
+import { comboToLabel, getEligibleMulticlassCombos, AbilityScores } from './multiclass.js';
 import { rollDie, roll3d6, roll4d6DropLowest } from './dice.js';
 
 export class Generator {
