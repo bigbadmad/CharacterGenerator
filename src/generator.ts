@@ -14,9 +14,6 @@ export class Generator {
   level = 1;
 
   hitdice = 6;
-  hitProb = 0;
-  DmgAdj = 0;
-
   isFighter = false;
 
   hpAdj = 0;
@@ -25,6 +22,8 @@ export class Generator {
   MxPres = 0;
   opDrs = 0;
   bndBrs = 0;
+  hitProb = 0;
+  DmgAdj = 0;
 
   // Attributes
   strInit = 0;
@@ -65,6 +64,8 @@ export class Generator {
   labelMxPress: any;
   labelOpDrs: any;
   labelBndBrs: any;
+  labelHitProb: any;
+  labelDmgAdj: any;
   labelRctAdj: any;
   labelMislAdj: any;
   labelDefAdj: any;
@@ -132,6 +133,8 @@ export class Generator {
     this.labelMxPress = document.getElementById('MxPres') as HTMLLabelElement;
     this.labelOpDrs = document.getElementById('opDrs') as HTMLLabelElement;
     this.labelBndBrs = document.getElementById('bndBrs') as HTMLLabelElement;
+    this.labelHitProb = document.getElementById('hitProb') as HTMLLabelElement;
+    this.labelDmgAdj = document.getElementById('dmgAdj') as HTMLLabelElement;
     this.labelRctAdj = document.getElementById('rctAdj') as HTMLLabelElement;
     this.labelMislAdj = document.getElementById('mislAdj') as HTMLLabelElement;
     this.labelDefAdj = document.getElementById('defAdj') as HTMLLabelElement;
@@ -277,6 +280,8 @@ export class Generator {
     this.labelMxPress.textContent = '';
     this.labelOpDrs.textContent = '';
     this.labelBndBrs.textContent = '';
+    this.labelHitProb.textContent = '';
+    this.labelDmgAdj.textContent = '';
     this.labelRctAdj.textContent = '';
     this.labelMislAdj.textContent = '';
     this.labelDefAdj.textContent = '';
@@ -302,18 +307,10 @@ export class Generator {
     this.labelSvPara.textContent = '';
     this.labelSvRod.textContent = '';
     this.labelSvPoly.textContent = '';
-    this.labelSvBreath.textContent = '';
     this.labelSvSpell.textContent = '';
-
-    this.clearVals(this.stat1);
-    this.clearVals(this.stat2);
-    this.clearVals(this.stat3);
-    this.clearVals(this.stat4);
-    this.clearVals(this.stat5);
-    this.clearVals(this.stat6);
-
-    this.selectRace.selectedIndex = 0;
+    this.labelSvBreath.textContent = '';
     this.selectClass.selectedIndex = 0;
+    this.selectMulticlass.selectedIndex = 0;
     this.selectLevel.selectedIndex = 0;
     this.refreshMulticlassOptions();
   };
@@ -394,55 +391,56 @@ export class Generator {
     }
     switch (str) {
       case 3:
-        this.hitProb = -3; this.DmgAdj = -1; this.setStrChecks(5, 10, 2, 0); break;
+        this.setStrChecks(-3, -1, 5, 10, 2, 0); break;
       case 4:
       case 5:
-        this.hitProb = -2; this.DmgAdj = -1; this.setStrChecks(10, 25, 3, 0); break;
+        this.setStrChecks(-2, -1, 10, 25, 3, 0); break;
       case 6:
       case 7:
-        this.hitProb = -1; this.DmgAdj = 0; this.setStrChecks(20, 55, 4, 0); break;
+        this.setStrChecks(-1, 0, 20, 55, 4, 0); break;
       case 8:
       case 9:
-        this.hitProb = 0; this.DmgAdj = 0; this.setStrChecks(35, 90, 5, 1); break;
+        this.setStrChecks(0, 0, 35, 90, 5, 1); break;
       case 10:
       case 11:
-        this.hitProb = 0; this.DmgAdj = 0; this.setStrChecks(40, 115, 6, 2); break;
+        this.setStrChecks(0, 0, 40, 115, 6, 2); break;
       case 12:
       case 13:
-        this.hitProb = 0; this.DmgAdj = 0; this.setStrChecks(45, 140, 7, 4); break;
+        this.setStrChecks(0, 0, 45, 140, 7, 4); break;
       case 14:
       case 15:
-        this.hitProb = 0; this.DmgAdj = 0; this.setStrChecks(55, 170, 8, 7); break;
+        this.setStrChecks(0, 0, 55, 170, 8, 7); break;
       case 16:
-        this.hitProb = 0; this.DmgAdj = 1; this.setStrChecks(70, 195, 8, 10); break;
+        this.setStrChecks(0, 1, 70, 195, 8, 10); break;
       case 17:
-        this.hitProb = 1; this.DmgAdj = 1; this.setStrChecks(85, 220, 10, 13); break;
+        this.setStrChecks(1, 1, 85, 220, 10, 13); break;
       case 18:
         switch (true) {
           case prcStr < 51:
-            this.hitProb = 1; this.DmgAdj = 3; this.setStrChecks(135, 280, 12, 20); break;
+            this.setStrChecks(1, 3, 135, 280, 12, 20); break;
           case prcStr < 76:
-            this.hitProb = 2; this.DmgAdj = 3; this.setStrChecks(160, 305, 13, 25); break;
+            this.setStrChecks(2, 3, 160, 305, 13, 25); break;
           case prcStr < 91:
-            this.hitProb = 2; this.DmgAdj = 4; this.setStrChecks(185, 330, 14, 30); break;
+            this.setStrChecks(2, 4, 185, 330, 14, 30); break;
           case prcStr < 100:
-            this.hitProb = 2; this.DmgAdj = 5; this.setStrChecks(235, 380, 15, 35); break;
-          case prcStr == 100:
-            this.hitProb = 3; this.DmgAdj = 6; this.setStrChecks(335, 480, 16, 40);
-            this.wghtAllow = 335; this.MxPres = 480; this.opDrs = 16; this.bndBrs = 40;
+            this.setStrChecks(2, 5, 235, 380, 15, 35); break;
+          case prcStr === 100:
+            this.setStrChecks(3, 6, 335, 480, 16, 40); break;
           default:
-            this.hitProb = 1; this.DmgAdj = 2; this.setStrChecks(110, 255, 11, 16);
+            this.setStrChecks(1, 2, 110, 255, 11, 16); break;
         }
         break;
     }
   };
 
   // set strength adjustments
-  setStrChecks = (wAllow: number, mPres: number, oDrs: number, bBrs: number) => {
+  setStrChecks = (hitProb: number, dmgAdj: number, wAllow: number, mPres: number, oDrs: number, bBrs: number) => {
     this.labelWgtAllow.textContent = wAllow.toString();
-    this.labelMxPress.innerHTML = mPres.toString();
-    this.labelOpDrs.innerHTML = oDrs.toString();
-    this.labelBndBrs.innerHTML = bBrs.toString();
+    this.labelMxPress.textContent = mPres.toString();
+    this.labelOpDrs.textContent = oDrs.toString();
+    this.labelBndBrs.textContent = bBrs.toString();
+    this.labelHitProb.textContent = hitProb.toString();
+    this.labelDmgAdj.textContent = dmgAdj.toString();
   };
 
   // calculate dexterity modifiers
