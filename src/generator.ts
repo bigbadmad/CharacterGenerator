@@ -261,12 +261,12 @@ export class Generator {
     this.inputSix.value = '';
     this.labelPercent.value = '';
 
-    this.stat1.selectedIndex = 0;
-    this.stat2.selectedIndex = 0;
-    this.stat3.selectedIndex = 0;
-    this.stat4.selectedIndex = 0;
-    this.stat5.selectedIndex = 0;
-    this.stat6.selectedIndex = 0;
+    this.clearVals(this.stat1);
+    this.clearVals(this.stat2);
+    this.clearVals(this.stat3);
+    this.clearVals(this.stat4);
+    this.clearVals(this.stat5);
+    this.clearVals(this.stat6);
 
     this.inputStr.value = '';
     this.inputDex.value = '';
@@ -310,8 +310,11 @@ export class Generator {
     this.labelSvSpell.textContent = '';
     this.labelSvBreath.textContent = '';
     this.selectClass.selectedIndex = 0;
-    this.selectMulticlass.selectedIndex = 0;
+    if (this.selectMulticlass) {
+      this.selectMulticlass.selectedIndex = 0;
+    }
     this.selectLevel.selectedIndex = 0;
+    this.selectRace.selectedIndex = 0;
     this.refreshMulticlassOptions();
   };
 
@@ -435,6 +438,8 @@ export class Generator {
 
   // set strength adjustments
   setStrChecks = (hitProb: number, dmgAdj: number, wAllow: number, mPres: number, oDrs: number, bBrs: number) => {
+    this.hitProb = hitProb;
+    this.DmgAdj = dmgAdj;
     this.labelWgtAllow.textContent = wAllow.toString();
     this.labelMxPress.textContent = mPres.toString();
     this.labelOpDrs.textContent = oDrs.toString();
