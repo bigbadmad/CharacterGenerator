@@ -1,4 +1,4 @@
-/* ── Reset & Custom Properties ─────────────────────────────── */
+/* -- Reset & Custom Properties ------------------------------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -30,7 +30,7 @@ body {
   min-height: 100vh;
 }
 
-/* ── Spinner ────────────────────────────────────────────────── */
+/* -- Spinner -------------------------------------------------- */
 #spinner {
   position: fixed;
   inset: 0;
@@ -54,7 +54,7 @@ body {
 
 @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-/* ── Header ─────────────────────────────────────────────────── */
+/* -- Header --------------------------------------------------- */
 .site-header {
   background: linear-gradient(135deg, #1c0902 0%, #3d1608 50%, #1c0902 100%);
   border-bottom: 3px solid var(--gold);
@@ -98,7 +98,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ── Page Layout ────────────────────────────────────────────── */
+/* -- Page Layout ---------------------------------------------- */
 .layout {
   display: flex;
   gap: 1.5rem;
@@ -108,7 +108,7 @@ body {
   margin: 0 auto;
 }
 
-/* ── Builder (left column) ──────────────────────────────────── */
+/* -- Builder (left column) ------------------------------------ */
 .builder {
   flex: 0 0 var(--builder-width);
   display: flex;
@@ -116,7 +116,7 @@ body {
   gap: 1.2rem;
 }
 
-/* ── Card ───────────────────────────────────────────────────── */
+/* -- Card ----------------------------------------------------- */
 .card {
   background: var(--parchment);
   border: 1px solid var(--parchment-edge);
@@ -137,7 +137,7 @@ body {
   border-bottom: 2px solid var(--gold);
 }
 
-/* ── Radio Group ────────────────────────────────────────────── */
+/* -- Radio Group ---------------------------------------------- */
 .radio-group {
   padding: 0.8rem 1rem;
   display: flex;
@@ -163,7 +163,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ── Score Table ────────────────────────────────────────────── */
+/* -- Score Table ---------------------------------------------- */
 .score-table {
   width: 100%;
   border-collapse: collapse;
@@ -248,7 +248,7 @@ body {
   line-height: 1;
 }
 
-/* ── Roll Button ────────────────────────────────────────────── */
+/* -- Roll Button ---------------------------------------------- */
 .roll-btn-wrap {
   padding: 0.75rem 1rem;
   border-top: 1px solid var(--parchment-edge);
@@ -289,7 +289,7 @@ body {
   transform: none;
 }
 
-/* ── Character Fields ───────────────────────────────────────── */
+/* -- Character Fields ----------------------------------------- */
 .char-fields {
   padding: 0.8rem 1rem;
   display: flex;
@@ -333,7 +333,7 @@ body {
   font-size: 0.88rem;
 }
 
-/* ── Derived Stats bar ──────────────────────────────────────── */
+/* -- Derived Stats bar ---------------------------------------- */
 .derived-stats {
   display: flex;
   border-top: 1px solid var(--parchment-edge);
@@ -370,7 +370,7 @@ body {
   line-height: 1;
 }
 
-/* ── Stats Area (right grid) ────────────────────────────────── */
+/* -- Stats Area (right grid) ---------------------------------- */
 .stats-area {
   flex: 1;
   display: grid;
@@ -379,7 +379,7 @@ body {
   align-content: start;
 }
 
-/* ── Stat Card ──────────────────────────────────────────────── */
+/* -- Stat Card ------------------------------------------------ */
 .stat-card {
   background: var(--parchment);
   border: 1px solid var(--parchment-edge);
@@ -404,7 +404,7 @@ body {
   border-bottom: 2px solid var(--gold);
 }
 
-/* ── Definition List ────────────────────────────────────────── */
+/* -- Definition List ------------------------------------------ */
 .stat-dl {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -442,7 +442,7 @@ body {
   grid-template-columns: repeat(2, auto 1fr);
 }
 
-/* ── Export Button ──────────────────────────────────────────── */
+/* -- Export Button -------------------------------------------- */
 .export-wrap {
   padding: 0.6rem 1rem;
   background: var(--parchment-mid);
@@ -476,7 +476,7 @@ body {
   box-shadow: none;
 }
 
-/* ── Responsive ─────────────────────────────────────────────── */
+/* -- Responsive ----------------------------------------------- */
 @media (max-width: 1150px) {
   .stats-area {
     grid-template-columns: repeat(2, 1fr);
