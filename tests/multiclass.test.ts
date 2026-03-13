@@ -1,7 +1,14 @@
 import { describe, it, expect } from 'vitest';
 
 import { Classes, Races } from '../src/types.js';
-import { classMinimums, getEligibleMulticlassCombos } from '../src/multiclass.js';
+import {
+  classMinimums,
+  comboToLabel,
+  meetsClassMinimums,
+  qualifiesForCombo,
+  getAllowedCombosForRace,
+  getEligibleMulticlassCombos,
+} from '../src/multiclass.js';
 
 describe('multiclass rules', () => {
   it('class minimums include key classes', () => {
@@ -28,5 +35,43 @@ describe('multiclass rules', () => {
     expect(combos.map(c => c.join('+'))).toContain(
       [Classes.cleric, Classes.fighter, Classes.mage, Classes.thief].join('+')
     );
+  });
+
+  it('comboToLabel formats classes with slash separators', () => {
+    expect(comboToLabel([Classes.fighter, Classes.mage])).toBe('fighter / mage');
+    expect(comboToLabel([Classes.cleric, Classes.fighter, Classes.mage])).toBe('cleric / fighter / mage');
+  });
+
+  it('meetsClassMinimums returns true when all abilities satisfy requirements', () => {
+    const abil = { str: 13, dex: 16, con: 0, int: 15, wis: 0, chr: 0 };
+    expect(meetsClassMinimums(abil, Classes.illusionist)).toBe(true);
+  });
+
+  it('meetsClassMinimums returns false when one ability falls short', () => {
+    const abil = { str: 13, dex: 15, con: 0, int: 15, wis: 0, chr: 0 }; // dex 15 < 16
+    expect(meetsClassMinimums(abil, Classes.illusionist)).toBe(false);
+  });
+
+  it('qualifiesForCombo returns true when all classes pass minimums', () => {
+    const abil = { str: 9, dex: 9, con: 0, int: 9, wis: 9, chr: 0 };
+    expect(qualifiesForCombo(abil, [Classes.fighter, Classes.cleric])).toBe(true);
+  });
+
+  it('qualifiesForCombo returns false when one class fails minimums', () => {
+    const abil = { str: 9, dex: 9, con: 0, int: 9, wis: 8, chr: 0 }; // wis 8 < 9 for cleric
+    expect(qualifiesForCombo(abil, [Classes.fighter, Classes.cleric])).toBe(false);
+  });
+
+  it('human has no allowed multiclass combos', () => {
+    expect(getAllowedCombosForRace(Races.human)).toEqual([]);
+  });
+
+  it('dwarf has exactly three two-class combos', () => {
+    const combos = getAllowedCombosForRace(Races.dwarf);
+    const labels = combos.map(c => c.join('+'));
+    expect(labels).toContain('cleric+fighter');
+    expect(labels).toContain('cleric+thief');
+    expect(labels).toContain('fighter+thief');
+    expect(combos).toHaveLength(3);
   });
 });

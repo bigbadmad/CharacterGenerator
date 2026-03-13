@@ -44,4 +44,12 @@ describe('dice', () => {
     setMockRandomSequence([0, 1, 2, 3]);
     expect(roll4d6DropLowest()).toBe(9);
   });
+
+  it('discards values in the biased tail and retries', () => {
+    // For die=6, limit = Math.floor(0x100000000 / 6) * 6 = 4294967292.
+    // 4294967293 >= limit so it is rejected; next value 2 → 2 % 6 + 1 = 3.
+    // Without rejection the first value would give 4294967293 % 6 + 1 = 2.
+    setMockRandomSequence([4294967293, 2]);
+    expect(rollDie(6)).toBe(3);
+  });
 });

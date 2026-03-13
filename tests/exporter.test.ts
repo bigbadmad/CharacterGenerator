@@ -16,7 +16,7 @@ const baseChar: CharacterData = {
   para: '13', rod: '15', poly: '14', breath: '16', spell: '15',
 };
 
-// ── cv() ────────────────────────────────────────────────────────────────────
+// -- cv() --------------------------------------------------------------------
 
 describe('cv()', () => {
   it('converts numeric strings to numbers', () => {
@@ -33,9 +33,14 @@ describe('cv()', () => {
     expect(cv('Nil')).toBe('Nil');
     expect(cv('fighter')).toBe('fighter');
   });
+
+  it('converts decimal strings to numbers', () => {
+    expect(cv('3.14')).toBe(3.14);
+    expect(cv('0.5')).toBe(0.5);
+  });
 });
 
-// ── buildSheetData() ────────────────────────────────────────────────────────
+// -- buildSheetData() --------------------------------------------------------
 
 describe('buildSheetData()', () => {
   let aoa: (string | number)[][];
@@ -50,7 +55,7 @@ describe('buildSheetData()', () => {
 
   it('every row has 15 columns', () => {
     aoa.forEach((row, i) => {
-      expect(row).toHaveLength(15, `row ${i} length`);
+      expect(row, `row ${i} length`).toHaveLength(15);
     });
   });
 
@@ -127,9 +132,57 @@ describe('buildSheetData()', () => {
     expect(rows[21][4]).toBe(''); // empty hp  → ''
     expect(rows[21][8]).toBe(''); // empty thac0 → ''
   });
+
+  it('row 8 contains dexterity labels and poly save', () => {
+    expect(aoa[8][0]).toBe('Dexterity');
+    expect(aoa[8][11]).toBe('Petrify/Polymorph');
+    expect(aoa[8][12]).toBe(14); // cv(poly='14')
+  });
+
+  it('row 12 contains intelligence labels', () => {
+    expect(aoa[12][0]).toBe('Intelligence');
+  });
+
+  it('row 13 contains intelligence data', () => {
+    expect(aoa[13][0]).toBe(10); // int
+    expect(aoa[13][1]).toBe(2);  // noLang
+    expect(aoa[13][2]).toBe(5);  // splLvl
+    expect(aoa[13][3]).toBe(40); // lrnSpl
+    expect(aoa[13][4]).toBe(7);  // splPerLvl
+    expect(aoa[13][5]).toBe(0);  // splImun
+  });
+
+  it('row 14 contains wisdom labels', () => {
+    expect(aoa[14][0]).toBe('Wisdom');
+  });
+
+  it('row 15 contains wisdom data', () => {
+    expect(aoa[15][0]).toBe(12); // wis
+    expect(aoa[15][1]).toBe(0);  // mgcDefAdj
+    expect(aoa[15][2]).toBe(1);  // bonusSp
+    expect(aoa[15][3]).toBe(5);  // chnFail
+    expect(aoa[15][4]).toBe(0);  // splImmune
+  });
+
+  it('row 16 contains charisma labels', () => {
+    expect(aoa[16][0]).toBe('Charisma');
+  });
+
+  it('row 17 contains charisma data', () => {
+    expect(aoa[17][0]).toBe(9); // chr
+    expect(aoa[17][1]).toBe(4); // mxHench
+    expect(aoa[17][2]).toBe(0); // loyalBs
+    expect(aoa[17][3]).toBe(0); // reactAdj
+  });
+
+  it('row 40 contains spells/day header', () => {
+    expect(aoa[40][0]).toBe('Spells/day');
+    expect(aoa[40][2]).toBe('Spell list');
+    expect(aoa[40][11]).toBe('Notes');
+  });
 });
 
-// ── exportCharacterSheet() ──────────────────────────────────────────────────
+// -- exportCharacterSheet() --------------------------------------------------
 
 describe('exportCharacterSheet()', () => {
   const mockWriteFile = vi.fn();
