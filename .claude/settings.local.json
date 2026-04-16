@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p c:/Dev/MadTV/public/character-generator/dist)",
+      "Bash(cp c:/Dev/CharacterGenerator/index.html c:/Dev/MadTV/public/character-generator/)",
+      "Bash(cp c:/Dev/CharacterGenerator/styles.css c:/Dev/MadTV/public/character-generator/)",
+      "Bash(cp c:/Dev/CharacterGenerator/dist/*.js c:/Dev/MadTV/public/character-generator/dist/)"
+    ]
+  }
+}
