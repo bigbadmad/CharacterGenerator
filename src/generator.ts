@@ -1,6 +1,7 @@
 import { Classes, Races, THAC0S } from './types.js';
 import { raceClassLimits, thac0s, savingThrows } from './data.js';
 import { comboToLabel, getEligibleMulticlassCombos, AbilityScores } from './multiclass.js';
+import { getEligibleDualClassCombos, dualClassLabel } from './dualclass.js';
 import { rollDie, roll3d6, roll4d6DropLowest } from './dice.js';
 import { exportCharacterSheet } from './exporter.js';
 
@@ -95,6 +96,13 @@ export class Generator {
   labelSvBreath: any;
   selectClass: any;
   selectMulticlass: any;
+  selectDualclass: any;
+  selectDualLvlFrom: any;
+  selectDualLvlTo: any;
+  lblDualLvlFrom: any;
+  lblDualLvlTo: any;
+  dualLevelsRow: any;
+  singleLevelRow: any;
   selectRace: any;
   selectLevel: any;
   rollType: any;
@@ -166,6 +174,13 @@ export class Generator {
     this.selectRace = document.getElementById('race') as HTMLSelectElement;
     this.selectClass = document.getElementById('class') as HTMLSelectElement;
   this.selectMulticlass = document.getElementById('multiclass') as HTMLSelectElement | null;
+    this.selectDualclass    = document.getElementById('dualclass')      as HTMLSelectElement | null;
+    this.selectDualLvlFrom  = document.getElementById('lvl-from')      as HTMLSelectElement | null;
+    this.selectDualLvlTo    = document.getElementById('lvl-to')        as HTMLSelectElement | null;
+    this.lblDualLvlFrom     = document.getElementById('lbl-lvl-from')  as HTMLLabelElement  | null;
+    this.lblDualLvlTo       = document.getElementById('lbl-lvl-to')    as HTMLLabelElement  | null;
+    this.dualLevelsRow      = document.getElementById('dual-levels-row') as HTMLElement      | null;
+    this.singleLevelRow     = document.getElementById('single-level-row') as HTMLElement     | null;
     this.selectLevel = document.getElementById('lvl') as HTMLSelectElement;
 
     this.rollType = document.getElementsByName('rolltype') as any;
@@ -202,6 +217,7 @@ export class Generator {
     if (!race || race === Races.human) {
       el.style.display = 'none';
       el.innerHTML = '';
+      this.refreshDualclassOptions();
       return;
     }
 
@@ -215,6 +231,30 @@ export class Generator {
       el.appendChild(opt);
     }
     el.size = Math.min(Math.max(combos.length, 0), 8) || 4;
+    el.style.display = combos.length ? '' : 'none';
+    this.refreshDualclassOptions();
+  };
+
+  // Update dual-class selector for humans based on ability score minimums
+  private refreshDualclassOptions = () => {
+    if (!this.selectDualclass) return;
+    const el = this.selectDualclass as HTMLSelectElement;
+    const raceIdx = (this.selectRace as HTMLSelectElement).selectedIndex;
+    if (raceIdx !== 1) { // only humans
+      el.style.display = 'none';
+      el.innerHTML = '';
+      return;
+    }
+    const abilities = this.getAbilities();
+    const combos = getEligibleDualClassCombos(abilities);
+    el.innerHTML = '<option></option>';
+    for (const [from, to] of combos) {
+      const opt = document.createElement('option');
+      opt.value = `${from}>${to}`;
+      opt.text = dualClassLabel(from, to);
+      el.appendChild(opt);
+    }
+    el.size = Math.min(Math.max(combos.length, 1), 8);
     el.style.display = combos.length ? '' : 'none';
   };
 
@@ -313,6 +353,10 @@ export class Generator {
     if (this.selectMulticlass) {
       this.selectMulticlass.selectedIndex = 0;
     }
+    if (this.selectDualLvlFrom) this.selectDualLvlFrom.selectedIndex = 0;
+    if (this.selectDualLvlTo)   this.selectDualLvlTo.selectedIndex   = 0;
+    if (this.dualLevelsRow)     this.dualLevelsRow.style.display     = 'none';
+    if (this.singleLevelRow)    this.singleLevelRow.style.display    = '';
     this.selectLevel.selectedIndex = 0;
     this.selectRace.selectedIndex = 0;
     this.refreshMulticlassOptions();
@@ -635,6 +679,15 @@ export class Generator {
         return selectedClasses;
       }
     }
+    // Dual-class (humans only): value stored as "fighter>mage"
+    const dual = this.selectDualclass as HTMLSelectElement | null;
+    if (dual && dual.style.display !== 'none' && dual.selectedIndex > 0) {
+      const value = dual.options[dual.selectedIndex]?.value;
+      if (value) {
+        const [from, to] = value.split('>') as [Classes, Classes];
+        return [from, to];
+      }
+    }
     const single = this.selectClass as HTMLSelectElement;
     const v = single.options[single.selectedIndex]?.value as Classes | undefined;
     return v ? [v] : [];
@@ -656,23 +709,18 @@ export class Generator {
     this.checkForStrMods(this.strInit);
     this.setConMods(this.conInit);
 
-    // Hit dice heuristic: pick the highest HD among selected classes (Ftr d10, Priest d8, Rogue d6, Wizard d4)
-    const hdFor = (c: Classes) => {
-      switch (c) {
-        case Classes.fighter:
-        case Classes.paladin:
-        case Classes.ranger: return 10;
-        case Classes.cleric:
-        case Classes.druid: return 8;
-        case Classes.thief:
-        case Classes.bard: return 6;
-        case Classes.mage:
-        case Classes.illusionist: return 4;
-        default: return 6;
-      }
-    };
+    // Show dual-level inputs when a dual-class combo is chosen, hide the single level select
+    const dual = this.selectDualclass as HTMLSelectElement | null;
+    const inDualMode = !!(dual && dual.style.display !== 'none' && dual.selectedIndex > 0 && dual.options[dual.selectedIndex]?.value);
+    if (this.dualLevelsRow)  this.dualLevelsRow.style.display  = inDualMode ? '' : 'none';
+    if (this.singleLevelRow) this.singleLevelRow.style.display = inDualMode ? 'none' : '';
+    if (inDualMode && this.lblDualLvlFrom && this.lblDualLvlTo) {
+      const [from, to] = dual!.options[dual!.selectedIndex].value.split('>');
+      this.lblDualLvlFrom.textContent = `${from} lvl`;
+      this.lblDualLvlTo.textContent   = `${to} lvl`;
+    }
     if (selected.length) {
-      const hds = selected.map(hdFor) as number[];
+      const hds = selected.map(c => this.hdForClass(c)) as number[];
       this.hitdice = Math.max(...hds);
       return;
     }
@@ -853,11 +901,79 @@ export class Generator {
     this.labelSvSpell.innerText = savingThrows[classType].spell[level] as unknown as string;
   };
 
+  private hdForClass = (c: Classes): number => {
+    switch (c) {
+      case Classes.fighter:
+      case Classes.paladin:
+      case Classes.ranger: return 10;
+      case Classes.cleric:
+      case Classes.druid: return 8;
+      case Classes.thief:
+      case Classes.bard: return 6;
+      case Classes.mage:
+      case Classes.illusionist: return 4;
+      default: return 6;
+    }
+  };
+
+  private setLabelValuesBest = (metaA: keyof THAC0S, lvlA: number, metaB: keyof THAC0S, lvlB: number) => {
+    const best = (a: number, b: number) => Math.min(a, b);
+    this.labelThac0.innerText    = best(thac0s[metaA][lvlA], thac0s[metaB][lvlB]).toString();
+    this.labelSvBreath.innerText = best(savingThrows[metaA].breath[lvlA], savingThrows[metaB].breath[lvlB]).toString();
+    this.labelSvPara.innerText   = best(savingThrows[metaA].para[lvlA],   savingThrows[metaB].para[lvlB]).toString();
+    this.labelSvPoly.innerText   = best(savingThrows[metaA].poly[lvlA],   savingThrows[metaB].poly[lvlB]).toString();
+    this.labelSvRod.innerText    = best(savingThrows[metaA].rod[lvlA],    savingThrows[metaB].rod[lvlB]).toString();
+    this.labelSvSpell.innerText  = best(savingThrows[metaA].spell[lvlA],  savingThrows[metaB].spell[lvlB]).toString();
+  };
+
+  // Calculate HP, THAC0 and saves for a dual-class character
+  setDualLevel = () => {
+    const dual = this.selectDualclass as HTMLSelectElement | null;
+    if (!dual || dual.selectedIndex <= 0) return;
+    const value = dual.options[dual.selectedIndex]?.value;
+    if (!value) return;
+
+    const [from, to] = value.split('>') as [Classes, Classes];
+    const fromLvl = this.selectDualLvlFrom?.selectedIndex ?? 0;
+    const toLvl   = this.selectDualLvlTo?.selectedIndex   ?? 0;
+    if (fromLvl === 0 || toLvl === 0) {
+      this.labelHp.innerHTML = '';
+      return;
+    }
+
+    // HP: roll each class's levels separately with their own hit die
+    const savedDice = this.hitdice;
+    let hp = 0;
+    this.hitdice = this.hdForClass(from);
+    for (let i = 0; i < fromLvl; i++) hp += this.calcHPRoll();
+    this.hitdice = this.hdForClass(to);
+    for (let i = 0; i < toLvl; i++) hp += this.calcHPRoll();
+    this.hitdice = savedDice;
+    this.labelHp.innerHTML = hp.toString();
+
+    // THAC0/saves: PHB rule — use from-class until to-class surpasses it, then use best of both
+    const fromMeta = this.getMetaClass([from]);
+    const toMeta   = this.getMetaClass([to]);
+    if (toLvl <= fromLvl) {
+      this.setLabelValues(fromMeta, fromLvl - 1);
+    } else {
+      this.setLabelValuesBest(fromMeta, fromLvl - 1, toMeta, toLvl - 1);
+    }
+  };
+
   getCharacterData = () => {
     const classes = this.getSelectedClasses();
+    // Dual-class: format as "fighter → mage" rather than "fighter+mage"
+    const dual = this.selectDualclass as HTMLSelectElement | null;
+    const dualValue = dual && dual.style.display !== 'none' && dual.selectedIndex > 0
+      ? dual.options[dual.selectedIndex]?.value
+      : null;
+    const className = dualValue ? dualValue.replace('>', ' → ') : classes.join('+');
     return {
-      className: classes.join('+'),
-      level:     (this.selectLevel as HTMLSelectElement).value || '',
+      className,
+      level:     dualValue
+               ? `${this.selectDualLvlFrom?.value || '1'}/${this.selectDualLvlTo?.value || '1'}`
+               : (this.selectLevel as HTMLSelectElement).value || '',
       race:      (this.selectRace  as HTMLSelectElement).value || '',
       str:       this.inputStr?.value  || '',
       dex:       this.inputDex?.value  || '',

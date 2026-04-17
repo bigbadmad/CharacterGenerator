@@ -223,6 +223,12 @@ describe('exportCharacterSheet()', () => {
     expect(filename).toBe('fighter-mage_Lvl5_Sheet.xlsx');
   });
 
+  it('replaces / with - in dual-class level filename', () => {
+    exportCharacterSheet({ ...baseChar, className: 'fighter → mage', level: '6/3' });
+    const [, filename] = mockWriteFile.mock.calls[0];
+    expect(filename).toBe('fighter → mage_Lvl6-3_Sheet.xlsx');
+  });
+
   it('falls back to "Character" when className is empty', () => {
     exportCharacterSheet({ ...baseChar, className: '' });
     const [, filename] = mockWriteFile.mock.calls[0];

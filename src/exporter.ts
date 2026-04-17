@@ -149,6 +149,7 @@ export function exportCharacterSheet(d: CharacterData): void {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Character Sheet');
 
-  const safeName = (d.className || 'Character').replace(/\+/g, '-');
-  XLSX.writeFile(wb, `${safeName}_Lvl${d.level || '1'}_Sheet.xlsx`);
+  const safeName  = (d.className || 'Character').replace(/\+/g, '-');
+  const safeLevel = (d.level || '1').replace(/\//g, '-');
+  XLSX.writeFile(wb, `${safeName}_Lvl${safeLevel}_Sheet.xlsx`);
 }

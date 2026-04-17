@@ -7,6 +7,7 @@ declare global {
     setRace: (ddl: HTMLSelectElement) => void;
     setClass: (ddl: HTMLSelectElement) => void;
     setLevel: (ddl: HTMLSelectElement) => void;
+    setDualLevel: () => void;
     noRollType: () => void;
     rollerType: () => void;
     exportSheet: () => void;
@@ -25,6 +26,7 @@ window.addEventListener('load', () => {
   window.setRace = (ddl) => gen.setRace(ddl);
   window.setClass = (ddl) => gen.setClass(ddl);
   window.setLevel = (ddl) => gen.setLevel(ddl);
+  window.setDualLevel = () => gen.setDualLevel();
   window.noRollType = () => gen.dmMode();
   window.rollerType = () => gen.genMode();
   window.exportSheet = () => gen.exportSheet();
