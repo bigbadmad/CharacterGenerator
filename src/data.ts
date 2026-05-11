@@ -1,4 +1,4 @@
-import { Classes, Races, RaceClassLimits, THAC0S, ISavingThrows, HeightWeightTable, AgeTable, StartingMoneyTable } from './types.js';
+﻿import { Classes, Races, RaceClassLimits, THAC0S, ISavingThrows, HeightWeightTable, AgeTable, StartingMoneyTable } from './types.js';
 
 export const raceClassLimits: RaceClassLimits = {
   human: [Classes.fighter, Classes.thief, Classes.cleric, Classes.mage, Classes.bard, Classes.paladin, Classes.ranger, Classes.druid, Classes.illusionist],
@@ -47,7 +47,7 @@ export const savingThrows: ISavingThrows = {
   }
 };
 
-// PHB Table 1B — Height and Weight by Race and Gender
+// PHB Table 1B - Height and Weight by Race and Gender
 // Heights in inches, weights in lbs. Roll: base + XdY.
 export const heightWeightTable: HeightWeightTable = {
   human: {
@@ -76,7 +76,7 @@ export const heightWeightTable: HeightWeightTable = {
   },
 };
 
-// PHB Table 1A — Starting Age by Race and Class
+// PHB Table 1A - Starting Age by Race and Class
 // Starting age = base + rollXdY(dice, sides)
 export const startingAgeTable: AgeTable = {
   human: {
@@ -126,8 +126,8 @@ export const startingAgeTable: AgeTable = {
   },
 };
 
-// PHB Table 23 — Starting Money by Class
-// Starting gold = rollXdY(dice, sides) × multiplier
+// PHB Table 23 - Starting Money by Class
+// Starting gold = rollXdY(dice, sides) �- multiplier
 export const startingMoneyTable: StartingMoneyTable = {
   fighter:     { dice: 5, sides: 4, multiplier: 10 },
   paladin:     { dice: 5, sides: 4, multiplier: 10 },
