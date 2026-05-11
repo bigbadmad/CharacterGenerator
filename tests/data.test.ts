@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 // Import built JS to avoid TS import extension issues
-import { raceClassLimits, thac0s, savingThrows } from '../dist/data.js';
+import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable } from '../dist/data.js';
 import { Classes } from '../dist/types.js';
 
 describe('data tables', () => {
@@ -61,5 +61,102 @@ describe('data tables', () => {
 
   it('mage rod save at level 1 is 11', () => {
     expect(savingThrows.mage.rod[0]).toBe(11);
+  });
+});
+
+const ALL_RACES = ['human', 'dwarf', 'elf', 'gnome', 'halfling', 'halfElf'];
+const ALL_CLASSES = ['fighter', 'paladin', 'ranger', 'cleric', 'druid', 'mage', 'illusionist', 'thief', 'bard'];
+
+describe('heightWeightTable', () => {
+  it('has entries for all six races', () => {
+    for (const race of ALL_RACES) {
+      expect(heightWeightTable, `missing race: ${race}`).toHaveProperty(race);
+    }
+  });
+
+  it('each race has male and female entries', () => {
+    for (const race of ALL_RACES) {
+      expect(heightWeightTable[race]).toHaveProperty('male');
+      expect(heightWeightTable[race]).toHaveProperty('female');
+    }
+  });
+
+  it('each entry has all required numeric fields', () => {
+    for (const race of ALL_RACES) {
+      for (const gender of ['male', 'female'] as const) {
+        const e = heightWeightTable[race][gender];
+        for (const field of ['htBase', 'htDice', 'htSides', 'wtBase', 'wtDice', 'wtSides']) {
+          expect(typeof e[field as keyof typeof e], `${race}.${gender}.${field}`).toBe('number');
+        }
+      }
+    }
+  });
+
+  it('human male has htBase 60 and female htBase 59', () => {
+    expect(heightWeightTable.human.male.htBase).toBe(60);
+    expect(heightWeightTable.human.female.htBase).toBe(59);
+  });
+
+  it('dwarf is shorter than human (smaller htBase)', () => {
+    expect(heightWeightTable.dwarf.male.htBase).toBeLessThan(heightWeightTable.human.male.htBase);
+  });
+});
+
+describe('startingAgeTable', () => {
+  it('has entries for all six races', () => {
+    for (const race of ALL_RACES) {
+      expect(startingAgeTable, `missing race: ${race}`).toHaveProperty(race);
+    }
+  });
+
+  it('human has entries for all nine classes', () => {
+    for (const cls of ALL_CLASSES) {
+      expect(startingAgeTable.human, `human missing class: ${cls}`).toHaveProperty(cls);
+    }
+  });
+
+  it('each entry has base, dice, and sides as numbers', () => {
+    for (const race of ALL_RACES) {
+      for (const [cls, entry] of Object.entries(startingAgeTable[race])) {
+        expect(typeof entry.base,  `${race}.${cls}.base`).toBe('number');
+        expect(typeof entry.dice,  `${race}.${cls}.dice`).toBe('number');
+        expect(typeof entry.sides, `${race}.${cls}.sides`).toBe('number');
+      }
+    }
+  });
+
+  it('non-human races have plausible base ages (> human base)', () => {
+    expect(startingAgeTable.elf.fighter.base).toBeGreaterThan(startingAgeTable.human.fighter.base);
+    expect(startingAgeTable.dwarf.fighter.base).toBeGreaterThan(startingAgeTable.human.fighter.base);
+  });
+
+  it('dwarf has no paladin entry (class not available to dwarves)', () => {
+    expect(startingAgeTable.dwarf).not.toHaveProperty('paladin');
+  });
+});
+
+describe('startingMoneyTable', () => {
+  it('has entries for all nine classes', () => {
+    for (const cls of ALL_CLASSES) {
+      expect(startingMoneyTable, `missing class: ${cls}`).toHaveProperty(cls);
+    }
+  });
+
+  it('each entry has dice, sides, and multiplier as numbers', () => {
+    for (const [cls, entry] of Object.entries(startingMoneyTable)) {
+      expect(typeof entry.dice,       `${cls}.dice`).toBe('number');
+      expect(typeof entry.sides,      `${cls}.sides`).toBe('number');
+      expect(typeof entry.multiplier, `${cls}.multiplier`).toBe('number');
+    }
+  });
+
+  it('all multipliers are 10 (PHB Table 23)', () => {
+    for (const [cls, entry] of Object.entries(startingMoneyTable)) {
+      expect(entry.multiplier, `${cls}.multiplier`).toBe(10);
+    }
+  });
+
+  it('fighters roll more dice than mages', () => {
+    expect(startingMoneyTable.fighter.dice).toBeGreaterThan(startingMoneyTable.mage.dice);
   });
 });

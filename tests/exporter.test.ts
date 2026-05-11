@@ -14,6 +14,7 @@ const baseChar: CharacterData = {
   mxHench: '4', loyalBs: '0', reactAdj: '0',
   hp: '24', thac0: '18',
   para: '13', rod: '15', poly: '14', breath: '16', spell: '15',
+  height: `5'10"`, weight: '165', age: '19', startingGold: '120',
 };
 
 // -- cv() --------------------------------------------------------------------
@@ -179,6 +180,34 @@ describe('buildSheetData()', () => {
     expect(aoa[40][0]).toBe('Spells/day');
     expect(aoa[40][2]).toBe('Spell list');
     expect(aoa[40][11]).toBe('Notes');
+  });
+
+  it('row 2 biography labels include Weight, Height, Age', () => {
+    expect(aoa[2][1]).toBe('Weight');
+    expect(aoa[2][2]).toBe('Height');
+    expect(aoa[2][3]).toBe('Age');
+  });
+
+  it('row 3 biography data contains weight, height, age', () => {
+    expect(aoa[3][1]).toBe(165);      // cv('165') → 165
+    expect(aoa[3][2]).toBe(`5'10"`);  // height string kept as-is
+    expect(aoa[3][3]).toBe(19);       // cv('19') → 19
+  });
+
+  it('row 37 GP data cell contains starting gold', () => {
+    // Row 35 = index 34: 'Experience Points' header
+    // Row 36 = PP, Row 37 = EP, Row 38 = GP (index 37)
+    expect(aoa[37][3]).toBe('GP');
+    expect(aoa[37][4]).toBe(120); // cv('120') → 120
+  });
+
+  it('handles empty physical/background values gracefully', () => {
+    const empty: CharacterData = { ...baseChar, height: '', weight: '', age: '', startingGold: '' };
+    const rows = buildSheetData(empty);
+    expect(rows[3][1]).toBe(''); // weight
+    expect(rows[3][2]).toBe(''); // height
+    expect(rows[3][3]).toBe(''); // age
+    expect(rows[37][4]).toBe(''); // startingGold
   });
 });
 

@@ -1,7 +1,7 @@
-import { Classes, Races, THAC0S } from './types.js';
-import { raceClassLimits, thac0s, savingThrows } from './data.js';
+import { Classes, Races, THAC0S, Gender } from './types.js';
+import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable } from './data.js';
 import { comboToLabel, getEligibleMulticlassCombos, AbilityScores } from './multiclass.js';
-import { rollDie, roll3d6, roll4d6DropLowest } from './dice.js';
+import { rollDie, roll3d6, roll4d6DropLowest, rollXdY } from './dice.js';
 import { exportCharacterSheet } from './exporter.js';
 
 export class Generator {
@@ -24,6 +24,13 @@ export class Generator {
   bndBrs = 0;
   hitProb = 0;
   DmgAdj = 0;
+
+  // Physical & background
+  gender: Gender | '' = '';
+  height = '';
+  weight = 0;
+  age = 0;
+  startingGold = 0;
 
   // Attributes
   strInit = 0;
@@ -93,10 +100,15 @@ export class Generator {
   labelSvPoly: any;
   labelSvSpell: any;
   labelSvBreath: any;
+  labelHeight: any;
+  labelWeight: any;
+  labelAge: any;
+  labelGold: any;
   selectClass: any;
   selectMulticlass: any;
   selectRace: any;
   selectLevel: any;
+  selectGender: any;
   rollType: any;
   spinner: any;
 
@@ -167,6 +179,12 @@ export class Generator {
     this.selectClass = document.getElementById('class') as HTMLSelectElement;
   this.selectMulticlass = document.getElementById('multiclass') as HTMLSelectElement | null;
     this.selectLevel = document.getElementById('lvl') as HTMLSelectElement;
+    this.selectGender = document.getElementById('gender') as HTMLSelectElement;
+
+    this.labelHeight = document.getElementById('charHeight') as HTMLElement;
+    this.labelWeight = document.getElementById('charWeight') as HTMLElement;
+    this.labelAge    = document.getElementById('charAge')    as HTMLElement;
+    this.labelGold   = document.getElementById('charGold')   as HTMLElement;
 
     this.rollType = document.getElementsByName('rolltype') as any;
     this.spinner = document.getElementById('spinner') as HTMLElement;
@@ -315,6 +333,16 @@ export class Generator {
     }
     this.selectLevel.selectedIndex = 0;
     this.selectRace.selectedIndex = 0;
+    if (this.selectGender) this.selectGender.selectedIndex = 0;
+    this.gender = '';
+    this.height = '';
+    this.weight = 0;
+    this.age = 0;
+    this.startingGold = 0;
+    if (this.labelHeight) this.labelHeight.textContent = '';
+    if (this.labelWeight) this.labelWeight.textContent = '';
+    if (this.labelAge)    this.labelAge.textContent    = '';
+    if (this.labelGold)   this.labelGold.textContent   = '';
     this.refreshMulticlassOptions();
   };
 
@@ -648,6 +676,74 @@ export class Generator {
     return 'mage';
   };
 
+  // Returns the race key used in data tables (e.g. 'halfElf'), or '' if none selected
+  private getCurrentRaceKey = (): string => {
+    return (this.selectRace as HTMLSelectElement).value || '';
+  };
+
+  // Clear height/weight state and UI labels
+  private clearPhysical = () => {
+    this.height = '';
+    this.weight = 0;
+    if (this.labelHeight) this.labelHeight.textContent = '';
+    if (this.labelWeight) this.labelWeight.textContent = '';
+  };
+
+  // Roll and display height and weight based on current race + gender
+  calcPhysical = () => {
+    const raceKey = this.getCurrentRaceKey();
+    if (!raceKey || !this.gender) { this.clearPhysical(); return; }
+    const entry = heightWeightTable[raceKey]?.[this.gender];
+    if (!entry) { this.clearPhysical(); return; }
+    const totalInches = entry.htBase + rollXdY(entry.htDice, entry.htSides);
+    this.height = `${Math.floor(totalInches / 12)}'${totalInches % 12}"`;
+    this.weight = entry.wtBase + rollXdY(entry.wtDice, entry.wtSides);
+    if (this.labelHeight) this.labelHeight.textContent = this.height;
+    if (this.labelWeight) this.labelWeight.textContent = `${this.weight} lbs`;
+  };
+
+  // Set gender and re-roll physical stats
+  setGender = (ddl: HTMLSelectElement) => {
+    this.gender = ddl.value as Gender | '';
+    this.calcPhysical();
+  };
+
+  // Roll starting age from race + class tables; for multiclass takes the oldest result
+  calcAge = () => {
+    const raceKey = this.getCurrentRaceKey();
+    if (!raceKey) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
+    const classes = this.getSelectedClasses();
+    if (!classes.length) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
+    const raceAges = startingAgeTable[raceKey];
+    if (!raceAges) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
+    let maxAge = 0;
+    for (const cls of classes) {
+      const entry = raceAges[cls];
+      if (!entry) continue;
+      const rolled = entry.base + rollXdY(entry.dice, entry.sides);
+      if (rolled > maxAge) maxAge = rolled;
+    }
+    if (!maxAge) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
+    this.age = maxAge;
+    if (this.labelAge) this.labelAge.textContent = this.age.toString();
+  };
+
+  // Roll starting gold from class tables; for multiclass takes the highest result
+  calcMoney = () => {
+    const classes = this.getSelectedClasses();
+    if (!classes.length) { this.startingGold = 0; if (this.labelGold) this.labelGold.textContent = ''; return; }
+    let maxGold = 0;
+    for (const cls of classes) {
+      const entry = startingMoneyTable[cls];
+      if (!entry) continue;
+      const rolled = rollXdY(entry.dice, entry.sides) * entry.multiplier;
+      if (rolled > maxGold) maxGold = rolled;
+    }
+    if (!maxGold) { this.startingGold = 0; if (this.labelGold) this.labelGold.textContent = ''; return; }
+    this.startingGold = maxGold;
+    if (this.labelGold) this.labelGold.textContent = `${maxGold} gp`;
+  };
+
   // Set the class (single or multiclass)
   setClass = (ddl: HTMLSelectElement) => {
     const selected = this.getSelectedClasses();
@@ -674,6 +770,8 @@ export class Generator {
     if (selected.length) {
       const hds = selected.map(hdFor) as number[];
       this.hitdice = Math.max(...hds);
+      this.calcAge();
+      this.calcMoney();
       return;
     }
 
@@ -701,6 +799,8 @@ export class Generator {
       default:
         throw new Error('Unknown class type');
     }
+    this.calcAge();
+    this.calcMoney();
   };
 
   zeroMOds = () => {
@@ -808,8 +908,10 @@ export class Generator {
       default: throw Error('Unknown race');
     }
     this.applyRacialMods();
-  // Race changed; refresh multiclass options
+  // Race changed; refresh multiclass options and re-roll physical/age
   this.refreshMulticlassOptions();
+  this.calcPhysical();
+  this.calcAge();
   };
 
   // Calculate hp and thac0
@@ -898,6 +1000,10 @@ export class Generator {
       poly:      this.labelSvPoly?.textContent    || '',
       breath:    this.labelSvBreath?.textContent  || '',
       spell:     this.labelSvSpell?.textContent   || '',
+      height:      this.height || '',
+      weight:      this.weight ? this.weight.toString() : '',
+      age:         this.age    ? this.age.toString()    : '',
+      startingGold:this.startingGold ? this.startingGold.toString() : '',
     };
   };
 
