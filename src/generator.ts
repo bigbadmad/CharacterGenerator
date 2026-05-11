@@ -678,15 +678,7 @@ export class Generator {
 
   // Returns the race key used in data tables (e.g. 'halfElf'), or '' if none selected
   private getCurrentRaceKey = (): string => {
-    switch ((this.selectRace as HTMLSelectElement).selectedIndex) {
-      case 1: return 'human';
-      case 2: return 'dwarf';
-      case 3: return 'elf';
-      case 4: return 'gnome';
-      case 5: return 'halfling';
-      case 6: return 'halfElf';
-      default: return '';
-    }
+    return (this.selectRace as HTMLSelectElement).value || '';
   };
 
   // Clear height/weight state and UI labels

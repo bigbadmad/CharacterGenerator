@@ -1,4 +1,4 @@
-﻿import { Classes, Races, RaceClassLimits, THAC0S, ISavingThrows, HeightWeightTable, AgeTable, StartingMoneyTable } from './types.js';
+import { Classes, Races, RaceClassLimits, THAC0S, ISavingThrows, HeightWeightTable, AgeTable, StartingMoneyTable } from './types.js';
 
 export const raceClassLimits: RaceClassLimits = {
   human: [Classes.fighter, Classes.thief, Classes.cleric, Classes.mage, Classes.bard, Classes.paladin, Classes.ranger, Classes.druid, Classes.illusionist],
@@ -127,7 +127,7 @@ export const startingAgeTable: AgeTable = {
 };
 
 // PHB Table 23 - Starting Money by Class
-// Starting gold = rollXdY(dice, sides) �- multiplier
+// Starting gold = rollXdY(dice, sides) * multiplier
 export const startingMoneyTable: StartingMoneyTable = {
   fighter:     { dice: 5, sides: 4, multiplier: 10 },
   paladin:     { dice: 5, sides: 4, multiplier: 10 },

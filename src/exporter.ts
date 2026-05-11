@@ -1,4 +1,4 @@
-﻿// SheetJS is loaded via CDN script tag in index.html
+// SheetJS is loaded via CDN script tag in index.html
 declare const XLSX: any;
 
 export interface CharacterData {
