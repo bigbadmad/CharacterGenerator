@@ -164,6 +164,14 @@
           <h2 class="card-title">Character</h2>
           <div class="char-fields">
             <div class="field-row">
+              <label class="field-label" for="gender">Gender</label>
+              <select id="gender" onchange="setGender(this)">
+                <option value=""></option>
+                <option value="male">male</option>
+                <option value="female">female</option>
+              </select>
+            </div>
+            <div class="field-row">
               <label class="field-label" for="race">Race</label>
               <select id="race" onchange="setRace(this)">
                 <option></option>
@@ -298,6 +306,16 @@
             <dt>Petrification / Polymorph</dt><dd id="poly"></dd>
             <dt>Breath Weapon</dt><dd id="breath"></dd>
             <dt>Spell</dt><dd id="spell"></dd>
+          </dl>
+        </div>
+
+        <div class="stat-card">
+          <h3 class="stat-card-title">Physical &amp; Background</h3>
+          <dl class="stat-dl">
+            <dt>Height</dt><dd id="charHeight"></dd>
+            <dt>Weight</dt><dd id="charWeight"></dd>
+            <dt>Age</dt><dd id="charAge"></dd>
+            <dt>Starting Gold</dt><dd id="charGold"></dd>
           </dl>
         </div>
 

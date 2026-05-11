@@ -51,3 +51,34 @@ export enum Races {
   halfling = 'halfling',
   halfElf = 'halfElf'
 }
+
+export type Gender = 'male' | 'female';
+
+export interface PhysicalEntry {
+  htBase: number;
+  htDice: number;
+  htSides: number;
+  wtBase: number;
+  wtDice: number;
+  wtSides: number;
+}
+
+export interface HeightWeightTable {
+  [race: string]: { male: PhysicalEntry; female: PhysicalEntry };
+}
+
+export interface AgeEntry {
+  base: number;
+  dice: number;
+  sides: number;
+}
+
+export type AgeTable = { [race: string]: { [classKey: string]: AgeEntry } };
+
+export interface MoneyEntry {
+  dice: number;
+  sides: number;
+  multiplier: number;
+}
+
+export type StartingMoneyTable = { [classKey: string]: MoneyEntry };

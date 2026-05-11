@@ -20,3 +20,10 @@ export function roll4d6DropLowest(): number {
   const lowest = Math.min(...r);
   return r.reduce((a, b) => a + b, 0) - lowest;
 }
+
+/** Roll xDy: sum of x rolls of a y-sided die */
+export function rollXdY(x: number, y: number): number {
+  let total = 0;
+  for (let i = 0; i < x; i++) total += rollDie(y);
+  return total;
+}

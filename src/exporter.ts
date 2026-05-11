@@ -44,6 +44,10 @@ export interface CharacterData {
   poly: string;
   breath: string;
   spell: string;
+  height: string;
+  weight: string;
+  age: string;
+  startingGold: string;
 }
 
 /** Convert a string to a number if possible, otherwise keep as string */
@@ -64,9 +68,9 @@ export function buildSheetData(d: CharacterData): (string | number)[][] {
     // Row 2  — data
     [E, d.className, cv(d.level), E, E, E, E, E, E, E, E, E, E, E, E],
     // Row 3  — labels: biography
-    ['Alignment', 'Weight', 'Height', 'Social Class', 'Eyes', 'Family/clan', E, E, E, E, E, E, E, E, E],
-    // Row 4  — data (manual fill)
-    [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
+    ['Alignment', 'Weight', 'Height', 'Age', 'Eyes', 'Family/clan', E, E, E, E, E, E, E, E, E],
+    // Row 4  — data
+    [E, cv(d.weight), d.height, cv(d.age), E, E, E, E, E, E, E, E, E, E, E],
     // Row 5  — empty
     [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
     // Row 6  — section headers
@@ -124,7 +128,7 @@ export function buildSheetData(d: CharacterData): (string | number)[][] {
     ['Experience Points', E, E, 'Money', E, 'Valuables', E, E, E, 'Magic items', E, E, E, E, E],
     [E, E, E, 'PP', E, E, E, E, E, E, E, E, E, E, E],
     [E, E, E, 'EP', E, E, E, E, E, E, E, E, E, E, E],
-    [E, E, E, 'GP', E, E, E, E, E, E, E, E, E, E, E],
+    [E, E, E, 'GP', cv(d.startingGold), E, E, E, E, E, E, E, E, E, E],
     [E, E, E, 'SP', E, E, E, E, E, E, E, E, E, E, E],
     [E, E, E, 'CP', E, E, E, E, E, E, E, E, E, E, E],
     // Row 41 — Spells/day header
