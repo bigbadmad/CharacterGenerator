@@ -689,12 +689,20 @@ export class Generator {
     }
   };
 
+  // Clear height/weight state and UI labels
+  private clearPhysical = () => {
+    this.height = '';
+    this.weight = 0;
+    if (this.labelHeight) this.labelHeight.textContent = '';
+    if (this.labelWeight) this.labelWeight.textContent = '';
+  };
+
   // Roll and display height and weight based on current race + gender
   calcPhysical = () => {
     const raceKey = this.getCurrentRaceKey();
-    if (!raceKey || !this.gender) return;
+    if (!raceKey || !this.gender) { this.clearPhysical(); return; }
     const entry = heightWeightTable[raceKey]?.[this.gender];
-    if (!entry) return;
+    if (!entry) { this.clearPhysical(); return; }
     const totalInches = entry.htBase + rollXdY(entry.htDice, entry.htSides);
     this.height = `${Math.floor(totalInches / 12)}'${totalInches % 12}"`;
     this.weight = entry.wtBase + rollXdY(entry.wtDice, entry.wtSides);
@@ -711,11 +719,11 @@ export class Generator {
   // Roll starting age from race + class tables; for multiclass takes the oldest result
   calcAge = () => {
     const raceKey = this.getCurrentRaceKey();
-    if (!raceKey) return;
+    if (!raceKey) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
     const classes = this.getSelectedClasses();
-    if (!classes.length) return;
+    if (!classes.length) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
     const raceAges = startingAgeTable[raceKey];
-    if (!raceAges) return;
+    if (!raceAges) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
     let maxAge = 0;
     for (const cls of classes) {
       const entry = raceAges[cls];
@@ -723,7 +731,7 @@ export class Generator {
       const rolled = entry.base + rollXdY(entry.dice, entry.sides);
       if (rolled > maxAge) maxAge = rolled;
     }
-    if (!maxAge) return;
+    if (!maxAge) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
     this.age = maxAge;
     if (this.labelAge) this.labelAge.textContent = this.age.toString();
   };
@@ -731,7 +739,7 @@ export class Generator {
   // Roll starting gold from class tables; for multiclass takes the highest result
   calcMoney = () => {
     const classes = this.getSelectedClasses();
-    if (!classes.length) return;
+    if (!classes.length) { this.startingGold = 0; if (this.labelGold) this.labelGold.textContent = ''; return; }
     let maxGold = 0;
     for (const cls of classes) {
       const entry = startingMoneyTable[cls];
@@ -739,7 +747,7 @@ export class Generator {
       const rolled = rollXdY(entry.dice, entry.sides) * entry.multiplier;
       if (rolled > maxGold) maxGold = rolled;
     }
-    if (!maxGold) return;
+    if (!maxGold) { this.startingGold = 0; if (this.labelGold) this.labelGold.textContent = ''; return; }
     this.startingGold = maxGold;
     if (this.labelGold) this.labelGold.textContent = `${maxGold} gp`;
   };

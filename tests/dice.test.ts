@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 // Import built JS to avoid TS extension resolution issues in tests
-import { rollDie, roll3d6, roll4d6DropLowest } from '../dist/dice.js';
+import { rollDie, roll3d6, roll4d6DropLowest, rollXdY } from '../dist/dice.js';
 
 function setMockRandomSequence(seq: number[]) {
   let i = 0;
@@ -51,5 +51,21 @@ describe('dice', () => {
     // Without rejection the first value would give 4294967293 % 6 + 1 = 2.
     setMockRandomSequence([4294967293, 2]);
     expect(rollDie(6)).toBe(3);
+  });
+
+  it('rollXdY returns 0 when x is 0', () => {
+    // No dice rolled; crypto should never be called.
+    expect(rollXdY(0, 6)).toBe(0);
+  });
+
+  it('rollXdY sums exactly x rolls of y-sided die', () => {
+    // Values 0,1,2 → rollDie(6) = 1,2,3 → sum = 6 for x=3
+    setMockRandomSequence([0, 1, 2]);
+    expect(rollXdY(3, 6)).toBe(6);
+  });
+
+  it('rollXdY with x=1 equals a single rollDie(y)', () => {
+    setMockRandomSequence([4]); // 4 % 8 + 1 = 5
+    expect(rollXdY(1, 8)).toBe(5);
   });
 });
