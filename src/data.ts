@@ -1,4 +1,4 @@
-import { Classes, Races, RaceClassLimits, THAC0S, ISavingThrows, HeightWeightTable, AgeTable, StartingMoneyTable } from './types.js';
+import { Classes, Races, Alignment, RaceClassLimits, THAC0S, ISavingThrows, HeightWeightTable, AgeTable, StartingMoneyTable } from './types.js';
 
 export const raceClassLimits: RaceClassLimits = {
   human: [Classes.fighter, Classes.thief, Classes.cleric, Classes.mage, Classes.bard, Classes.paladin, Classes.ranger, Classes.druid, Classes.illusionist],
@@ -142,10 +142,10 @@ export const startingMoneyTable: StartingMoneyTable = {
 
 // Alignment restrictions by class (PHB).
 // Paladin must be LG, Druid must be TN, Ranger must be any Good.
-export const classAlignmentRestrictions: Partial<Record<Classes, string[]>> = {
-  [Classes.paladin]: ['LG'],
-  [Classes.druid]:   ['TN'],
-  [Classes.ranger]:  ['LG', 'NG', 'CG'],
+export const classAlignmentRestrictions: Partial<Record<Classes, Alignment[]>> = {
+  [Classes.paladin]: [Alignment.LG],
+  [Classes.druid]:   [Alignment.TN],
+  [Classes.ranger]:  [Alignment.LG, Alignment.NG, Alignment.CG],
 };
 
 // Proficiency slots per meta-class group.

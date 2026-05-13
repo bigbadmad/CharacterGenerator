@@ -1,4 +1,4 @@
-import { Classes, Races, THAC0S, Gender } from './types.js';
+import { Classes, Races, Alignment, THAC0S, Gender } from './types.js';
 import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable, classAlignmentRestrictions, proficiencySlotData, spellSlotsPerDay, thiefBaseSkills, thiefRaceAdjustments, bardBaseSkills } from './data.js';
 import { comboToLabel, getEligibleMulticlassCombos, AbilityScores } from './multiclass.js';
 import { rollDie, roll3d6, roll4d6DropLowest, rollXdY } from './dice.js';
@@ -1011,6 +1011,11 @@ export class Generator {
   this.calcAge();
   this.calcThiefSkillBases();
   this.calcBardSkillBases();
+  this.applyAlignmentRestrictions(this.getSelectedClasses());
+  this.calcProfSlots();
+  this.calcSpellSlots();
+  this.updateThiefSkillsVisibility();
+  this.updateBardSkillsVisibility();
   };
 
   // Calculate hp and thac0
@@ -1119,7 +1124,7 @@ export class Generator {
   private applyAlignmentRestrictions = (classes: Classes[]) => {
     const sel = this.selectAlignment as HTMLSelectElement | null;
     if (!sel) return;
-    let allowed: string[] | null = null;
+    let allowed: Alignment[] | null = null;
     for (const cls of classes) {
       const restriction = classAlignmentRestrictions[cls];
       if (!restriction) continue;
@@ -1128,14 +1133,14 @@ export class Generator {
     for (const opt of Array.from(sel.options)) {
       const o = opt as HTMLOptionElement;
       if (!o.value) continue;
-      o.disabled = allowed !== null && !allowed.includes(o.value);
+      o.disabled = allowed !== null && !allowed.includes(o.value as Alignment);
     }
     if (allowed !== null && allowed.length === 1) {
       sel.value = allowed[0];
       sel.disabled = true;
     } else {
       sel.disabled = false;
-      if (allowed !== null && sel.value && !allowed.includes(sel.value)) sel.value = '';
+      if (allowed !== null && sel.value && !allowed.includes(sel.value as Alignment)) sel.value = '';
     }
   };
 
@@ -1143,7 +1148,12 @@ export class Generator {
     if (!this.profsCard) return;
     const classes = this.getSelectedClasses();
     const level = parseInt((this.selectLevel as HTMLSelectElement).value || '0');
-    if (!classes.length || !level) { this.profsCard.style.display = 'none'; return; }
+    if (!classes.length || !level) {
+      this.profsCard.style.display = 'none';
+      if (this.labelWpSlots) this.labelWpSlots.textContent = '';
+      if (this.labelNwpSlots) this.labelNwpSlots.textContent = '';
+      return;
+    }
     const getGroup = (c: Classes): keyof typeof proficiencySlotData => {
       if ([Classes.fighter, Classes.paladin, Classes.ranger].includes(c)) return 'warrior';
       if ([Classes.thief, Classes.bard].includes(c)) return 'rogue';
@@ -1239,7 +1249,7 @@ export class Generator {
     const avail = level ? 60 + (level - 1) * 30 : 0;
     let used = 0;
     this.thiefSkillAdds.forEach((input, i) => {
-      const added = parseInt(input?.value || '0') || 0;
+      const added = Math.max(0, parseInt(input?.value || '0') || 0);
       used += added;
       const total = Math.min((this.thiefSkillBaseValues[i] || 0) + added, 95);
       if (this.thiefSkillTotals[i]) this.thiefSkillTotals[i].textContent = `${total}%`;
@@ -1290,7 +1300,7 @@ export class Generator {
     const avail = level ? level * 20 : 0;
     let used = 0;
     this.bardSkillAdds.forEach((input, i) => {
-      const added = parseInt(input?.value || '0') || 0;
+      const added = Math.max(0, parseInt(input?.value || '0') || 0);
       used += added;
       const total = Math.min((this.bardSkillBaseValues[i] || 0) + added, 95);
       if (this.bardSkillTotals[i]) this.bardSkillTotals[i].textContent = `${total}%`;

@@ -15,6 +15,7 @@ const baseChar: CharacterData = {
   hp: '24', thac0: '18',
   para: '13', rod: '15', poly: '14', breath: '16', spell: '15',
   height: `5'10"`, weight: '165', age: '19', startingGold: '120',
+  alignment: 'LG', wpSlots: '4', nwpSlots: '3',
 };
 
 // -- cv() --------------------------------------------------------------------
@@ -199,6 +200,21 @@ describe('buildSheetData()', () => {
     // Row 36 = PP, Row 37 = EP, Row 38 = GP (index 37)
     expect(aoa[37][3]).toBe('GP');
     expect(aoa[37][4]).toBe(120); // cv('120') → 120
+  });
+
+  it('row 3 biography data contains alignment', () => {
+    expect(aoa[3][0]).toBe('LG');
+  });
+
+  it('row 26 prof slots are exported when present', () => {
+    expect(aoa[26][5]).toBe('Weapon slots: 4');
+    expect(aoa[26][7]).toBe('NWP slots: 3');
+  });
+
+  it('row 26 prof slot cells are empty when slots absent', () => {
+    const rows = buildSheetData({ ...baseChar, wpSlots: '', nwpSlots: '' });
+    expect(rows[26][5]).toBe('');
+    expect(rows[26][7]).toBe('');
   });
 
   it('handles empty physical/background values gracefully', () => {

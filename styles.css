@@ -496,6 +496,11 @@ body {
     grid-template-columns: repeat(2, 1fr);
     width: 100%;
   }
+  #thief-skills-card,
+  #bard-skills-card {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 @media (max-width: 520px) {
