@@ -1,11 +1,11 @@
-name: Test & Deploy
+name: Test & Build
 
 on:
   push:
     branches: [master]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,18 +23,3 @@ jobs:
 
       - name: Test & Build
         run: npm test
-
-      - name: Assemble deploy package
-        run: |
-          mkdir deploy
-          cp index.html styles.css deploy/
-          cp -r dist deploy/dist
-
-      - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /htdocs/dnd/
-          local-dir: ./deploy/
