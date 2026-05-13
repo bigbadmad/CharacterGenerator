@@ -214,6 +214,21 @@
                 <option>16</option><option>17</option><option>18</option><option>19</option><option>20</option>
               </select>
             </div>
+            <div class="field-row">
+              <label class="field-label" for="alignment">Alignment</label>
+              <select id="alignment" onchange="setAlignment(this)">
+                <option value=""></option>
+                <option value="LG">Lawful Good</option>
+                <option value="LN">Lawful Neutral</option>
+                <option value="LE">Lawful Evil</option>
+                <option value="NG">Neutral Good</option>
+                <option value="TN">True Neutral</option>
+                <option value="NE">Neutral Evil</option>
+                <option value="CG">Chaotic Good</option>
+                <option value="CN">Chaotic Neutral</option>
+                <option value="CE">Chaotic Evil</option>
+              </select>
+            </div>
           </div>
           <div class="derived-stats">
             <div class="derived-stat">
@@ -233,6 +248,52 @@
         </div>
 
       </aside>
+
+      <!-- Thief Skills (shown only when Thief class is selected) -->
+      <div class="card" id="thief-skills-card" style="display:none">
+        <h2 class="card-title">Thief Skills</h2>
+        <div class="thief-points-info">
+          <span>Available: <strong id="ts-avail">0</strong></span>
+          <span>Used: <strong id="ts-used">0</strong></span>
+          <span>Remaining: <strong id="ts-remain">0</strong></span>
+        </div>
+        <table class="thief-table">
+          <thead>
+            <tr><th>Skill</th><th>Base%</th><th>+Add</th><th>Total%</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pick Pockets</td><td id="ts-pp-base">—</td><td><input type="number" id="ts-pp-add" class="thief-add" min="0" value="0" oninput="updateThiefSkills()" /></td><td id="ts-pp-total">—</td></tr>
+            <tr><td>Open Locks</td><td id="ts-ol-base">—</td><td><input type="number" id="ts-ol-add" class="thief-add" min="0" value="0" oninput="updateThiefSkills()" /></td><td id="ts-ol-total">—</td></tr>
+            <tr><td>Find/Remove Traps</td><td id="ts-frt-base">—</td><td><input type="number" id="ts-frt-add" class="thief-add" min="0" value="0" oninput="updateThiefSkills()" /></td><td id="ts-frt-total">—</td></tr>
+            <tr><td>Move Silently</td><td id="ts-ms-base">—</td><td><input type="number" id="ts-ms-add" class="thief-add" min="0" value="0" oninput="updateThiefSkills()" /></td><td id="ts-ms-total">—</td></tr>
+            <tr><td>Hide in Shadows</td><td id="ts-his-base">—</td><td><input type="number" id="ts-his-add" class="thief-add" min="0" value="0" oninput="updateThiefSkills()" /></td><td id="ts-his-total">—</td></tr>
+            <tr><td>Detect Noise</td><td id="ts-dn-base">—</td><td><input type="number" id="ts-dn-add" class="thief-add" min="0" value="0" oninput="updateThiefSkills()" /></td><td id="ts-dn-total">—</td></tr>
+            <tr><td>Climb Walls</td><td id="ts-cw-base">—</td><td><input type="number" id="ts-cw-add" class="thief-add" min="0" value="0" oninput="updateThiefSkills()" /></td><td id="ts-cw-total">—</td></tr>
+            <tr><td>Read Languages</td><td id="ts-rl-base">—</td><td><input type="number" id="ts-rl-add" class="thief-add" min="0" value="0" oninput="updateThiefSkills()" /></td><td id="ts-rl-total">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Bard Skills (shown only when Bard class is selected) -->
+      <div class="card" id="bard-skills-card" style="display:none">
+        <h2 class="card-title">Bard Skills</h2>
+        <div class="thief-points-info">
+          <span>Available: <strong id="bs-avail">0</strong></span>
+          <span>Used: <strong id="bs-used">0</strong></span>
+          <span>Remaining: <strong id="bs-remain">0</strong></span>
+        </div>
+        <table class="thief-table">
+          <thead>
+            <tr><th>Skill</th><th>Base%</th><th>+Add</th><th>Total%</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pick Pockets</td><td id="bs-pp-base">—</td><td><input type="number" id="bs-pp-add" class="thief-add" min="0" value="0" oninput="updateBardSkills()" /></td><td id="bs-pp-total">—</td></tr>
+            <tr><td>Detect Noise</td><td id="bs-dn-base">—</td><td><input type="number" id="bs-dn-add" class="thief-add" min="0" value="0" oninput="updateBardSkills()" /></td><td id="bs-dn-total">—</td></tr>
+            <tr><td>Climb Walls</td><td id="bs-cw-base">—</td><td><input type="number" id="bs-cw-add" class="thief-add" min="0" value="0" oninput="updateBardSkills()" /></td><td id="bs-cw-total">—</td></tr>
+            <tr><td>Read Languages</td><td id="bs-rl-base">—</td><td><input type="number" id="bs-rl-add" class="thief-add" min="0" value="0" oninput="updateBardSkills()" /></td><td id="bs-rl-total">—</td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- -- RIGHT: STAT PANELS ----------------------- -->
       <div class="stats-area">
@@ -318,6 +379,19 @@
             <dt>Age</dt><dd id="charAge"></dd>
             <dt>Starting Gold</dt><dd id="charGold"></dd>
           </dl>
+        </div>
+
+        <div class="stat-card" id="profs-card" style="display:none">
+          <h3 class="stat-card-title">Proficiency Slots</h3>
+          <dl class="stat-dl">
+            <dt>Weapon Profs</dt><dd id="wpSlots"></dd>
+            <dt>Non-Weapon Profs</dt><dd id="nwpSlots"></dd>
+          </dl>
+        </div>
+
+        <div class="stat-card" id="spells-card" style="display:none">
+          <h3 class="stat-card-title">Spells Per Day</h3>
+          <dl class="stat-dl" id="spells-dl"></dl>
         </div>
 
       </div>

@@ -48,6 +48,9 @@ export interface CharacterData {
   weight: string;
   age: string;
   startingGold: string;
+  alignment: string;
+  wpSlots: string;
+  nwpSlots: string;
 }
 
 /** Convert a string to a number if possible, otherwise keep as string */
@@ -70,7 +73,7 @@ export function buildSheetData(d: CharacterData): (string | number)[][] {
     // Row 3  - labels: biography
     ['Alignment', 'Weight', 'Height', 'Age', 'Eyes', 'Family/clan', E, E, E, E, E, E, E, E, E],
     // Row 4  - data
-    [E, cv(d.weight), d.height, cv(d.age), E, E, E, E, E, E, E, E, E, E, E],
+    [d.alignment, cv(d.weight), d.height, cv(d.age), E, E, E, E, E, E, E, E, E, E, E],
     // Row 5  - empty
     [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
     // Row 6  - section headers
@@ -115,7 +118,7 @@ export function buildSheetData(d: CharacterData): (string | number)[][] {
     [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
     // Row 26 - Special attacks / Proficiencies / Equipment headers
     ['Special attacks', E, E, E, E, 'Proficiencies/skills/languages', E, E, E, 'Equipment', E, E, E, E, E],
-    [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
+    [E, E, E, E, E, d.wpSlots ? `Weapon slots: ${d.wpSlots}` : E, E, d.nwpSlots ? `NWP slots: ${d.nwpSlots}` : E, E, E, E, E, E, E, E],
     [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
     [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
     // Row 30 - Special Abilities

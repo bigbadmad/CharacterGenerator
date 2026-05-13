@@ -139,3 +139,133 @@ export const startingMoneyTable: StartingMoneyTable = {
   thief:       { dice: 2, sides: 6, multiplier: 10 },
   bard:        { dice: 2, sides: 6, multiplier: 10 },
 };
+
+// Alignment restrictions by class (PHB).
+// Paladin must be LG, Druid must be TN, Ranger must be any Good.
+export const classAlignmentRestrictions: Partial<Record<Classes, string[]>> = {
+  [Classes.paladin]: ['LG'],
+  [Classes.druid]:   ['TN'],
+  [Classes.ranger]:  ['LG', 'NG', 'CG'],
+};
+
+// Proficiency slots per meta-class group.
+// Formula: initial + floor((level - 1) / per)
+export const proficiencySlotData = {
+  warrior: { wp: { initial: 4, per: 3 }, nwp: { initial: 3, per: 3 } },
+  rogue:   { wp: { initial: 2, per: 4 }, nwp: { initial: 3, per: 4 } },
+  priest:  { wp: { initial: 2, per: 4 }, nwp: { initial: 4, per: 3 } },
+  wizard:  { wp: { initial: 1, per: 6 }, nwp: { initial: 4, per: 3 } },
+} as const;
+
+// Spell slots per day indexed as [level-1][spellLevel-1]
+// PHB Table 27 – Wizard Spell Progression (Mage / Illusionist, 9 spell levels)
+const mageSlots: number[][] = [
+  [1,0,0,0,0,0,0,0,0],
+  [2,0,0,0,0,0,0,0,0],
+  [2,1,0,0,0,0,0,0,0],
+  [3,2,0,0,0,0,0,0,0],
+  [4,2,1,0,0,0,0,0,0],
+  [4,2,2,0,0,0,0,0,0],
+  [4,3,2,1,0,0,0,0,0],
+  [4,3,3,2,0,0,0,0,0],
+  [4,3,3,2,1,0,0,0,0],
+  [4,4,3,2,2,0,0,0,0],
+  [4,4,4,3,3,0,0,0,0],
+  [4,4,4,4,4,1,0,0,0],
+  [5,5,5,4,4,2,0,0,0],
+  [5,5,5,4,4,2,1,0,0],
+  [5,5,5,5,5,2,1,0,0],
+  [5,5,5,5,5,3,2,1,0],
+  [5,5,5,5,5,3,3,2,1],
+  [5,5,5,5,5,3,3,2,2],
+  [5,5,5,5,5,3,3,3,3],
+  [5,5,5,5,5,4,3,3,3],
+];
+
+// PHB Priest Spell Progression (Cleric / Druid, 7 spell levels, base without WIS bonus)
+const priestSlots: number[][] = [
+  [1,0,0,0,0,0,0],
+  [2,0,0,0,0,0,0],
+  [2,1,0,0,0,0,0],
+  [3,2,0,0,0,0,0],
+  [3,3,1,0,0,0,0],
+  [3,3,2,0,0,0,0],
+  [3,3,2,1,0,0,0],
+  [3,3,3,2,0,0,0],
+  [4,4,3,2,1,0,0],
+  [4,4,3,3,2,0,0],
+  [5,4,4,3,2,1,0],
+  [6,5,5,3,2,2,0],
+  [6,6,6,4,2,2,0],
+  [6,6,6,5,3,2,1],
+  [6,6,6,6,4,2,1],
+  [7,7,7,6,4,3,1],
+  [7,7,7,7,5,3,2],
+  [8,8,8,8,6,4,2],
+  [9,9,8,8,6,4,2],
+  [9,9,9,8,7,5,2],
+];
+
+// PHB Bard Spell Progression (wizard-type spells, 6 levels; level 1 has no spells)
+const bardSlots: number[][] = [
+  [0,0,0,0,0,0],
+  [1,0,0,0,0,0],
+  [2,0,0,0,0,0],
+  [2,1,0,0,0,0],
+  [3,1,0,0,0,0],
+  [3,2,0,0,0,0],
+  [3,2,1,0,0,0],
+  [3,3,2,0,0,0],
+  [3,3,2,1,0,0],
+  [3,3,3,2,0,0],
+  [3,3,3,2,1,0],
+  [3,3,3,3,2,0],
+  [3,3,3,3,2,1],
+  [3,3,3,3,3,2],
+  [3,3,3,3,3,2],
+  [4,3,3,3,3,2],
+  [4,4,3,3,3,2],
+  [4,4,4,3,3,2],
+  [4,4,4,4,3,3],
+  [4,4,4,4,4,3],
+];
+
+export const spellSlotsPerDay: Partial<Record<Classes, number[][]>> = {
+  [Classes.mage]:        mageSlots,
+  [Classes.illusionist]: mageSlots,
+  [Classes.cleric]:      priestSlots,
+  [Classes.druid]:       priestSlots,
+  [Classes.bard]:        bardSlots,
+};
+
+// Thief base skill scores before racial adjustments or discretionary points (PHB Table 28)
+export const thiefBaseSkills = {
+  pp:  15,  // Pick Pockets
+  ol:  10,  // Open Locks
+  frt:  5,  // Find/Remove Traps
+  ms:  10,  // Move Silently
+  his:  5,  // Hide in Shadows
+  dn:  15,  // Detect Noise
+  cw:  60,  // Climb Walls
+  rl:   0,  // Read Languages
+} as const;
+
+// Racial adjustments added to base thief skill scores (PHB Table 28)
+export const thiefRaceAdjustments: Record<string, {
+  pp: number; ol: number; frt: number; ms: number; his: number; dn: number; cw: number; rl: number;
+}> = {
+  human:    { pp:  0, ol:  0, frt:  0, ms:  0, his:  0, dn:  0, cw:   0, rl:  0 },
+  dwarf:    { pp: -5, ol: 10, frt: 15, ms:  0, his:  0, dn:  0, cw: -10, rl:  0 },
+  elf:      { pp:  5, ol: -5, frt: -5, ms:  5, his: 10, dn: -5, cw:  -5, rl:  0 },
+  gnome:    { pp:  5, ol:  5, frt:  5, ms: 10, his: 10, dn:  0, cw: -15, rl: -5 },
+  halfling: { pp:  5, ol: 10, frt:  0, ms: 15, his: 15, dn:  5, cw: -15, rl: -5 },
+  halfElf:  { pp:  5, ol: -5, frt: -5, ms:  5, his: 10, dn: -5, cw:  -5, rl:  0 },
+};
+
+// Bard base skill scores — bards receive 4 of the thief skills (PHB)
+export const bardBaseSkills = {
+  pp:  15,  // Pick Pockets
+  dn:  15,  // Detect Noise
+  cw:  60,  // Climb Walls
+  rl:   0,  // Read Languages
+} as const;

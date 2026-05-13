@@ -509,3 +509,77 @@ body {
     grid-template-columns: auto 1fr;
   }
 }
+
+/* -- Thief Skills Card ---------------------------------------- */
+.thief-points-info {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: var(--parchment-mid);
+  border-bottom: 1px solid var(--parchment-edge);
+}
+
+.thief-points-info strong {
+  color: var(--accent);
+}
+
+.thief-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.thief-table th {
+  background: var(--parchment-mid);
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.6rem;
+  border-bottom: 1px solid var(--parchment-edge);
+  text-align: left;
+}
+
+.thief-table td {
+  padding: 0.28rem 0.6rem;
+  border-bottom: 1px solid #e8d8b8;
+  vertical-align: middle;
+  color: var(--text);
+}
+
+.thief-table tr:last-child td {
+  border-bottom: none;
+}
+
+.thief-table tr:nth-child(even) td {
+  background: rgba(0,0,0,0.025);
+}
+
+.thief-add {
+  width: 48px;
+  padding: 0.18rem 0.25rem;
+  border: 1px solid var(--parchment-edge);
+  border-radius: 3px;
+  background: #fff9ef;
+  color: var(--text);
+  font-size: 0.82rem;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.thief-add::-webkit-inner-spin-button {
+  display: none;
+}
+
+.spell-class-header {
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  padding-top: 0.5rem;
+}

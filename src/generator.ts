@@ -1,5 +1,5 @@
 import { Classes, Races, THAC0S, Gender } from './types.js';
-import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable } from './data.js';
+import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable, classAlignmentRestrictions, proficiencySlotData, spellSlotsPerDay, thiefBaseSkills, thiefRaceAdjustments, bardBaseSkills } from './data.js';
 import { comboToLabel, getEligibleMulticlassCombos, AbilityScores } from './multiclass.js';
 import { rollDie, roll3d6, roll4d6DropLowest, rollXdY } from './dice.js';
 import { exportCharacterSheet } from './exporter.js';
@@ -31,6 +31,8 @@ export class Generator {
   weight = 0;
   age = 0;
   startingGold = 0;
+  baseAge = 0;
+  baseGold = 0;
 
   // Attributes
   strInit = 0;
@@ -112,6 +114,38 @@ export class Generator {
   rollType: any;
   spinner: any;
 
+  // Alignment
+  selectAlignment: any;
+
+  // Proficiency slots
+  profsCard: any;
+  labelWpSlots: any;
+  labelNwpSlots: any;
+
+  // Spell slots
+  spellsCard: any;
+  spellsDl: any;
+
+  // Thief skills
+  thiefSkillsCard: any;
+  tsAvail: any;
+  tsUsed: any;
+  tsRemain: any;
+  thiefSkillBases: HTMLElement[] = [];
+  thiefSkillAdds: HTMLInputElement[] = [];
+  thiefSkillTotals: HTMLElement[] = [];
+  thiefSkillBaseValues: number[] = [0,0,0,0,0,0,0,0];
+
+  // Bard skills
+  bardSkillsCard: any;
+  bsAvail: any;
+  bsUsed: any;
+  bsRemain: any;
+  bardSkillBases: HTMLElement[] = [];
+  bardSkillAdds: HTMLInputElement[] = [];
+  bardSkillTotals: HTMLElement[] = [];
+  bardSkillBaseValues: number[] = [0,0,0,0];
+
   setup = () => {
     this.rollButton.addEventListener('click', this.roll);
     this.getControls();
@@ -188,6 +222,29 @@ export class Generator {
 
     this.rollType = document.getElementsByName('rolltype') as any;
     this.spinner = document.getElementById('spinner') as HTMLElement;
+
+    this.selectAlignment = document.getElementById('alignment') as HTMLSelectElement;
+    this.profsCard = document.getElementById('profs-card');
+    this.labelWpSlots = document.getElementById('wpSlots');
+    this.labelNwpSlots = document.getElementById('nwpSlots');
+    this.spellsCard = document.getElementById('spells-card');
+    this.spellsDl = document.getElementById('spells-dl');
+    this.thiefSkillsCard = document.getElementById('thief-skills-card');
+    this.tsAvail = document.getElementById('ts-avail');
+    this.tsUsed = document.getElementById('ts-used');
+    this.tsRemain = document.getElementById('ts-remain');
+    const skillIds = ['pp','ol','frt','ms','his','dn','cw','rl'];
+    this.thiefSkillBases = skillIds.map(id => document.getElementById(`ts-${id}-base`) as HTMLElement);
+    this.thiefSkillAdds = skillIds.map(id => document.getElementById(`ts-${id}-add`) as HTMLInputElement);
+    this.thiefSkillTotals = skillIds.map(id => document.getElementById(`ts-${id}-total`) as HTMLElement);
+    this.bardSkillsCard = document.getElementById('bard-skills-card');
+    this.bsAvail = document.getElementById('bs-avail');
+    this.bsUsed = document.getElementById('bs-used');
+    this.bsRemain = document.getElementById('bs-remain');
+    const bardSkillIds = ['pp','dn','cw','rl'];
+    this.bardSkillBases = bardSkillIds.map(id => document.getElementById(`bs-${id}-base`) as HTMLElement);
+    this.bardSkillAdds = bardSkillIds.map(id => document.getElementById(`bs-${id}-add`) as HTMLInputElement);
+    this.bardSkillTotals = bardSkillIds.map(id => document.getElementById(`bs-${id}-total`) as HTMLElement);
   };
 
   // Compose current ability scores (after racial mods) from inputs
@@ -232,7 +289,7 @@ export class Generator {
       opt.text = comboToLabel(combo);
       el.appendChild(opt);
     }
-    el.size = Math.min(Math.max(combos.length, 0), 8) || 4;
+    el.size = Math.min(Math.max(combos.length, 2), 8);
     el.style.display = combos.length ? '' : 'none';
   };
 
@@ -339,11 +396,31 @@ export class Generator {
     this.weight = 0;
     this.age = 0;
     this.startingGold = 0;
+    this.baseAge = 0;
+    this.baseGold = 0;
     if (this.labelHeight) this.labelHeight.textContent = '';
     if (this.labelWeight) this.labelWeight.textContent = '';
     if (this.labelAge)    this.labelAge.textContent    = '';
     if (this.labelGold)   this.labelGold.textContent   = '';
     this.refreshMulticlassOptions();
+    if (this.selectAlignment) {
+      const sel = this.selectAlignment as HTMLSelectElement;
+      sel.value = '';
+      sel.disabled = false;
+      for (const opt of Array.from(sel.options)) (opt as HTMLOptionElement).disabled = false;
+    }
+    if (this.profsCard) this.profsCard.style.display = 'none';
+    if (this.spellsCard) this.spellsCard.style.display = 'none';
+    if (this.thiefSkillsCard) this.thiefSkillsCard.style.display = 'none';
+    this.thiefSkillAdds.forEach(input => { if (input) input.value = '0'; });
+    if (this.tsAvail) this.tsAvail.textContent = '0';
+    if (this.tsUsed) this.tsUsed.textContent = '0';
+    if (this.tsRemain) this.tsRemain.textContent = '0';
+    if (this.bardSkillsCard) this.bardSkillsCard.style.display = 'none';
+    this.bardSkillAdds.forEach(input => { if (input) input.value = '0'; });
+    if (this.bsAvail) this.bsAvail.textContent = '0';
+    if (this.bsUsed) this.bsUsed.textContent = '0';
+    if (this.bsRemain) this.bsRemain.textContent = '0';
   };
 
   // re-enable dropdown option
@@ -711,11 +788,11 @@ export class Generator {
   // Roll starting age from race + class tables; for multiclass takes the oldest result
   calcAge = () => {
     const raceKey = this.getCurrentRaceKey();
-    if (!raceKey) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
+    if (!raceKey) { this.baseAge = 0; this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
     const classes = this.getSelectedClasses();
-    if (!classes.length) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
+    if (!classes.length) { this.baseAge = 0; this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
     const raceAges = startingAgeTable[raceKey];
-    if (!raceAges) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
+    if (!raceAges) { this.baseAge = 0; this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
     let maxAge = 0;
     for (const cls of classes) {
       const entry = raceAges[cls];
@@ -723,15 +800,15 @@ export class Generator {
       const rolled = entry.base + rollXdY(entry.dice, entry.sides);
       if (rolled > maxAge) maxAge = rolled;
     }
-    if (!maxAge) { this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
-    this.age = maxAge;
-    if (this.labelAge) this.labelAge.textContent = this.age.toString();
+    if (!maxAge) { this.baseAge = 0; this.age = 0; if (this.labelAge) this.labelAge.textContent = ''; return; }
+    this.baseAge = maxAge;
+    this.applyLevelToAgeGold();
   };
 
   // Roll starting gold from class tables; for multiclass takes the highest result
   calcMoney = () => {
     const classes = this.getSelectedClasses();
-    if (!classes.length) { this.startingGold = 0; if (this.labelGold) this.labelGold.textContent = ''; return; }
+    if (!classes.length) { this.baseGold = 0; this.startingGold = 0; if (this.labelGold) this.labelGold.textContent = ''; return; }
     let maxGold = 0;
     for (const cls of classes) {
       const entry = startingMoneyTable[cls];
@@ -739,9 +816,19 @@ export class Generator {
       const rolled = rollXdY(entry.dice, entry.sides) * entry.multiplier;
       if (rolled > maxGold) maxGold = rolled;
     }
-    if (!maxGold) { this.startingGold = 0; if (this.labelGold) this.labelGold.textContent = ''; return; }
-    this.startingGold = maxGold;
-    if (this.labelGold) this.labelGold.textContent = `${maxGold} gp`;
+    if (!maxGold) { this.baseGold = 0; this.startingGold = 0; if (this.labelGold) this.labelGold.textContent = ''; return; }
+    this.baseGold = maxGold;
+    this.applyLevelToAgeGold();
+  };
+
+  // Apply level bonus (each level above 1st adds 1 year and 10 gp) to the rolled base values
+  private applyLevelToAgeGold = () => {
+    const level = parseInt((this.selectLevel as HTMLSelectElement)?.value || '0');
+    const bonus = Math.max(0, level - 1);
+    this.age = this.baseAge ? this.baseAge + bonus : 0;
+    this.startingGold = this.baseGold ? this.baseGold + bonus * 10 : 0;
+    if (this.labelAge) this.labelAge.textContent = this.age ? this.age.toString() : '';
+    if (this.labelGold) this.labelGold.textContent = this.startingGold ? `${this.startingGold} gp` : '';
   };
 
   // Set the class (single or multiclass)
@@ -772,6 +859,11 @@ export class Generator {
       this.hitdice = Math.max(...hds);
       this.calcAge();
       this.calcMoney();
+      this.applyAlignmentRestrictions(selected);
+      this.calcProfSlots();
+      this.calcSpellSlots();
+      this.updateThiefSkillsVisibility();
+      this.updateBardSkillsVisibility();
       return;
     }
 
@@ -801,6 +893,11 @@ export class Generator {
     }
     this.calcAge();
     this.calcMoney();
+    this.applyAlignmentRestrictions(this.getSelectedClasses());
+    this.calcProfSlots();
+    this.calcSpellSlots();
+    this.updateThiefSkillsVisibility();
+    this.updateBardSkillsVisibility();
   };
 
   zeroMOds = () => {
@@ -912,6 +1009,8 @@ export class Generator {
   this.refreshMulticlassOptions();
   this.calcPhysical();
   this.calcAge();
+  this.calcThiefSkillBases();
+  this.calcBardSkillBases();
   };
 
   // Calculate hp and thac0
@@ -938,6 +1037,11 @@ export class Generator {
       }
     })();
     this.setLabelValues(meta, ddl.selectedIndex - 1);
+    this.applyLevelToAgeGold();
+    this.calcProfSlots();
+    this.calcSpellSlots();
+    this.updateThiefPoints();
+    this.updateBardPoints();
   };
 
   // Hit dice roll with con mod, minimum roll 1
@@ -1003,8 +1107,201 @@ export class Generator {
       height:      this.height || '',
       weight:      this.weight ? this.weight.toString() : '',
       age:         this.age    ? this.age.toString()    : '',
-      startingGold:this.startingGold ? this.startingGold.toString() : '',
+      startingGold: this.startingGold ? this.startingGold.toString() : '',
+      alignment:    (this.selectAlignment as HTMLSelectElement)?.value || '',
+      wpSlots:      this.labelWpSlots?.textContent || '',
+      nwpSlots:     this.labelNwpSlots?.textContent || '',
     };
+  };
+
+  setAlignment = (_ddl: HTMLSelectElement) => {};
+
+  private applyAlignmentRestrictions = (classes: Classes[]) => {
+    const sel = this.selectAlignment as HTMLSelectElement | null;
+    if (!sel) return;
+    let allowed: string[] | null = null;
+    for (const cls of classes) {
+      const restriction = classAlignmentRestrictions[cls];
+      if (!restriction) continue;
+      allowed = allowed === null ? [...restriction] : allowed.filter(a => restriction.includes(a));
+    }
+    for (const opt of Array.from(sel.options)) {
+      const o = opt as HTMLOptionElement;
+      if (!o.value) continue;
+      o.disabled = allowed !== null && !allowed.includes(o.value);
+    }
+    if (allowed !== null && allowed.length === 1) {
+      sel.value = allowed[0];
+      sel.disabled = true;
+    } else {
+      sel.disabled = false;
+      if (allowed !== null && sel.value && !allowed.includes(sel.value)) sel.value = '';
+    }
+  };
+
+  private calcProfSlots = () => {
+    if (!this.profsCard) return;
+    const classes = this.getSelectedClasses();
+    const level = parseInt((this.selectLevel as HTMLSelectElement).value || '0');
+    if (!classes.length || !level) { this.profsCard.style.display = 'none'; return; }
+    const getGroup = (c: Classes): keyof typeof proficiencySlotData => {
+      if ([Classes.fighter, Classes.paladin, Classes.ranger].includes(c)) return 'warrior';
+      if ([Classes.thief, Classes.bard].includes(c)) return 'rogue';
+      if ([Classes.cleric, Classes.druid].includes(c)) return 'priest';
+      return 'wizard';
+    };
+    let bestWp = 0, bestNwp = 0;
+    for (const cls of classes) {
+      const g = proficiencySlotData[getGroup(cls)];
+      const wp = g.wp.initial + Math.floor((level - 1) / g.wp.per);
+      const nwp = g.nwp.initial + Math.floor((level - 1) / g.nwp.per);
+      if (wp > bestWp) bestWp = wp;
+      if (nwp > bestNwp) bestNwp = nwp;
+    }
+    if (this.labelWpSlots) this.labelWpSlots.textContent = bestWp.toString();
+    if (this.labelNwpSlots) this.labelNwpSlots.textContent = bestNwp.toString();
+    this.profsCard.style.display = '';
+  };
+
+  private calcSpellSlots = () => {
+    if (!this.spellsCard || !this.spellsDl) return;
+    const classes = this.getSelectedClasses();
+    const level = parseInt((this.selectLevel as HTMLSelectElement).value || '0');
+    if (!classes.length || !level) { this.spellsCard.style.display = 'none'; return; }
+    const casters = classes.filter(c => spellSlotsPerDay[c]);
+    if (!casters.length) { this.spellsCard.style.display = 'none'; return; }
+    this.spellsDl.innerHTML = '';
+    const ordinals = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th'];
+    casters.forEach(cls => {
+      const table = spellSlotsPerDay[cls]!;
+      const slots = table[level - 1];
+      if (!slots) return;
+      const lastNonZero = slots.reduce((m, c, i) => (c > 0 ? i : m), -1);
+      if (lastNonZero < 0) return;
+      if (casters.length > 1) {
+        const dt = document.createElement('dt');
+        dt.textContent = cls.charAt(0).toUpperCase() + cls.slice(1);
+        dt.className = 'spell-class-header';
+        this.spellsDl.appendChild(dt);
+        this.spellsDl.appendChild(document.createElement('dd'));
+      }
+      for (let i = 0; i <= lastNonZero; i++) {
+        const dt = document.createElement('dt');
+        dt.textContent = ordinals[i];
+        const dd = document.createElement('dd');
+        dd.textContent = slots[i] > 0 ? slots[i].toString() : '—';
+        this.spellsDl.appendChild(dt);
+        this.spellsDl.appendChild(dd);
+      }
+    });
+    if (this.spellsDl.children.length === 0) { this.spellsCard.style.display = 'none'; return; }
+    this.spellsCard.style.display = '';
+  };
+
+  private updateThiefSkillsVisibility = () => {
+    if (!this.thiefSkillsCard) return;
+    const isThief = this.getSelectedClasses().includes(Classes.thief);
+    this.thiefSkillsCard.style.display = isThief ? '' : 'none';
+    if (isThief) { this.calcThiefSkillBases(); this.updateThiefPoints(); }
+  };
+
+  private calcThiefSkillBases = () => {
+    if (!this.thiefSkillsCard || this.thiefSkillsCard.style.display === 'none') return;
+    const raceKey = this.getCurrentRaceKey() || 'human';
+    const adj = thiefRaceAdjustments[raceKey] ?? thiefRaceAdjustments['human'];
+    this.thiefSkillBaseValues = [
+      thiefBaseSkills.pp  + adj.pp,
+      thiefBaseSkills.ol  + adj.ol,
+      thiefBaseSkills.frt + adj.frt,
+      thiefBaseSkills.ms  + adj.ms,
+      thiefBaseSkills.his + adj.his,
+      thiefBaseSkills.dn  + adj.dn,
+      thiefBaseSkills.cw  + adj.cw,
+      thiefBaseSkills.rl  + adj.rl,
+    ];
+    this.thiefSkillBaseValues.forEach((val, i) => {
+      if (this.thiefSkillBases[i]) this.thiefSkillBases[i].textContent = `${val}%`;
+    });
+    this.updateThiefTotals();
+  };
+
+  private updateThiefPoints = () => {
+    const level = parseInt((this.selectLevel as HTMLSelectElement).value || '0');
+    const avail = level ? 60 + (level - 1) * 30 : 0;
+    if (this.tsAvail) this.tsAvail.textContent = avail.toString();
+    this.updateThiefTotals();
+  };
+
+  updateThiefSkills = () => { this.updateThiefTotals(); };
+
+  private updateThiefTotals = () => {
+    const level = parseInt((this.selectLevel as HTMLSelectElement).value || '0');
+    const avail = level ? 60 + (level - 1) * 30 : 0;
+    let used = 0;
+    this.thiefSkillAdds.forEach((input, i) => {
+      const added = parseInt(input?.value || '0') || 0;
+      used += added;
+      const total = Math.min((this.thiefSkillBaseValues[i] || 0) + added, 95);
+      if (this.thiefSkillTotals[i]) this.thiefSkillTotals[i].textContent = `${total}%`;
+    });
+    if (this.tsAvail) this.tsAvail.textContent = avail.toString();
+    if (this.tsUsed) this.tsUsed.textContent = used.toString();
+    if (this.tsRemain) {
+      const remaining = avail - used;
+      this.tsRemain.textContent = remaining.toString();
+      this.tsRemain.style.color = remaining < 0 ? 'var(--accent)' : '';
+    }
+  };
+
+  private updateBardSkillsVisibility = () => {
+    if (!this.bardSkillsCard) return;
+    const isBard = this.getSelectedClasses().includes(Classes.bard);
+    this.bardSkillsCard.style.display = isBard ? '' : 'none';
+    if (isBard) { this.calcBardSkillBases(); this.updateBardPoints(); }
+  };
+
+  private calcBardSkillBases = () => {
+    if (!this.bardSkillsCard || this.bardSkillsCard.style.display === 'none') return;
+    const raceKey = this.getCurrentRaceKey() || 'human';
+    const adj = thiefRaceAdjustments[raceKey] ?? thiefRaceAdjustments['human'];
+    this.bardSkillBaseValues = [
+      bardBaseSkills.pp + adj.pp,
+      bardBaseSkills.dn + adj.dn,
+      bardBaseSkills.cw + adj.cw,
+      bardBaseSkills.rl + adj.rl,
+    ];
+    this.bardSkillBaseValues.forEach((val, i) => {
+      if (this.bardSkillBases[i]) this.bardSkillBases[i].textContent = `${val}%`;
+    });
+    this.updateBardTotals();
+  };
+
+  private updateBardPoints = () => {
+    const level = parseInt((this.selectLevel as HTMLSelectElement).value || '0');
+    const avail = level ? level * 20 : 0;
+    if (this.bsAvail) this.bsAvail.textContent = avail.toString();
+    this.updateBardTotals();
+  };
+
+  updateBardSkills = () => { this.updateBardTotals(); };
+
+  private updateBardTotals = () => {
+    const level = parseInt((this.selectLevel as HTMLSelectElement).value || '0');
+    const avail = level ? level * 20 : 0;
+    let used = 0;
+    this.bardSkillAdds.forEach((input, i) => {
+      const added = parseInt(input?.value || '0') || 0;
+      used += added;
+      const total = Math.min((this.bardSkillBaseValues[i] || 0) + added, 95);
+      if (this.bardSkillTotals[i]) this.bardSkillTotals[i].textContent = `${total}%`;
+    });
+    if (this.bsAvail) this.bsAvail.textContent = avail.toString();
+    if (this.bsUsed) this.bsUsed.textContent = used.toString();
+    if (this.bsRemain) {
+      const remaining = avail - used;
+      this.bsRemain.textContent = remaining.toString();
+      this.bsRemain.style.color = remaining < 0 ? 'var(--accent)' : '';
+    }
   };
 
   exportSheet = () => exportCharacterSheet(this.getCharacterData());

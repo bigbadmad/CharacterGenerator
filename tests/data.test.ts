@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 // Import built JS to avoid TS import extension issues
-import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable } from '../dist/data.js';
+import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable, classAlignmentRestrictions, proficiencySlotData, spellSlotsPerDay, thiefBaseSkills, thiefRaceAdjustments, bardBaseSkills } from '../dist/data.js';
 import { Classes } from '../dist/types.js';
 
 describe('data tables', () => {
@@ -158,5 +158,150 @@ describe('startingMoneyTable', () => {
 
   it('fighters roll more dice than mages', () => {
     expect(startingMoneyTable.fighter.dice).toBeGreaterThan(startingMoneyTable.mage.dice);
+  });
+});
+
+describe('classAlignmentRestrictions', () => {
+  it('paladin is restricted to Lawful Good only', () => {
+    expect(classAlignmentRestrictions[Classes.paladin]).toEqual(['LG']);
+  });
+
+  it('druid is restricted to True Neutral only', () => {
+    expect(classAlignmentRestrictions[Classes.druid]).toEqual(['TN']);
+  });
+
+  it('ranger is restricted to good alignments only', () => {
+    const allowed = classAlignmentRestrictions[Classes.ranger]!;
+    expect(allowed).toContain('LG');
+    expect(allowed).toContain('NG');
+    expect(allowed).toContain('CG');
+    expect(allowed).not.toContain('LE');
+    expect(allowed).not.toContain('CE');
+    expect(allowed).not.toContain('NE');
+  });
+
+  it('fighter has no alignment restriction', () => {
+    expect(classAlignmentRestrictions[Classes.fighter]).toBeUndefined();
+  });
+});
+
+describe('proficiencySlotData', () => {
+  it('warrior has 4 initial weapon profs', () => {
+    expect(proficiencySlotData.warrior.wp.initial).toBe(4);
+  });
+
+  it('wizard has 1 initial weapon prof', () => {
+    expect(proficiencySlotData.wizard.wp.initial).toBe(1);
+  });
+
+  it('all groups have positive initial and per values', () => {
+    for (const group of ['warrior', 'rogue', 'priest', 'wizard'] as const) {
+      const g = proficiencySlotData[group];
+      expect(g.wp.initial).toBeGreaterThan(0);
+      expect(g.nwp.initial).toBeGreaterThan(0);
+      expect(g.wp.per).toBeGreaterThan(0);
+      expect(g.nwp.per).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe('spellSlotsPerDay', () => {
+  it('mage has 20 levels of spell slots', () => {
+    expect(spellSlotsPerDay[Classes.mage]).toHaveLength(20);
+  });
+
+  it('mage level 1 has exactly 1 first-level spell and no higher', () => {
+    const slots = spellSlotsPerDay[Classes.mage]![0];
+    expect(slots[0]).toBe(1);
+    expect(slots.slice(1).every((n: number) => n === 0)).toBe(true);
+  });
+
+  it('mage level 20 has 9th-level spells', () => {
+    const slots = spellSlotsPerDay[Classes.mage]![19];
+    expect(slots[8]).toBeGreaterThan(0);
+  });
+
+  it('cleric has 20 levels of spell slots with 7 spell levels', () => {
+    const table = spellSlotsPerDay[Classes.cleric]!;
+    expect(table).toHaveLength(20);
+    expect(table[0]).toHaveLength(7);
+  });
+
+  it('bard level 1 has no spells', () => {
+    const slots = spellSlotsPerDay[Classes.bard]![0];
+    expect(slots.every((n: number) => n === 0)).toBe(true);
+  });
+
+  it('bard level 2 has 1 first-level spell', () => {
+    expect(spellSlotsPerDay[Classes.bard]![1][0]).toBe(1);
+  });
+
+  it('fighter has no spell slot entry', () => {
+    expect(spellSlotsPerDay[Classes.fighter]).toBeUndefined();
+  });
+
+  it('illusionist shares the same table as mage', () => {
+    expect(spellSlotsPerDay[Classes.illusionist]).toBe(spellSlotsPerDay[Classes.mage]);
+  });
+});
+
+describe('thiefBaseSkills', () => {
+  it('has all 8 skill keys', () => {
+    for (const key of ['pp', 'ol', 'frt', 'ms', 'his', 'dn', 'cw', 'rl']) {
+      expect(thiefBaseSkills).toHaveProperty(key);
+    }
+  });
+
+  it('climb walls base is 60', () => {
+    expect(thiefBaseSkills.cw).toBe(60);
+  });
+
+  it('read languages base is 0', () => {
+    expect(thiefBaseSkills.rl).toBe(0);
+  });
+});
+
+describe('thiefRaceAdjustments', () => {
+  const ALL_RACES = ['human', 'dwarf', 'elf', 'gnome', 'halfling', 'halfElf'];
+
+  it('has entries for all six races', () => {
+    for (const race of ALL_RACES) {
+      expect(thiefRaceAdjustments).toHaveProperty(race);
+    }
+  });
+
+  it('human has all zero adjustments', () => {
+    const h = thiefRaceAdjustments['human'];
+    for (const val of Object.values(h)) {
+      expect(val).toBe(0);
+    }
+  });
+
+  it('halfling gets a bonus to move silently and hide in shadows', () => {
+    expect(thiefRaceAdjustments['halfling'].ms).toBeGreaterThan(0);
+    expect(thiefRaceAdjustments['halfling'].his).toBeGreaterThan(0);
+  });
+
+  it('dwarf gets a bonus to open locks and find/remove traps', () => {
+    expect(thiefRaceAdjustments['dwarf'].ol).toBeGreaterThan(0);
+    expect(thiefRaceAdjustments['dwarf'].frt).toBeGreaterThan(0);
+  });
+});
+
+describe('bardBaseSkills', () => {
+  it('has exactly the 4 bard skills', () => {
+    expect(Object.keys(bardBaseSkills)).toEqual(['pp', 'dn', 'cw', 'rl']);
+  });
+
+  it('climb walls base is 60', () => {
+    expect(bardBaseSkills.cw).toBe(60);
+  });
+
+  it('read languages base is 0', () => {
+    expect(bardBaseSkills.rl).toBe(0);
+  });
+
+  it('pick pockets base is 15', () => {
+    expect(bardBaseSkills.pp).toBe(15);
   });
 });

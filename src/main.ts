@@ -8,9 +8,12 @@ declare global {
     setClass: (ddl: HTMLSelectElement) => void;
     setLevel: (ddl: HTMLSelectElement) => void;
     setGender: (ddl: HTMLSelectElement) => void;
+    setAlignment: (ddl: HTMLSelectElement) => void;
     noRollType: () => void;
     rollerType: () => void;
     exportSheet: () => void;
+    updateThiefSkills: () => void;
+    updateBardSkills: () => void;
   }
 }
 
@@ -27,7 +30,10 @@ window.addEventListener('load', () => {
   window.setClass = (ddl) => gen.setClass(ddl);
   window.setLevel = (ddl) => gen.setLevel(ddl);
   window.setGender = (ddl) => gen.setGender(ddl);
+  window.setAlignment = (ddl) => gen.setAlignment(ddl);
   window.noRollType = () => gen.dmMode();
   window.rollerType = () => gen.genMode();
   window.exportSheet = () => gen.exportSheet();
+  window.updateThiefSkills = () => gen.updateThiefSkills();
+  window.updateBardSkills = () => gen.updateBardSkills();
 });
