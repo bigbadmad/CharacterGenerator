@@ -43,6 +43,18 @@ export enum Classes {
   illusionist = 'illusionist'
 }
 
+export enum Alignment {
+  LG = 'LG',
+  LN = 'LN',
+  LE = 'LE',
+  NG = 'NG',
+  TN = 'TN',
+  NE = 'NE',
+  CG = 'CG',
+  CN = 'CN',
+  CE = 'CE',
+}
+
 export enum Races {
   human = 'human',
   dwarf = 'dwarf',
