@@ -843,6 +843,12 @@ export class Generator {
 
   // Set the class (single or multiclass)
   setClass = (ddl: HTMLSelectElement) => {
+    // Keep only one class selector active at a time so getSelectedClasses() is unambiguous
+    if (ddl === this.selectClass) {
+      if (this.selectMulticlass) (this.selectMulticlass as HTMLSelectElement).selectedIndex = -1;
+    } else {
+      (this.selectClass as HTMLSelectElement).selectedIndex = 0;
+    }
     const selected = this.getSelectedClasses();
     const hasFightery = selected.some(c => c === Classes.fighter || c === Classes.paladin || c === Classes.ranger);
     this.isFighter = hasFightery;
@@ -1370,7 +1376,11 @@ export class Generator {
   private updateRangerDisplay = () => {
     if (!this.rangerSkillsCard || this.rangerSkillsCard.style.display === 'none') return;
     const level = parseInt((this.selectLevel as HTMLSelectElement).value || '0');
-    if (!level) return;
+    if (!level) {
+      if (this.rangerMsDisplay) this.rangerMsDisplay.textContent = '—';
+      if (this.rangerHisDisplay) this.rangerHisDisplay.textContent = '—';
+      return;
+    }
     const idx = Math.min(level, rangerSkillsByLevel.length) - 1;
     const { ms, his } = rangerSkillsByLevel[idx];
     if (this.rangerMsDisplay) this.rangerMsDisplay.textContent = `${ms}%`;

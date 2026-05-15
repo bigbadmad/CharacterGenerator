@@ -261,6 +261,22 @@ describe('spellSlotsPerDay', () => {
     expect(slots.slice(1).every((n: number) => n === 0)).toBe(true);
   });
 
+  it('paladin level 11 gains first 2nd-level spell', () => {
+    expect(spellSlotsPerDay[Classes.paladin]![10]).toEqual([2, 1, 0, 0]);
+  });
+
+  it('paladin level 13 gains first 3rd-level spell', () => {
+    expect(spellSlotsPerDay[Classes.paladin]![12]).toEqual([2, 2, 1, 0]);
+  });
+
+  it('paladin level 15 gains first 4th-level spell (3/2/1/1)', () => {
+    expect(spellSlotsPerDay[Classes.paladin]![14]).toEqual([3, 2, 1, 1]);
+  });
+
+  it('paladin level 16 has correct slots (3/3/2/1)', () => {
+    expect(spellSlotsPerDay[Classes.paladin]![15]).toEqual([3, 3, 2, 1]);
+  });
+
   it('paladin level 20 has 3 slots of each of 4 spell levels', () => {
     const slots = spellSlotsPerDay[Classes.paladin]![19];
     expect(slots).toEqual([3, 3, 3, 3]);
