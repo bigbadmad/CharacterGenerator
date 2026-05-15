@@ -1,5 +1,5 @@
 import { Classes, Races, Alignment, THAC0S, Gender } from './types.js';
-import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable, classAlignmentRestrictions, proficiencySlotData, spellSlotsPerDay, thiefBaseSkills, thiefRaceAdjustments, bardBaseSkills } from './data.js';
+import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable, classAlignmentRestrictions, proficiencySlotData, spellSlotsPerDay, thiefBaseSkills, thiefRaceAdjustments, bardBaseSkills, rangerSkillsByLevel } from './data.js';
 import { comboToLabel, getEligibleMulticlassCombos, meetsClassMinimums, AbilityScores } from './multiclass.js';
 import { rollDie, roll3d6, roll4d6DropLowest, rollXdY } from './dice.js';
 import { exportCharacterSheet } from './exporter.js';
@@ -146,6 +146,11 @@ export class Generator {
   bardSkillTotals: HTMLElement[] = [];
   bardSkillBaseValues: number[] = [0,0,0,0];
 
+  // Ranger skills
+  rangerSkillsCard: any;
+  rangerMsDisplay: HTMLElement | null = null;
+  rangerHisDisplay: HTMLElement | null = null;
+
   setup = () => {
     this.rollButton.addEventListener('click', this.roll);
     this.getControls();
@@ -245,6 +250,9 @@ export class Generator {
     this.bardSkillBases = bardSkillIds.map(id => document.getElementById(`bs-${id}-base`) as HTMLElement);
     this.bardSkillAdds = bardSkillIds.map(id => document.getElementById(`bs-${id}-add`) as HTMLInputElement);
     this.bardSkillTotals = bardSkillIds.map(id => document.getElementById(`bs-${id}-total`) as HTMLElement);
+    this.rangerSkillsCard = document.getElementById('ranger-skills-card');
+    this.rangerMsDisplay = document.getElementById('rs-ms');
+    this.rangerHisDisplay = document.getElementById('rs-his');
   };
 
   // Compose current ability scores (after racial mods) from inputs
@@ -421,6 +429,7 @@ export class Generator {
     if (this.bsAvail) this.bsAvail.textContent = '0';
     if (this.bsUsed) this.bsUsed.textContent = '0';
     if (this.bsRemain) this.bsRemain.textContent = '0';
+    if (this.rangerSkillsCard) this.rangerSkillsCard.style.display = 'none';
   };
 
   // re-enable dropdown option
@@ -834,6 +843,12 @@ export class Generator {
 
   // Set the class (single or multiclass)
   setClass = (ddl: HTMLSelectElement) => {
+    // Keep only one class selector active at a time so getSelectedClasses() is unambiguous
+    if (ddl === this.selectClass) {
+      if (this.selectMulticlass) (this.selectMulticlass as HTMLSelectElement).selectedIndex = -1;
+    } else {
+      (this.selectClass as HTMLSelectElement).selectedIndex = 0;
+    }
     const selected = this.getSelectedClasses();
     const hasFightery = selected.some(c => c === Classes.fighter || c === Classes.paladin || c === Classes.ranger);
     this.isFighter = hasFightery;
@@ -865,6 +880,7 @@ export class Generator {
       this.calcSpellSlots();
       this.updateThiefSkillsVisibility();
       this.updateBardSkillsVisibility();
+      this.updateRangerSkillsVisibility();
       return;
     }
 
@@ -875,6 +891,7 @@ export class Generator {
       this.calcSpellSlots();
       this.updateThiefSkillsVisibility();
       this.updateBardSkillsVisibility();
+      this.updateRangerSkillsVisibility();
       return;
     }
 
@@ -909,6 +926,7 @@ export class Generator {
     this.calcSpellSlots();
     this.updateThiefSkillsVisibility();
     this.updateBardSkillsVisibility();
+    this.updateRangerSkillsVisibility();
   };
 
   zeroMOds = () => {
@@ -1048,6 +1066,7 @@ export class Generator {
   this.calcSpellSlots();
   this.updateThiefSkillsVisibility();
   this.updateBardSkillsVisibility();
+  this.updateRangerSkillsVisibility();
   };
 
   // Calculate hp and thac0
@@ -1079,6 +1098,7 @@ export class Generator {
     this.calcSpellSlots();
     this.updateThiefPoints();
     this.updateBardPoints();
+    this.updateRangerDisplay();
   };
 
   // Hit dice roll with con mod, minimum roll 1
@@ -1344,6 +1364,27 @@ export class Generator {
       this.bsRemain.textContent = remaining.toString();
       this.bsRemain.style.color = remaining < 0 ? 'var(--accent)' : '';
     }
+  };
+
+  private updateRangerSkillsVisibility = () => {
+    if (!this.rangerSkillsCard) return;
+    const isRanger = this.getSelectedClasses().includes(Classes.ranger);
+    this.rangerSkillsCard.style.display = isRanger ? '' : 'none';
+    if (isRanger) this.updateRangerDisplay();
+  };
+
+  private updateRangerDisplay = () => {
+    if (!this.rangerSkillsCard || this.rangerSkillsCard.style.display === 'none') return;
+    const level = parseInt((this.selectLevel as HTMLSelectElement).value || '0');
+    if (!level) {
+      if (this.rangerMsDisplay) this.rangerMsDisplay.textContent = '—';
+      if (this.rangerHisDisplay) this.rangerHisDisplay.textContent = '—';
+      return;
+    }
+    const idx = Math.min(level, rangerSkillsByLevel.length) - 1;
+    const { ms, his } = rangerSkillsByLevel[idx];
+    if (this.rangerMsDisplay) this.rangerMsDisplay.textContent = `${ms}%`;
+    if (this.rangerHisDisplay) this.rangerHisDisplay.textContent = `${his}%`;
   };
 
   exportSheet = () => exportCharacterSheet(this.getCharacterData());

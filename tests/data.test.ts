@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 // Import built JS to avoid TS import extension issues
-import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable, classAlignmentRestrictions, proficiencySlotData, spellSlotsPerDay, thiefBaseSkills, thiefRaceAdjustments, bardBaseSkills } from '../dist/data.js';
+import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable, classAlignmentRestrictions, proficiencySlotData, spellSlotsPerDay, thiefBaseSkills, thiefRaceAdjustments, bardBaseSkills, rangerSkillsByLevel } from '../dist/data.js';
 import { Classes } from '../dist/types.js';
 
 describe('data tables', () => {
@@ -243,6 +243,68 @@ describe('spellSlotsPerDay', () => {
   it('illusionist shares the same table as mage', () => {
     expect(spellSlotsPerDay[Classes.illusionist]).toBe(spellSlotsPerDay[Classes.mage]);
   });
+
+  it('paladin has 20 levels of spell slots', () => {
+    expect(spellSlotsPerDay[Classes.paladin]).toHaveLength(20);
+  });
+
+  it('paladin levels 1-8 have no spells', () => {
+    for (let i = 0; i < 8; i++) {
+      const slots = spellSlotsPerDay[Classes.paladin]![i];
+      expect(slots.every((n: number) => n === 0), `level ${i+1} should have no spells`).toBe(true);
+    }
+  });
+
+  it('paladin level 9 has 1 first-level spell only', () => {
+    const slots = spellSlotsPerDay[Classes.paladin]![8];
+    expect(slots[0]).toBe(1);
+    expect(slots.slice(1).every((n: number) => n === 0)).toBe(true);
+  });
+
+  it('paladin level 11 gains first 2nd-level spell', () => {
+    expect(spellSlotsPerDay[Classes.paladin]![10]).toEqual([2, 1, 0, 0]);
+  });
+
+  it('paladin level 13 gains first 3rd-level spell', () => {
+    expect(spellSlotsPerDay[Classes.paladin]![12]).toEqual([2, 2, 1, 0]);
+  });
+
+  it('paladin level 15 gains first 4th-level spell (3/2/1/1)', () => {
+    expect(spellSlotsPerDay[Classes.paladin]![14]).toEqual([3, 2, 1, 1]);
+  });
+
+  it('paladin level 16 has correct slots (3/3/2/1)', () => {
+    expect(spellSlotsPerDay[Classes.paladin]![15]).toEqual([3, 3, 2, 1]);
+  });
+
+  it('paladin level 20 has 3 slots of each of 4 spell levels', () => {
+    const slots = spellSlotsPerDay[Classes.paladin]![19];
+    expect(slots).toEqual([3, 3, 3, 3]);
+  });
+
+  it('ranger has 20 levels of spell slots', () => {
+    expect(spellSlotsPerDay[Classes.ranger]).toHaveLength(20);
+  });
+
+  it('ranger levels 1-7 have no spells', () => {
+    for (let i = 0; i < 7; i++) {
+      const slots = spellSlotsPerDay[Classes.ranger]![i];
+      expect(slots.every((n: number) => n === 0), `level ${i+1} should have no spells`).toBe(true);
+    }
+  });
+
+  it('ranger level 8 has 1 first-level spell only', () => {
+    const slots = spellSlotsPerDay[Classes.ranger]![7];
+    expect(slots[0]).toBe(1);
+    expect(slots.slice(1).every((n: number) => n === 0)).toBe(true);
+  });
+
+  it('ranger level 16+ has 3 slots of each of 3 spell levels', () => {
+    for (let i = 15; i < 20; i++) {
+      const slots = spellSlotsPerDay[Classes.ranger]![i];
+      expect(slots).toEqual([3, 3, 3]);
+    }
+  });
 });
 
 describe('thiefBaseSkills', () => {
@@ -303,5 +365,30 @@ describe('bardBaseSkills', () => {
 
   it('pick pockets base is 15', () => {
     expect(bardBaseSkills.pp).toBe(15);
+  });
+});
+
+describe('rangerSkillsByLevel', () => {
+  it('has 16 entries', () => {
+    expect(rangerSkillsByLevel).toHaveLength(16);
+  });
+
+  it('level 1 has ms=15 and his=10', () => {
+    expect(rangerSkillsByLevel[0]).toEqual({ ms: 15, his: 10 });
+  });
+
+  it('level 12 has ms=94 and his=77', () => {
+    expect(rangerSkillsByLevel[11]).toEqual({ ms: 94, his: 77 });
+  });
+
+  it('levels 15 and 16 cap both skills at 99%', () => {
+    expect(rangerSkillsByLevel[14]).toEqual({ ms: 99, his: 99 });
+    expect(rangerSkillsByLevel[15]).toEqual({ ms: 99, his: 99 });
+  });
+
+  it('move silently is always higher than hide in shadows', () => {
+    for (const entry of rangerSkillsByLevel) {
+      expect(entry.ms).toBeGreaterThanOrEqual(entry.his);
+    }
   });
 });

@@ -230,12 +230,46 @@ const bardSlots: number[][] = [
   [4,4,4,4,4,3],
 ];
 
+// PHB Table 25 – Paladin Spell Progression (priest spells, 4 levels, starts at 9th level)
+const paladinSlots: number[][] = [
+  [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0],
+  [1,0,0,0], // 9
+  [2,0,0,0], // 10
+  [2,1,0,0], // 11
+  [2,2,0,0], // 12
+  [2,2,1,0], // 13
+  [3,2,1,0], // 14
+  [3,2,1,1], // 15
+  [3,3,2,1], // 16
+  [3,3,3,1], // 17
+  [3,3,3,2], // 18
+  [3,3,3,3], // 19
+  [3,3,3,3], // 20
+];
+
+// PHB Table 17 – Ranger Spell Progression (priest spells, 3 levels, starts at 8th level)
+const rangerSlots: number[][] = [
+  [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0],
+  [1,0,0], // 8
+  [2,0,0], // 9
+  [2,1,0], // 10
+  [2,2,0], // 11
+  [2,2,1], // 12
+  [3,2,1], // 13
+  [3,2,2], // 14
+  [3,3,2], // 15
+  [3,3,3], // 16
+  [3,3,3], [3,3,3], [3,3,3], [3,3,3], // 17-20
+];
+
 export const spellSlotsPerDay: Partial<Record<Classes, number[][]>> = {
   [Classes.mage]:        mageSlots,
   [Classes.illusionist]: mageSlots,
   [Classes.cleric]:      priestSlots,
   [Classes.druid]:       priestSlots,
   [Classes.bard]:        bardSlots,
+  [Classes.paladin]:     paladinSlots,
+  [Classes.ranger]:      rangerSlots,
 };
 
 // Thief base skill scores before racial adjustments or discretionary points (PHB Table 28)
@@ -269,3 +303,23 @@ export const bardBaseSkills = {
   cw:  60,  // Climb Walls
   rl:   0,  // Read Languages
 } as const;
+
+// Ranger wilderness skills progression by level — Move Silently and Hide in Shadows in natural settings (PHB)
+export const rangerSkillsByLevel: { ms: number; his: number }[] = [
+  { ms: 15, his: 10 }, // 1
+  { ms: 21, his: 15 }, // 2
+  { ms: 27, his: 20 }, // 3
+  { ms: 33, his: 25 }, // 4
+  { ms: 40, his: 31 }, // 5
+  { ms: 47, his: 37 }, // 6
+  { ms: 55, his: 43 }, // 7
+  { ms: 62, his: 49 }, // 8
+  { ms: 70, his: 56 }, // 9
+  { ms: 78, his: 63 }, // 10
+  { ms: 86, his: 70 }, // 11
+  { ms: 94, his: 77 }, // 12
+  { ms: 99, his: 85 }, // 13
+  { ms: 99, his: 93 }, // 14
+  { ms: 99, his: 99 }, // 15
+  { ms: 99, his: 99 }, // 16+
+];

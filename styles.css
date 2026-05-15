@@ -497,7 +497,8 @@ body {
     width: 100%;
   }
   #thief-skills-card,
-  #bard-skills-card {
+  #bard-skills-card,
+  #ranger-skills-card {
     width: 100%;
     box-sizing: border-box;
   }

@@ -21,9 +21,11 @@ describe('multiclass rules', () => {
   it('eligible combos are filtered by abilities', () => {
     const abil = { str: 13, dex: 13, con: 14, int: 9, wis: 14, chr: 10 };
     const combos = getEligibleMulticlassCombos(Races.elf, abil);
-    // elf can do fighter/ranger if meets all mins
     const labels = combos.map(c => c.join('+'));
-    expect(labels).toContain([Classes.fighter, Classes.ranger].join('+'));
+    // fighter/ranger is not a valid combo (ranger is a warrior subclass of fighter)
+    expect(labels).not.toContain([Classes.fighter, Classes.ranger].join('+'));
+    // cleric/ranger is valid (different class groups)
+    expect(labels).toContain([Classes.cleric, Classes.ranger].join('+'));
     // should not include fighter/thief if dex below 9 (set to 8 ensures removal)
     const combos2 = getEligibleMulticlassCombos(Races.elf, { ...abil, dex: 8 });
     const labels2 = combos2.map(c => c.join('+'));
