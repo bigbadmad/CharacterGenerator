@@ -718,6 +718,17 @@ export class Generator {
       this.calcMoney();
       this.applyAlignmentRestrictions(selected);
     } else {
+      // Reset class-dependent state so stale values don't carry over
+      this.hitdice = 6;
+      this.labelHp.innerHTML = '';
+      this.labelThac0.innerHTML = '';
+      this.labelSvPara.innerHTML = '';
+      this.labelSvRod.innerHTML = '';
+      this.labelSvPoly.innerHTML = '';
+      this.labelSvSpell.innerHTML = '';
+      this.labelSvBreath.innerHTML = '';
+      if (this.labelAge)  this.labelAge.textContent  = '';
+      if (this.labelGold) this.labelGold.textContent = '';
       this.applyAlignmentRestrictions([]);
     }
     this.calcProfSlots();
@@ -869,6 +880,22 @@ export class Generator {
 
   // Calculate hp and thac0
   setLevel = (ddl: HTMLSelectElement) => {
+    if (ddl.selectedIndex === 0) {
+      // No level selected — clear derived labels so stale values don't persist
+      this.labelHp.innerHTML = '';
+      this.labelThac0.innerHTML = '';
+      this.labelSvPara.innerHTML = '';
+      this.labelSvRod.innerHTML = '';
+      this.labelSvPoly.innerHTML = '';
+      this.labelSvSpell.innerHTML = '';
+      this.labelSvBreath.innerHTML = '';
+      this.calcProfSlots();
+      this.calcSpellSlots();
+      this.updateThiefPoints();
+      this.updateBardPoints();
+      this.updateRangerDisplay();
+      return;
+    }
     let hit = 0;
     for (let i = 0; i < ddl.selectedIndex; i++) { hit += this.calcHPRoll(); }
     this.labelHp.innerHTML = hit.toString();
