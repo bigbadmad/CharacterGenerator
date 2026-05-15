@@ -1,6 +1,6 @@
 import { Classes, Races, Alignment, THAC0S, Gender } from './types.js';
 import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTable, startingMoneyTable, classAlignmentRestrictions, proficiencySlotData, spellSlotsPerDay, thiefBaseSkills, thiefRaceAdjustments, bardBaseSkills } from './data.js';
-import { comboToLabel, getEligibleMulticlassCombos, AbilityScores } from './multiclass.js';
+import { comboToLabel, getEligibleMulticlassCombos, meetsClassMinimums, AbilityScores } from './multiclass.js';
 import { rollDie, roll3d6, roll4d6DropLowest, rollXdY } from './dice.js';
 import { exportCharacterSheet } from './exporter.js';
 
@@ -484,8 +484,9 @@ export class Generator {
         throw new Error('Impossible stat selected');
     }
     ddl.disabled = true;
-  // Stats changed; recompute multiclass options
+  // Stats changed; recompute multiclass and single-class options
   this.refreshMulticlassOptions();
+  this.refreshClassDdl();
   };
 
   // calculate strength modifiers
@@ -944,6 +945,23 @@ export class Generator {
         break;
       default: throw Error('No idea what species this is?');
     }
+    // Enforce ability score minimums on top of race-based filtering
+    const abilities = this.getAbilities();
+    const sel = this.selectClass as HTMLSelectElement;
+    for (const opt of Array.from(sel.getElementsByTagName('option')) as HTMLOptionElement[]) {
+      if (!opt.value || opt.disabled) continue;
+      if (!meetsClassMinimums(abilities, opt.value as Classes)) opt.disabled = true;
+    }
+    if (sel.selectedIndex > 0 && sel.options[sel.selectedIndex]?.disabled) sel.selectedIndex = 0;
+  };
+
+  private refreshClassDdl = () => {
+    const raceMap: Record<number, Races> = {
+      1: Races.human, 2: Races.dwarf, 3: Races.elf,
+      4: Races.gnome, 5: Races.halfling, 6: Races.halfElf,
+    };
+    const race = raceMap[(this.selectRace as HTMLSelectElement).selectedIndex];
+    if (race) this.enableClassDdl(race);
   };
 
   private dmListeners: (() => void)[] = [];
@@ -953,6 +971,7 @@ export class Generator {
       const val = parseInt(input.value) || 0;
       handler(val);
       this.refreshMulticlassOptions();
+      this.refreshClassDdl();
     };
     input.addEventListener('input', fn);
     this.dmListeners.push(() => input.removeEventListener('input', fn));

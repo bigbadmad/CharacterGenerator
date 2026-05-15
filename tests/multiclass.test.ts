@@ -14,7 +14,8 @@ describe('multiclass rules', () => {
   it('class minimums include key classes', () => {
     expect(classMinimums[Classes.fighter]).toBeTruthy();
     expect(classMinimums[Classes.ranger]?.str).toBe(13);
-    expect(classMinimums[Classes.illusionist]?.int).toBe(15);
+    expect(classMinimums[Classes.illusionist]?.dex).toBe(16);
+    expect(classMinimums[Classes.illusionist]?.int).toBe(9);
   });
 
   it('eligible combos are filtered by abilities', () => {
@@ -73,5 +74,44 @@ describe('multiclass rules', () => {
     expect(labels).toContain('cleric+thief');
     expect(labels).toContain('fighter+thief');
     expect(combos).toHaveLength(3);
+  });
+});
+
+describe('class ability minimums', () => {
+  it('paladin requires str 12, con 9, wis 13, chr 17', () => {
+    const good = { str: 12, dex: 0, con: 9, int: 0, wis: 13, chr: 17 };
+    expect(meetsClassMinimums(good, Classes.paladin)).toBe(true);
+    expect(meetsClassMinimums({ ...good, str: 11 }, Classes.paladin)).toBe(false);
+    expect(meetsClassMinimums({ ...good, con: 8 },  Classes.paladin)).toBe(false);
+    expect(meetsClassMinimums({ ...good, wis: 12 }, Classes.paladin)).toBe(false);
+    expect(meetsClassMinimums({ ...good, chr: 16 }, Classes.paladin)).toBe(false);
+  });
+
+  it('ranger requires str 13, dex 13, con 14, wis 14', () => {
+    const good = { str: 13, dex: 13, con: 14, int: 0, wis: 14, chr: 0 };
+    expect(meetsClassMinimums(good, Classes.ranger)).toBe(true);
+    expect(meetsClassMinimums({ ...good, str: 12 }, Classes.ranger)).toBe(false);
+    expect(meetsClassMinimums({ ...good, con: 13 }, Classes.ranger)).toBe(false);
+  });
+
+  it('druid requires wis 12, chr 15', () => {
+    const good = { str: 0, dex: 0, con: 0, int: 0, wis: 12, chr: 15 };
+    expect(meetsClassMinimums(good, Classes.druid)).toBe(true);
+    expect(meetsClassMinimums({ ...good, chr: 14 }, Classes.druid)).toBe(false);
+  });
+
+  it('illusionist requires dex 16, int 9', () => {
+    const good = { str: 0, dex: 16, con: 0, int: 9, wis: 0, chr: 0 };
+    expect(meetsClassMinimums(good, Classes.illusionist)).toBe(true);
+    expect(meetsClassMinimums({ ...good, dex: 15 }, Classes.illusionist)).toBe(false);
+    expect(meetsClassMinimums({ ...good, int: 8 },  Classes.illusionist)).toBe(false);
+  });
+
+  it('bard requires dex 12, int 13, chr 15', () => {
+    const good = { str: 0, dex: 12, con: 0, int: 13, wis: 0, chr: 15 };
+    expect(meetsClassMinimums(good, Classes.bard)).toBe(true);
+    expect(meetsClassMinimums({ ...good, dex: 11 }, Classes.bard)).toBe(false);
+    expect(meetsClassMinimums({ ...good, int: 12 }, Classes.bard)).toBe(false);
+    expect(meetsClassMinimums({ ...good, chr: 14 }, Classes.bard)).toBe(false);
   });
 });
