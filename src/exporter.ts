@@ -51,6 +51,15 @@ export interface CharacterData {
   alignment: string;
   wpSlots: string;
   nwpSlots: string;
+  // Thief skill totals
+  thiefPP?: string; thiefOL?: string; thiefFRT?: string; thiefMS?: string;
+  thiefHIS?: string; thiefDN?: string; thiefCW?: string; thiefRL?: string;
+  // Bard skill totals
+  bardPP?: string; bardDN?: string; bardCW?: string; bardRL?: string;
+  // Ranger skill totals
+  rangerMS?: string; rangerHIS?: string;
+  // Spell slots per level (index 0 = 1st level)
+  spellSlots?: string[];
 }
 
 /** Convert a string to a number if possible, otherwise keep as string */
@@ -123,9 +132,13 @@ export function buildSheetData(d: CharacterData): (string | number)[][] {
     [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
     // Row 30 - Special Abilities
     ['Special Abilities', E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
+    // Row 31 - Thief skills part 1
+    [d.thiefPP ? 'Thief skills' : E, 'PP:', cv(d.thiefPP ?? ''), 'OL:', cv(d.thiefOL ?? ''), 'FRT:', cv(d.thiefFRT ?? ''), 'MS:', cv(d.thiefMS ?? ''), E, E, E, E, E, E],
+    // Row 32 - Thief skills part 2
+    [E, 'HIS:', cv(d.thiefHIS ?? ''), 'DN:', cv(d.thiefDN ?? ''), 'CW:', cv(d.thiefCW ?? ''), 'RL:', cv(d.thiefRL ?? ''), E, E, E, E, E, E],
+    // Row 33 - Bard + Ranger skills
+    [d.bardPP ? 'Bard skills' : E, 'PP:', cv(d.bardPP ?? ''), 'DN:', cv(d.bardDN ?? ''), 'CW:', cv(d.bardCW ?? ''), 'RL:', cv(d.bardRL ?? ''), d.rangerMS ? 'Ranger' : E, 'MS:', cv(d.rangerMS ?? ''), 'HIS:', cv(d.rangerHIS ?? ''), E],
+    // Row 34 - empty
     [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
     // Row 35 - XP / Money / Valuables / Magic items headers
     ['Experience Points', E, E, 'Money', E, 'Valuables', E, E, E, 'Magic items', E, E, E, E, E],
@@ -135,17 +148,17 @@ export function buildSheetData(d: CharacterData): (string | number)[][] {
     [E, E, E, 'SP', E, E, E, E, E, E, E, E, E, E, E],
     [E, E, E, 'CP', E, E, E, E, E, E, E, E, E, E, E],
     // Row 41 - Spells/day header
-    ['Spells/day', E, 'Spell list', E, E, E, E, E, E, E, E, 'Notes', E, E, E],
+    ['Spells/day', 'Slots', 'Spell list', E, E, E, E, E, E, E, E, 'Notes', E, E, E],
     // Rows 42–50 - spell levels 1–9
-    [1, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [2, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [3, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [4, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [5, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [6, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [7, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [8, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-    [9, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
+    [1, cv(d.spellSlots?.[0] ?? ''), E, E, E, E, E, E, E, E, E, E, E, E, E],
+    [2, cv(d.spellSlots?.[1] ?? ''), E, E, E, E, E, E, E, E, E, E, E, E, E],
+    [3, cv(d.spellSlots?.[2] ?? ''), E, E, E, E, E, E, E, E, E, E, E, E, E],
+    [4, cv(d.spellSlots?.[3] ?? ''), E, E, E, E, E, E, E, E, E, E, E, E, E],
+    [5, cv(d.spellSlots?.[4] ?? ''), E, E, E, E, E, E, E, E, E, E, E, E, E],
+    [6, cv(d.spellSlots?.[5] ?? ''), E, E, E, E, E, E, E, E, E, E, E, E, E],
+    [7, cv(d.spellSlots?.[6] ?? ''), E, E, E, E, E, E, E, E, E, E, E, E, E],
+    [8, cv(d.spellSlots?.[7] ?? ''), E, E, E, E, E, E, E, E, E, E, E, E, E],
+    [9, cv(d.spellSlots?.[8] ?? ''), E, E, E, E, E, E, E, E, E, E, E, E, E],
   ];
   return aoa;
 }

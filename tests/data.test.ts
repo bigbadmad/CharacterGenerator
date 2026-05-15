@@ -62,6 +62,10 @@ describe('data tables', () => {
   it('mage rod save at level 1 is 11', () => {
     expect(savingThrows.mage.rod[0]).toBe(11);
   });
+
+  it('cleric rod save at level 12 is 10', () => {
+    expect(savingThrows.cleric.rod[11]).toBe(10);
+  });
 });
 
 const ALL_RACES = ['human', 'dwarf', 'elf', 'gnome', 'halfling', 'halfElf'];

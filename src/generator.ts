@@ -3,6 +3,9 @@ import { raceClassLimits, thac0s, savingThrows, heightWeightTable, startingAgeTa
 import { comboToLabel, getEligibleMulticlassCombos, meetsClassMinimums, AbilityScores } from './multiclass.js';
 import { rollDie, roll3d6, roll4d6DropLowest, rollXdY } from './dice.js';
 import { exportCharacterSheet } from './exporter.js';
+import { calcStrMods, calcDexMods, calcConMods, calcIntMods, calcWisMods, calcChrMods } from './statCalc.js';
+
+const SPELL_LEVEL_ORDINALS = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th'] as const;
 
 export class Generator {
   constructor(rollButton: HTMLInputElement) { this.rollButton = rollButton; }
@@ -50,97 +53,97 @@ export class Generator {
   wisMod = 0;
   chrMod = 0;
 
-  inputOne: any;
-  inputTwo: any;
-  inputThree: any;
-  inputFour: any;
-  inputFive: any;
-  inputSix: any;
-  labelPercent: any;
-  stat1: any;
-  stat2: any;
-  stat3: any;
-  stat4: any;
-  stat5: any;
-  stat6: any;
-  inputStr: any;
-  inputDex: any;
-  inputCon: any;
-  inputWis: any;
-  inputInt: any;
-  inputChr: any;
-  labelWgtAllow: any;
-  labelMxPress: any;
-  labelOpDrs: any;
-  labelBndBrs: any;
-  labelHitProb: any;
-  labelDmgAdj: any;
-  labelRctAdj: any;
-  labelMislAdj: any;
-  labelDefAdj: any;
-  labelHpAdj: any;
-  labelSysShk: any;
-  labelResSurv: any;
-  labelPoisSv: any;
-  labelRegen: any;
-  labelNoLang: any;
-  labelSplLvl: any;
-  labelChLrn: any;
-  labelMxSplPLvl: any;
-  labelSplImun: any;
-  labelMagDefAdj: any;
-  labelBonusSp: any;
-  labelChnFail: any;
-  labelSplImmune: any;
-  labelMxHench: any;
-  labelLoyaltyBs: any;
-  labelReactAdj: any;
-  labelHp: any;
-  labelThac0: any;
-  labelSvPara: any;
-  labelSvRod: any;
-  labelSvPoly: any;
-  labelSvSpell: any;
-  labelSvBreath: any;
-  labelHeight: any;
-  labelWeight: any;
-  labelAge: any;
-  labelGold: any;
-  selectClass: any;
-  selectMulticlass: any;
-  selectRace: any;
-  selectLevel: any;
-  selectGender: any;
-  rollType: any;
-  spinner: any;
+  inputOne!: HTMLInputElement;
+  inputTwo!: HTMLInputElement;
+  inputThree!: HTMLInputElement;
+  inputFour!: HTMLInputElement;
+  inputFive!: HTMLInputElement;
+  inputSix!: HTMLInputElement;
+  labelPercent!: HTMLLabelElement;
+  stat1!: HTMLSelectElement;
+  stat2!: HTMLSelectElement;
+  stat3!: HTMLSelectElement;
+  stat4!: HTMLSelectElement;
+  stat5!: HTMLSelectElement;
+  stat6!: HTMLSelectElement;
+  inputStr!: HTMLInputElement;
+  inputDex!: HTMLInputElement;
+  inputCon!: HTMLInputElement;
+  inputWis!: HTMLInputElement;
+  inputInt!: HTMLInputElement;
+  inputChr!: HTMLInputElement;
+  labelWgtAllow!: HTMLElement;
+  labelMxPress!: HTMLElement;
+  labelOpDrs!: HTMLElement;
+  labelBndBrs!: HTMLElement;
+  labelHitProb!: HTMLElement;
+  labelDmgAdj!: HTMLElement;
+  labelRctAdj!: HTMLElement;
+  labelMislAdj!: HTMLElement;
+  labelDefAdj!: HTMLElement;
+  labelHpAdj!: HTMLElement;
+  labelSysShk!: HTMLElement;
+  labelResSurv!: HTMLElement;
+  labelPoisSv!: HTMLElement;
+  labelRegen!: HTMLElement;
+  labelNoLang!: HTMLElement;
+  labelSplLvl!: HTMLElement;
+  labelChLrn!: HTMLElement;
+  labelMxSplPLvl!: HTMLElement;
+  labelSplImun!: HTMLElement;
+  labelMagDefAdj!: HTMLElement;
+  labelBonusSp!: HTMLElement;
+  labelChnFail!: HTMLElement;
+  labelSplImmune!: HTMLElement;
+  labelMxHench!: HTMLElement;
+  labelLoyaltyBs!: HTMLElement;
+  labelReactAdj!: HTMLElement;
+  labelHp!: HTMLElement;
+  labelThac0!: HTMLElement;
+  labelSvPara!: HTMLElement;
+  labelSvRod!: HTMLElement;
+  labelSvPoly!: HTMLElement;
+  labelSvSpell!: HTMLElement;
+  labelSvBreath!: HTMLElement;
+  labelHeight: HTMLElement | null = null;
+  labelWeight: HTMLElement | null = null;
+  labelAge: HTMLElement | null = null;
+  labelGold: HTMLElement | null = null;
+  selectClass!: HTMLSelectElement;
+  selectMulticlass: HTMLSelectElement | null = null;
+  selectRace!: HTMLSelectElement;
+  selectLevel!: HTMLSelectElement;
+  selectGender: HTMLSelectElement | null = null;
+  rollType!: NodeListOf<HTMLInputElement>;
+  spinner!: HTMLElement;
 
   // Alignment
-  selectAlignment: any;
+  selectAlignment: HTMLSelectElement | null = null;
 
   // Proficiency slots
-  profsCard: any;
-  labelWpSlots: any;
-  labelNwpSlots: any;
+  profsCard: HTMLElement | null = null;
+  labelWpSlots: HTMLElement | null = null;
+  labelNwpSlots: HTMLElement | null = null;
 
   // Spell slots
-  spellsCard: any;
-  spellsDl: any;
+  spellsCard: HTMLElement | null = null;
+  spellsDl: HTMLElement | null = null;
 
   // Thief skills
-  thiefSkillsCard: any;
-  tsAvail: any;
-  tsUsed: any;
-  tsRemain: any;
+  thiefSkillsCard: HTMLElement | null = null;
+  tsAvail: HTMLElement | null = null;
+  tsUsed: HTMLElement | null = null;
+  tsRemain: HTMLElement | null = null;
   thiefSkillBases: HTMLElement[] = [];
   thiefSkillAdds: HTMLInputElement[] = [];
   thiefSkillTotals: HTMLElement[] = [];
   thiefSkillBaseValues: number[] = [0,0,0,0,0,0,0,0];
 
   // Bard skills
-  bardSkillsCard: any;
-  bsAvail: any;
-  bsUsed: any;
-  bsRemain: any;
+  bardSkillsCard: HTMLElement | null = null;
+  bsAvail: HTMLElement | null = null;
+  bsUsed: HTMLElement | null = null;
+  bsRemain: HTMLElement | null = null;
   bardSkillBases: HTMLElement[] = [];
   bardSkillAdds: HTMLInputElement[] = [];
   bardSkillTotals: HTMLElement[] = [];
@@ -216,7 +219,7 @@ export class Generator {
 
     this.selectRace = document.getElementById('race') as HTMLSelectElement;
     this.selectClass = document.getElementById('class') as HTMLSelectElement;
-  this.selectMulticlass = document.getElementById('multiclass') as HTMLSelectElement | null;
+    this.selectMulticlass = document.getElementById('multiclass') as HTMLSelectElement | null;
     this.selectLevel = document.getElementById('lvl') as HTMLSelectElement;
     this.selectGender = document.getElementById('gender') as HTMLSelectElement;
 
@@ -225,7 +228,7 @@ export class Generator {
     this.labelAge    = document.getElementById('charAge')    as HTMLElement;
     this.labelGold   = document.getElementById('charGold')   as HTMLElement;
 
-    this.rollType = document.getElementsByName('rolltype') as any;
+    this.rollType = document.getElementsByName('rolltype') as unknown as NodeListOf<HTMLInputElement>;
     this.spinner = document.getElementById('spinner') as HTMLElement;
 
     this.selectAlignment = document.getElementById('alignment') as HTMLSelectElement;
@@ -313,20 +316,20 @@ export class Generator {
     this.spinnerOn();
     this.clearControls();
     if (this.rollType[0].checked) {
-      this.inputOne.value = roll4d6DropLowest();
-      this.inputTwo.value = roll4d6DropLowest();
-      this.inputThree.value = roll4d6DropLowest();
-      this.inputFour.value = roll4d6DropLowest();
-      this.inputFive.value = roll4d6DropLowest();
-      this.inputSix.value = roll4d6DropLowest();
+      this.inputOne.value = roll4d6DropLowest().toString();
+      this.inputTwo.value = roll4d6DropLowest().toString();
+      this.inputThree.value = roll4d6DropLowest().toString();
+      this.inputFour.value = roll4d6DropLowest().toString();
+      this.inputFive.value = roll4d6DropLowest().toString();
+      this.inputSix.value = roll4d6DropLowest().toString();
       this.spinnerOff();
     } else if (this.rollType[1].checked) {
-      this.inputOne.value = roll3d6();
-      this.inputTwo.value = roll3d6();
-      this.inputThree.value = roll3d6();
-      this.inputFour.value = roll3d6();
-      this.inputFive.value = roll3d6();
-      this.inputSix.value = roll3d6();
+      this.inputOne.value = roll3d6().toString();
+      this.inputTwo.value = roll3d6().toString();
+      this.inputThree.value = roll3d6().toString();
+      this.inputFour.value = roll3d6().toString();
+      this.inputFive.value = roll3d6().toString();
+      this.inputSix.value = roll3d6().toString();
       this.spinnerOff();
     }
   };
@@ -342,7 +345,6 @@ export class Generator {
     this.inputFour.value = '';
     this.inputFive.value = '';
     this.inputSix.value = '';
-    this.labelPercent.value = '';
 
     this.clearVals(this.stat1);
     this.clearVals(this.stat2);
@@ -493,236 +495,75 @@ export class Generator {
         throw new Error('Impossible stat selected');
     }
     ddl.disabled = true;
-  // Stats changed; recompute multiclass and single-class options
-  this.refreshMulticlassOptions();
-  this.refreshClassDdl();
+    // Stats changed; recompute multiclass and single-class options
+    this.refreshMulticlassOptions();
+    this.refreshClassDdl();
   };
 
-  // calculate strength modifiers
+  // Strength: roll d100 for STR 18 warriors, then delegate to pure calc
   checkForStrMods = (str: number) => {
-    let prcStr = 101;
+    let prcStr = 0;
     if (str === 18 && this.isFighter) {
       this.spinnerOn();
       prcStr = rollDie(100);
       this.spinnerOff();
       this.labelPercent.textContent = prcStr.toString();
     }
-    switch (str) {
-      case 3:
-        this.setStrChecks(-3, -1, 5, 10, 2, 0); break;
-      case 4:
-      case 5:
-        this.setStrChecks(-2, -1, 10, 25, 3, 0); break;
-      case 6:
-      case 7:
-        this.setStrChecks(-1, 0, 20, 55, 4, 0); break;
-      case 8:
-      case 9:
-        this.setStrChecks(0, 0, 35, 90, 5, 1); break;
-      case 10:
-      case 11:
-        this.setStrChecks(0, 0, 40, 115, 6, 2); break;
-      case 12:
-      case 13:
-        this.setStrChecks(0, 0, 45, 140, 7, 4); break;
-      case 14:
-      case 15:
-        this.setStrChecks(0, 0, 55, 170, 8, 7); break;
-      case 16:
-        this.setStrChecks(0, 1, 70, 195, 8, 10); break;
-      case 17:
-        this.setStrChecks(1, 1, 85, 220, 10, 13); break;
-      case 18:
-        switch (true) {
-          case prcStr < 51:
-            this.setStrChecks(1, 3, 135, 280, 12, 20); break;
-          case prcStr < 76:
-            this.setStrChecks(2, 3, 160, 305, 13, 25); break;
-          case prcStr < 91:
-            this.setStrChecks(2, 4, 185, 330, 14, 30); break;
-          case prcStr < 100:
-            this.setStrChecks(2, 5, 235, 380, 15, 35); break;
-          case prcStr === 100:
-            this.setStrChecks(3, 6, 335, 480, 16, 40); break;
-          default:
-            this.setStrChecks(1, 2, 110, 255, 11, 16); break;
-        }
-        break;
-    }
+    const m = calcStrMods(str, this.isFighter, prcStr);
+    this.hitProb = m.hitProb;
+    this.DmgAdj  = m.dmgAdj;
+    this.labelWgtAllow.textContent = m.wghtAllow.toString();
+    this.labelMxPress.textContent  = m.maxPress.toString();
+    this.labelOpDrs.textContent    = m.opDrs.toString();
+    this.labelBndBrs.textContent   = m.bndBrs.toString();
+    this.labelHitProb.textContent  = m.hitProb.toString();
+    this.labelDmgAdj.textContent   = m.dmgAdj.toString();
   };
 
-  // set strength adjustments
-  setStrChecks = (hitProb: number, dmgAdj: number, wAllow: number, mPres: number, oDrs: number, bBrs: number) => {
-    this.hitProb = hitProb;
-    this.DmgAdj = dmgAdj;
-    this.labelWgtAllow.textContent = wAllow.toString();
-    this.labelMxPress.textContent = mPres.toString();
-    this.labelOpDrs.textContent = oDrs.toString();
-    this.labelBndBrs.textContent = bBrs.toString();
-    this.labelHitProb.textContent = hitProb.toString();
-    this.labelDmgAdj.textContent = dmgAdj.toString();
-  };
-
-  // calculate dexterity modifiers
+  // Dexterity modifiers
   setDexMods = (dex: number) => {
-    switch (dex) {
-      case 3: this.setDexAdj(-3, -3, 4); break;
-      case 4: this.setDexAdj(-2, -2, 3); break;
-      case 5: this.setDexAdj(-1, -1, 2); break;
-      case 6: this.setDexAdj(0, 0, 1); break;
-      case 7:
-      case 8:
-      case 9:
-      case 10:
-      case 11:
-      case 12:
-      case 13:
-      case 14: this.setDexAdj(0, 0, 0); break;
-      case 15: this.setDexAdj(0, 0, -1); break;
-      case 16: this.setDexAdj(1, 1, -2); break;
-      case 17: this.setDexAdj(2, 2, -3); break;
-      case 18: this.setDexAdj(2, 2, -4); break;
-      default: break;
-    }
+    const m = calcDexMods(dex);
+    this.labelRctAdj.innerHTML  = m.rctAdj.toString();
+    this.labelMislAdj.innerHTML = m.mislAdj.toString();
+    this.labelDefAdj.innerHTML  = m.defAdj.toString();
   };
 
-  // set dexterity adj
-  setDexAdj = (rAdj: number, msAdj: number, dAdj: number) => {
-    this.labelRctAdj.innerHTML = rAdj.toString();
-    this.labelMislAdj.innerHTML = msAdj.toString();
-    this.labelDefAdj.innerHTML = dAdj.toString();
-  };
-
-  // calculate con modifiers
+  // Constitution modifiers
   setConMods = (con: number) => {
-    switch (con) {
-      case 3: this.setConAdj(-2, 25, 30, -2, 0); break;
-      case 4: this.setConAdj(-1, 40, 45, 0, 0); break;
-      case 5: this.setConAdj(-1, 45, 50, 0, 0); break;
-      case 6: this.setConAdj(-1, 50, 55, 0, 0); break;
-      case 7: this.setConAdj(0, 55, 60, 0, 0); break;
-      case 8: this.setConAdj(0, 60, 65, 0, 0); break;
-      case 9: this.setConAdj(0, 65, 70, 0, 0); break;
-      case 10: this.setConAdj(0, 70, 75, 0, 0); break;
-      case 11: this.setConAdj(0, 75, 80, 0, 0); break;
-      case 12: this.setConAdj(0, 80, 85, 0, 0); break;
-      case 13: this.setConAdj(0, 85, 90, 0, 0); break;
-      case 14: this.setConAdj(0, 88, 92, 0, 0); break;
-      case 15: this.setConAdj(1, 90, 94, 0, 0); break;
-      case 16: this.setConAdj(2, 95, 96, 0, 0); break;
-      case 17: this.setConAdj(2, 97, 98, 0, 0); break;
-      case 18: this.setConAdj(2, 99, 100, 0, 0); break;
-      default: break;
-    }
-    if (this.isFighter) {
-      switch (con) {
-        case 17: this.setConAdj(3, 97, 98, 0, 0); break;
-        case 18: this.setConAdj(4, 99, 100, 0, 0); break;
-      }
-    }
+    const m = calcConMods(con, this.isFighter);
+    this.hpAdj = m.hpAdj;
+    this.labelHpAdj.innerHTML  = m.hpAdj.toString();
+    this.labelSysShk.innerHTML = m.sysShk.toString();
+    this.labelResSurv.innerHTML = m.resSurv.toString();
+    this.labelPoisSv.innerHTML = m.poisonSv.toString();
+    this.labelRegen.innerHTML  = m.regen.toString();
   };
 
-  // set consititution adj
-  setConAdj = (hpA: number, sys: number, res: number, pos: number, reg: number) => {
-    this.hpAdj = hpA;
-    this.labelHpAdj.innerHTML = hpA.toString();
-    this.labelSysShk.innerHTML = sys.toString();
-    this.labelResSurv.innerHTML = res.toString();
-    this.labelPoisSv.innerHTML = pos.toString();
-    this.labelRegen.innerHTML = reg.toString();
-  };
-
-  // calculate intelligence modifiers
+  // Intelligence modifiers
   setIntMods = (int: number) => {
-    switch (int) {
-      case 3:
-      case 4:
-      case 5:
-      case 6:
-      case 7:
-      case 8: this.setIntAdj(1, 0, 0, 0, 0); break;
-      case 9: this.setIntAdj(2, 4, 35, 6, 0); break;
-      case 10: this.setIntAdj(2, 5, 40, 7, 0); break;
-      case 11: this.setIntAdj(2, 5, 45, 7, 0); break;
-      case 12: this.setIntAdj(3, 6, 50, 7, 0); break;
-      case 13: this.setIntAdj(3, 6, 55, 7, 0); break;
-      case 14: this.setIntAdj(4, 7, 60, 9, 0); break;
-      case 15: this.setIntAdj(4, 7, 65, 11, 0); break;
-      case 16: this.setIntAdj(5, 8, 70, 11, 0); break;
-      case 17: this.setIntAdj(6, 8, 75, 14, 0); break;
-      case 18: this.setIntAdj(7, 9, 85, 18, 0); break;
-      default: break;
-    }
+    const m = calcIntMods(int);
+    this.labelNoLang.innerHTML    = m.noLang.toString();
+    this.labelSplLvl.innerHTML    = m.splLvl.toString();
+    this.labelChLrn.innerHTML     = m.chnLearn.toString();
+    this.labelMxSplPLvl.innerHTML = m.maxSplPerLvl.toString();
+    this.labelSplImun.innerHTML   = m.splImun.toString();
   };
 
-  // set intelligence adjustments
-  setIntAdj = (noLan: number, sLvl: number, chnLn: number, max: number, imun: number) => {
-    this.labelNoLang.innerHTML = noLan.toString();
-    this.labelSplLvl.innerHTML = sLvl.toString();
-    this.labelChLrn.innerHTML = chnLn.toString();
-    this.labelMxSplPLvl.innerHTML = max.toString();
-    this.labelSplImun.innerHTML = imun.toString();
-  };
-
-  // calculate wisdom modifiers
+  // Wisdom modifiers
   setWisMods = (wis: number) => {
-    switch (wis) {
-      case 3: this.setWisAdj(-3, 0, 50, 0); break;
-      case 4: this.setWisAdj(-2, 0, 45, 0); break;
-      case 5: this.setWisAdj(-1, 0, 40, 0); break;
-      case 6: this.setWisAdj(-1, 0, 35, 0); break;
-      case 7: this.setWisAdj(-1, 0, 30, 0); break;
-      case 8: this.setWisAdj(0, 0, 25, 0); break;
-      case 9: this.setWisAdj(0, 0, 20, 0); break;
-      case 10: this.setWisAdj(0, 0, 15, 0); break;
-      case 11: this.setWisAdj(0, 0, 10, 0); break;
-      case 12: this.setWisAdj(0, 0, 5, 0); break;
-      case 13:
-      case 14: this.setWisAdj(0, 1, 0, 0); break;
-      case 15: this.setWisAdj(1, 2, 0, 0); break;
-      case 16: this.setWisAdj(2, 2, 0, 0); break;
-      case 17: this.setWisAdj(3, 3, 0, 0); break;
-      case 18: this.setWisAdj(4, 4, 0, 0); break;
-      default: break;
-    }
+    const m = calcWisMods(wis);
+    this.labelMagDefAdj.innerHTML = m.magDefAdj.toString();
+    this.labelBonusSp.innerHTML   = m.bonusSp.toString();
+    this.labelChnFail.innerHTML   = m.chnFail.toString();
+    this.labelSplImmune.innerHTML = m.splImmune.toString();
   };
 
-  // set wisdom adjustments
-  setWisAdj = (mDef: number, bSp: number, cnFl: number, imun: number) => {
-    this.labelMagDefAdj.innerHTML = mDef.toString();
-    this.labelBonusSp.innerHTML = bSp.toString();
-    this.labelChnFail.innerHTML = cnFl.toString();
-    this.labelSplImmune.innerHTML = imun.toString();
-  };
-
-  // Calculate charisma modifiers
+  // Charisma modifiers
   setCharMods = (chr: number) => {
-    switch (chr) {
-      case 3: this.setCharAdj(1, -6, -5); break;
-      case 4: this.setCharAdj(1, -5, -4); break;
-      case 5: this.setCharAdj(2, -4, -3); break;
-      case 6: this.setCharAdj(2, -3, -2); break;
-      case 7: this.setCharAdj(3, -2, -1); break;
-      case 8: this.setCharAdj(3, -1, 0); break;
-      case 9:
-      case 10:
-      case 11: this.setCharAdj(4, 0, 0); break;
-      case 12: this.setCharAdj(5, 0, 0); break;
-      case 13: this.setCharAdj(5, 0, 1); break;
-      case 14: this.setCharAdj(6, 1, 2); break;
-      case 15: this.setCharAdj(7, 3, 3); break;
-      case 16: this.setCharAdj(8, 4, 5); break;
-      case 17: this.setCharAdj(10, 6, 6); break;
-      case 18: this.setCharAdj(15, 8, 7); break;
-      default: break;
-    }
-  };
-
-  // Set charisma adj
-  setCharAdj = (hench: number, loyal: number, react: number) => {
-    this.labelMxHench.innerHTML = hench.toString();
-    this.labelLoyaltyBs.innerHTML = loyal.toString();
-    this.labelReactAdj.innerHTML = react.toString();
+    const m = calcChrMods(chr);
+    this.labelMxHench.innerHTML   = m.mxHench.toString();
+    this.labelLoyaltyBs.innerHTML = m.loyalBs.toString();
+    this.labelReactAdj.innerHTML  = m.reactAdj.toString();
   };
 
   // Disable statistic option after its selected
@@ -876,52 +717,9 @@ export class Generator {
       this.calcAge();
       this.calcMoney();
       this.applyAlignmentRestrictions(selected);
-      this.calcProfSlots();
-      this.calcSpellSlots();
-      this.updateThiefSkillsVisibility();
-      this.updateBardSkillsVisibility();
-      this.updateRangerSkillsVisibility();
-      return;
-    }
-
-    // No class selected: clear all dependent state
-    if (!selected.length) {
+    } else {
       this.applyAlignmentRestrictions([]);
-      this.calcProfSlots();
-      this.calcSpellSlots();
-      this.updateThiefSkillsVisibility();
-      this.updateBardSkillsVisibility();
-      this.updateRangerSkillsVisibility();
-      return;
     }
-
-    // Fallback to legacy single-class by dropdown index
-    switch (ddl.selectedIndex) {
-      case 1: // Fighters
-      case 6:
-      case 7:
-        this.isFighter = true;
-        this.checkForStrMods(this.strInit);
-        this.setConMods(this.conInit);
-        this.hitdice = 10;
-        break;
-      case 2: // Rogues
-      case 5:
-        this.hitdice = 6;
-        break;
-      case 3: // Priests
-      case 8:
-        this.hitdice = 8;
-        break;
-      case 4: // Wizards
-        this.hitdice = 4;
-        break;
-      default:
-        throw new Error('Unknown class type');
-    }
-    this.calcAge();
-    this.calcMoney();
-    this.applyAlignmentRestrictions(this.getSelectedClasses());
     this.calcProfSlots();
     this.calcSpellSlots();
     this.updateThiefSkillsVisibility();
@@ -942,11 +740,11 @@ export class Generator {
     this.inputWis.value = (this.wisMod == 0 ? this.inputWis.value : parseInt(this.inputWis.value) + this.wisMod).toString();
   };
 
-  disableSelectionOpts(options: HTMLOptionElement[]) {
+  disableSelectionOpts(options: ArrayLike<HTMLOptionElement>) {
     for (let i = 0; i < options.length; i++) { options[i].disabled = true; }
   }
 
-  enableSelectOptionByVal = (options: HTMLOptionElement[], type: string) => {
+  enableSelectOptionByVal = (options: ArrayLike<HTMLOptionElement>, type: string) => {
     for (let i = 1; i < options.length; i++) { if (options[i].value === type) options[i].disabled = false; }
   };
 
@@ -1055,18 +853,18 @@ export class Generator {
       default: throw Error('Unknown race');
     }
     this.applyRacialMods();
-  // Race changed; refresh multiclass options and re-roll physical/age
-  this.refreshMulticlassOptions();
-  this.calcPhysical();
-  this.calcAge();
-  this.calcThiefSkillBases();
-  this.calcBardSkillBases();
-  this.applyAlignmentRestrictions(this.getSelectedClasses());
-  this.calcProfSlots();
-  this.calcSpellSlots();
-  this.updateThiefSkillsVisibility();
-  this.updateBardSkillsVisibility();
-  this.updateRangerSkillsVisibility();
+    // Race changed; refresh multiclass options and re-roll physical/age
+    this.refreshMulticlassOptions();
+    this.calcPhysical();
+    this.calcAge();
+    this.calcThiefSkillBases();
+    this.calcBardSkillBases();
+    this.applyAlignmentRestrictions(this.getSelectedClasses());
+    this.calcProfSlots();
+    this.calcSpellSlots();
+    this.updateThiefSkillsVisibility();
+    this.updateBardSkillsVisibility();
+    this.updateRangerSkillsVisibility();
   };
 
   // Calculate hp and thac0
@@ -1076,23 +874,9 @@ export class Generator {
     this.labelHp.innerHTML = hit.toString();
 
     const sel = this.getSelectedClasses();
-    const meta = sel.length ? this.getMetaClass(sel) : (() => {
-      // derive from single-class dropdown
-      const classIndex = this.selectClass.selectedIndex;
-      switch (classIndex) {
-        case 1:
-        case 6:
-        case 7: return 'fighter' as const;
-        case 2:
-        case 5: return 'rogue' as const;
-        case 9:
-        case 4: return 'mage' as const;
-        case 3:
-        case 8: return 'cleric' as const;
-        default: throw new Error('Unknown meta class');
-      }
-    })();
-    this.setLabelValues(meta, ddl.selectedIndex - 1);
+    if (sel.length) {
+      this.setLabelValues(this.getMetaClass(sel), ddl.selectedIndex - 1);
+    }
     this.applyLevelToAgeGold();
     this.calcProfSlots();
     this.calcSpellSlots();
@@ -1118,6 +902,23 @@ export class Generator {
 
   getCharacterData = () => {
     const classes = this.getSelectedClasses();
+    // Compute spell slots from PHB data tables
+    const lvl = parseInt((this.selectLevel as HTMLSelectElement).value || '0');
+    const spellSlots: string[] = Array(9).fill('');
+    if (lvl) {
+      const casters = classes.filter(c => spellSlotsPerDay[c]);
+      if (casters.length > 0) {
+        const allSlots = casters.map(cls => spellSlotsPerDay[cls]![lvl - 1] ?? []);
+        const maxLen = Math.max(...allSlots.map((s: number[]) => s.length), 0);
+        for (let i = 0; i < maxLen && i < 9; i++) {
+          const parts = allSlots.map((s: number[]) => (s[i] > 0 ? s[i].toString() : '')).filter(Boolean);
+          spellSlots[i] = parts.join('/');
+        }
+      }
+    }
+    const tSkills = this.thiefSkillsCard?.style.display !== 'none';
+    const bSkills = this.bardSkillsCard?.style.display !== 'none';
+    const rSkills = this.rangerSkillsCard?.style.display !== 'none';
     return {
       className: classes.join('+'),
       level:     (this.selectLevel as HTMLSelectElement).value || '',
@@ -1168,6 +969,25 @@ export class Generator {
       alignment:    (this.selectAlignment as HTMLSelectElement)?.value || '',
       wpSlots:      this.labelWpSlots?.textContent || '',
       nwpSlots:     this.labelNwpSlots?.textContent || '',
+      // Thief skill totals
+      thiefPP:  tSkills ? (this.thiefSkillTotals[0]?.textContent || '') : '',
+      thiefOL:  tSkills ? (this.thiefSkillTotals[1]?.textContent || '') : '',
+      thiefFRT: tSkills ? (this.thiefSkillTotals[2]?.textContent || '') : '',
+      thiefMS:  tSkills ? (this.thiefSkillTotals[3]?.textContent || '') : '',
+      thiefHIS: tSkills ? (this.thiefSkillTotals[4]?.textContent || '') : '',
+      thiefDN:  tSkills ? (this.thiefSkillTotals[5]?.textContent || '') : '',
+      thiefCW:  tSkills ? (this.thiefSkillTotals[6]?.textContent || '') : '',
+      thiefRL:  tSkills ? (this.thiefSkillTotals[7]?.textContent || '') : '',
+      // Bard skill totals
+      bardPP:  bSkills ? (this.bardSkillTotals[0]?.textContent || '') : '',
+      bardDN:  bSkills ? (this.bardSkillTotals[1]?.textContent || '') : '',
+      bardCW:  bSkills ? (this.bardSkillTotals[2]?.textContent || '') : '',
+      bardRL:  bSkills ? (this.bardSkillTotals[3]?.textContent || '') : '',
+      // Ranger skill totals
+      rangerMS:  rSkills ? (this.rangerMsDisplay?.textContent || '') : '',
+      rangerHIS: rSkills ? (this.rangerHisDisplay?.textContent || '') : '',
+      // Spell slots per level (index 0 = 1st level)
+      spellSlots,
     };
   };
 
@@ -1232,8 +1052,9 @@ export class Generator {
     if (!classes.length || !level) { this.spellsCard.style.display = 'none'; return; }
     const casters = classes.filter(c => spellSlotsPerDay[c]);
     if (!casters.length) { this.spellsCard.style.display = 'none'; return; }
-    this.spellsDl.innerHTML = '';
-    const ordinals = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th'];
+    const dl = this.spellsDl;  // capture after null-check — safe to use inside forEach
+    dl.innerHTML = '';
+    const ordinals = SPELL_LEVEL_ORDINALS;
     casters.forEach(cls => {
       const table = spellSlotsPerDay[cls]!;
       const slots = table[level - 1];
@@ -1244,19 +1065,19 @@ export class Generator {
         const dt = document.createElement('dt');
         dt.textContent = cls.charAt(0).toUpperCase() + cls.slice(1);
         dt.className = 'spell-class-header';
-        this.spellsDl.appendChild(dt);
-        this.spellsDl.appendChild(document.createElement('dd'));
+        dl.appendChild(dt);
+        dl.appendChild(document.createElement('dd'));
       }
       for (let i = 0; i <= lastNonZero; i++) {
         const dt = document.createElement('dt');
         dt.textContent = ordinals[i];
         const dd = document.createElement('dd');
         dd.textContent = slots[i] > 0 ? slots[i].toString() : '—';
-        this.spellsDl.appendChild(dt);
-        this.spellsDl.appendChild(dd);
+        dl.appendChild(dt);
+        dl.appendChild(dd);
       }
     });
-    if (this.spellsDl.children.length === 0) { this.spellsCard.style.display = 'none'; return; }
+    if (dl.children.length === 0) { this.spellsCard.style.display = 'none'; return; }
     this.spellsCard.style.display = '';
   };
 
