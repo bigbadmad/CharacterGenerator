@@ -12,9 +12,9 @@ export const classMinimums: Record<Classes, Partial<AbilityScores>> = {
   [Classes.paladin]: { str: 12, con: 9, wis: 13, chr: 17 }, // not available to demi-humans
   [Classes.ranger]: { str: 13, dex: 13, con: 14, wis: 14 }, // only elves & half-elves
   [Classes.mage]: { int: 9 },
-  [Classes.illusionist]: { dex: 16, int: 15 },
+  [Classes.illusionist]: { dex: 16, int: 9 },
   [Classes.thief]: { dex: 9 },
-  [Classes.bard]: {}, // not used in combos list provided
+  [Classes.bard]: { dex: 12, int: 13, chr: 15 },
 };
 
 // Allowed multiclass combinations by race from the provided rules
