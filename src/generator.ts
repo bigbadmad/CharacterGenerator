@@ -868,6 +868,16 @@ export class Generator {
       return;
     }
 
+    // No class selected: clear all dependent state
+    if (!selected.length) {
+      this.applyAlignmentRestrictions([]);
+      this.calcProfSlots();
+      this.calcSpellSlots();
+      this.updateThiefSkillsVisibility();
+      this.updateBardSkillsVisibility();
+      return;
+    }
+
     // Fallback to legacy single-class by dropdown index
     switch (ddl.selectedIndex) {
       case 1: // Fighters
@@ -952,7 +962,10 @@ export class Generator {
       if (!opt.value || opt.disabled) continue;
       if (!meetsClassMinimums(abilities, opt.value as Classes)) opt.disabled = true;
     }
-    if (sel.selectedIndex > 0 && sel.options[sel.selectedIndex]?.disabled) sel.selectedIndex = 0;
+    if (sel.selectedIndex > 0 && sel.options[sel.selectedIndex]?.disabled) {
+      sel.selectedIndex = 0;
+      sel.dispatchEvent(new Event('change'));
+    }
   };
 
   private refreshClassDdl = () => {
