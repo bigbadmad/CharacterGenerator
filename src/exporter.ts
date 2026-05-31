@@ -6,6 +6,7 @@ export interface CharacterData {
   level: string;
   race: string;
   str: string;
+  strPct?: string;
   dex: string;
   con: string;
   int: string;
@@ -72,6 +73,10 @@ export function cv(val: string): string | number {
 /** Build the array-of-arrays sheet data from a CharacterData object */
 export function buildSheetData(d: CharacterData): (string | number)[][] {
   const E = '';
+  // Show exceptional strength as "18/xx" in the str cell when applicable
+  const strDisplay: string | number = (d.strPct && d.strPct !== '' && d.strPct !== '0')
+    ? `18/${d.strPct}`
+    : cv(d.str);
   // Columns A–O (indices 0–14). Data values are placed in the row below their label row.
   // Saving throw values go in col M (index 12) on the same row as their col-L label.
   const aoa: (string | number)[][] = [
@@ -90,7 +95,7 @@ export function buildSheetData(d: CharacterData): (string | number)[][] {
     // Row 7  - Strength labels | Movement: Base | Save label: Paralyze/Poison | Save value
     ['Strength', 'hit prob', 'dmg adjust', 'wgt allow', 'max press', 'opn door', 'BB/LG', 'Base', E, E, E, 'Paralyze/Poison', cv(d.para), E, E],
     // Row 8  - Strength data | Movement: Light sub-label | Save label: Rod/Staff/Wand | Save value
-    [cv(d.str), cv(d.hitProb), cv(d.dmgAdj), cv(d.wgtAllow), cv(d.maxPress), cv(d.opnDoor), cv(d.bbLg), 'Light', E, E, E, 'Rod/Staff/Wand', cv(d.rod), E, E],
+    [strDisplay, cv(d.hitProb), cv(d.dmgAdj), cv(d.wgtAllow), cv(d.maxPress), cv(d.opnDoor), cv(d.bbLg), 'Light', E, E, E, 'Rod/Staff/Wand', cv(d.rod), E, E],
     // Row 9  - Dexterity labels | Movement: Mod | Save label: Petrify/Polymorph | Save value
     ['Dexterity', 'rctn adj', 'missile adj', 'def adj', E, E, E, 'Mod', E, E, E, 'Petrify/Polymorph', cv(d.poly), E, E],
     // Row 10 - Dexterity data | Movement: Heavy | Save label: Breath weapon | Save value

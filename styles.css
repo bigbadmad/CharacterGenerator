@@ -245,8 +245,21 @@ body {
   font-weight: 700;
   color: var(--accent);
   min-width: 26px;
-  line-height: 1;
+  width: 34px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  outline: none;
+  padding: 0;
+  text-align: center;
 }
+
+.pct-label:not([readonly]) {
+  border-bottom-color: var(--accent);
+  cursor: text;
+}
+
+
 
 /* -- Roll Button ---------------------------------------------- */
 .roll-btn-wrap {

@@ -18,6 +18,8 @@ export class Generator {
 
   hitdice = 6;
   isFighter = false;
+  isDmMode = false;
+  prcStr = 0;
 
   hpAdj = 0;
   // str
@@ -59,7 +61,7 @@ export class Generator {
   inputFour!: HTMLInputElement;
   inputFive!: HTMLInputElement;
   inputSix!: HTMLInputElement;
-  labelPercent!: HTMLLabelElement;
+  inputPercent!: HTMLInputElement;
   stat1!: HTMLSelectElement;
   stat2!: HTMLSelectElement;
   stat3!: HTMLSelectElement;
@@ -167,7 +169,7 @@ export class Generator {
     this.inputFour = document.getElementById('four') as HTMLInputElement;
     this.inputFive = document.getElementById('five') as HTMLInputElement;
     this.inputSix = document.getElementById('six') as HTMLInputElement;
-    this.labelPercent = document.getElementById('percent') as HTMLLabelElement;
+    this.inputPercent = document.getElementById('percent') as HTMLInputElement;
 
     this.stat1 = document.getElementById('stat1') as HTMLSelectElement;
     this.stat2 = document.getElementById('stat2') as HTMLSelectElement;
@@ -360,7 +362,9 @@ export class Generator {
     this.inputInt.value = '';
     this.inputChr.value = '';
 
-    this.labelPercent.textContent = '';
+    this.prcStr = 0;
+    this.inputPercent.value = '';
+    this.inputPercent.readOnly = true;
     this.labelWgtAllow.textContent = '';
     this.labelMxPress.textContent = '';
     this.labelOpDrs.textContent = '';
@@ -459,6 +463,7 @@ export class Generator {
         this.strInit = val;
         this.inputStr.value = this.strInit.toString();
         this.removeOption(1);
+        this.prcStr = 0; // force a fresh roll in gen mode
         this.checkForStrMods(this.strInit);
         break;
       case 2:
@@ -500,16 +505,27 @@ export class Generator {
     this.refreshClassDdl();
   };
 
-  // Strength: roll d100 for STR 18 warriors, then delegate to pure calc
+  // Strength: handle STR 18 warriors. In gen mode, rolls d100 when needed.
+  // In DM mode, enables the % input for manual entry instead of auto-rolling.
   checkForStrMods = (str: number) => {
-    let prcStr = 0;
-    if (str === 18 && this.isFighter) {
-      this.spinnerOn();
-      prcStr = rollDie(100);
-      this.spinnerOff();
-      this.labelPercent.textContent = prcStr.toString();
+    if (str !== 18 || !this.isFighter) {
+      // Not exceptional strength — clear any stored % and lock the input
+      this.prcStr = 0;
+      this.inputPercent.value = '';
+      this.inputPercent.readOnly = true;
+    } else {
+      // str===18 and isFighter: exceptional strength
+      if (!this.isDmMode && this.prcStr === 0) {
+        // Gen mode with no existing value: roll once
+        this.spinnerOn();
+        this.prcStr = rollDie(100);
+        this.spinnerOff();
+      }
+      this.inputPercent.value = this.prcStr === 100 ? '00' : (this.prcStr > 0 ? this.prcStr.toString() : '');
+      // In DM mode the field is editable; in gen mode it's display-only
+      this.inputPercent.readOnly = !this.isDmMode;
     }
-    const m = calcStrMods(str, this.isFighter, prcStr);
+    const m = calcStrMods(str, this.isFighter, this.prcStr);
     this.hitProb = m.hitProb;
     this.DmgAdj  = m.dmgAdj;
     this.labelWgtAllow.textContent = m.wghtAllow.toString();
@@ -818,6 +834,7 @@ export class Generator {
   };
 
   dmMode = () => {
+    this.isDmMode = true;
     this.clearControls();
     this.enableDisableStats(true);
     this.zeroMOds();
@@ -826,15 +843,33 @@ export class Generator {
     this.inputStr.readOnly = false; this.inputDex.readOnly = false; this.inputCon.readOnly = false;
     this.inputInt.readOnly = false; this.inputWis.readOnly = false; this.inputChr.readOnly = false;
 
-    this.addDmListener(this.inputStr, (v) => { this.strInit = v; this.checkForStrMods(v); });
+    // When str changes in DM mode, reset the % so it's re-entered by the DM
+    this.addDmListener(this.inputStr, (v) => { this.strInit = v; this.prcStr = 0; this.checkForStrMods(v); });
     this.addDmListener(this.inputDex, (v) => { this.dexInit = v; this.setDexMods(v); });
     this.addDmListener(this.inputCon, (v) => { this.conInit = v; this.setConMods(v); });
     this.addDmListener(this.inputInt, (v) => { this.intInit = v; this.setIntMods(v); });
     this.addDmListener(this.inputWis, (v) => { this.wisInit = v; this.setWisMods(v); });
     this.addDmListener(this.inputChr, (v) => { this.chrInit = v; this.setCharMods(v); });
+    // Allow DM to type the exceptional strength % directly; '00' means 100
+    const pctFn = () => {
+      const raw = this.inputPercent.value.trim();
+      this.prcStr = raw === '00' ? 100 : (parseInt(raw) || 0);
+      const m = calcStrMods(this.strInit, this.isFighter, this.prcStr);
+      this.hitProb = m.hitProb;
+      this.DmgAdj  = m.dmgAdj;
+      this.labelWgtAllow.textContent = m.wghtAllow.toString();
+      this.labelMxPress.textContent  = m.maxPress.toString();
+      this.labelOpDrs.textContent    = m.opDrs.toString();
+      this.labelBndBrs.textContent   = m.bndBrs.toString();
+      this.labelHitProb.textContent  = m.hitProb.toString();
+      this.labelDmgAdj.textContent   = m.dmgAdj.toString();
+    };
+    this.inputPercent.addEventListener('input', pctFn);
+    this.dmListeners.push(() => this.inputPercent.removeEventListener('input', pctFn));
   };
 
   genMode = () => {
+    this.isDmMode = false;
     this.dmListeners.forEach(remove => remove());
     this.dmListeners = [];
     this.clearControls();
@@ -842,6 +877,7 @@ export class Generator {
     this.rollButton.disabled = false;
     this.inputStr.readOnly = true; this.inputDex.readOnly = true; this.inputCon.readOnly = true;
     this.inputInt.readOnly = true; this.inputWis.readOnly = true; this.inputChr.readOnly = true;
+    this.inputPercent.readOnly = true;
   };
 
   enableDisableStats = (disable: boolean) => {
@@ -951,6 +987,7 @@ export class Generator {
       level:     (this.selectLevel as HTMLSelectElement).value || '',
       race:      (this.selectRace  as HTMLSelectElement).value || '',
       str:       this.inputStr?.value  || '',
+      strPct:    this.inputPercent?.value || '',
       dex:       this.inputDex?.value  || '',
       con:       this.inputCon?.value  || '',
       int:       this.inputInt?.value  || '',

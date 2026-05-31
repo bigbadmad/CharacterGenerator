@@ -95,6 +95,16 @@ describe('buildSheetData()', () => {
     expect(aoa[7][12]).toBe(15); // rod
   });
 
+  it('row 7 shows "18/xx" when strPct is provided', () => {
+    const aoa2 = buildSheetData({ ...baseChar, str: '18', strPct: '76' });
+    expect(aoa2[7][0]).toBe('18/76');
+  });
+
+  it('row 7 falls back to numeric str when strPct is absent', () => {
+    const aoa2 = buildSheetData({ ...baseChar, str: '18' });
+    expect(aoa2[7][0]).toBe(18);
+  });
+
   it('row 9 contains dexterity data and breath save', () => {
     expect(aoa[9][0]).toBe(13); // dex
     expect(aoa[9][11]).toBe('Breath weapon');
