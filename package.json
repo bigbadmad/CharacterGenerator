@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "AD&D 2e Character Generator",
   "main": "generator.js",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
   "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
   "build": "tsc",
